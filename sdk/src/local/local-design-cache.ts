@@ -1,6 +1,8 @@
 import { relative, resolve as resolvePath } from 'path'
 import { checkFile, readJsonFile, writeJsonFile } from '../utils/fs'
 
+import { Env } from '../env'
+
 import type { CancelToken } from '@avocode/cancel-token'
 
 const VERSION = 1
@@ -11,17 +13,11 @@ type DesignCacheInfo = {
 }
 
 export class LocalDesignCache {
-  private _workingDirectory: string | null = null
+  private _env: Env = new Env()
   private _cacheInfo: DesignCacheInfo | null = null
 
-  getWorkingDirectory() {
-    return this._workingDirectory || resolvePath('.')
-  }
-
-  setWorkingDirectory(workingDirectory: string | null) {
-    this._workingDirectory = workingDirectory
-      ? resolvePath(workingDirectory)
-      : null
+  setEnv(env: Env) {
+    this._env = env
   }
 
   async getDesignOctopusFilename(
@@ -129,7 +125,7 @@ export class LocalDesignCache {
   }
 
   _resolvePath(filePath: string) {
-    return resolvePath(this._workingDirectory || '.', `${filePath}`)
+    return resolvePath(this._env.workingDirectory || '.', `${filePath}`)
   }
 
   _getRelativePath(filePath: string) {

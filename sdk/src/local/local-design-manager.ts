@@ -6,6 +6,7 @@ import { writeJsonFile } from '../utils/fs'
 import mkdirp from 'mkdirp'
 import { v4 as uuid } from 'uuid'
 
+import { Env } from '../env'
 import { ApiDesignInfo, LocalDesign } from './local-design'
 
 import { MANIFEST_BASENAME } from './consts'
@@ -16,29 +17,23 @@ const statPromised = promisify(stat)
 
 export class LocalDesignManager {
   private _console: Console
-  private _workingDirectory: string | null = null
+  private _env: Env = new Env()
   private _destroyTokenController = createCancelToken()
 
   constructor(params: { console?: Console | null } = {}) {
     this._console = params.console || console
   }
 
+  setEnv(env: Env) {
+    this._env = env
+  }
+
   destroy() {
     this._destroyTokenController.cancel()
   }
 
-  getWorkingDirectory() {
-    return this._workingDirectory || resolvePath('.')
-  }
-
-  setWorkingDirectory(workingDirectory: string | null) {
-    this._workingDirectory = workingDirectory
-      ? resolvePath(workingDirectory)
-      : null
-  }
-
   resolvePath(filePath: string) {
-    return resolvePath(this._workingDirectory || '.', `${filePath}`)
+    return resolvePath(this._env.workingDirectory || '.', `${filePath}`)
   }
 
   async openOctopusFile(

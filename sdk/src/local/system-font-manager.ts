@@ -4,6 +4,7 @@ import SystemFontFamilies, { getFontInfo } from '@avocode/system-font-families'
 import { extname, resolve as resolvePath } from 'path'
 import { readFile } from 'fs'
 import { promisify } from 'util'
+import { Env } from '../env'
 import { FontSource } from './font-source'
 import { mapFind } from '../utils/async'
 
@@ -19,7 +20,7 @@ export class SystemFontManager {
   // NOTE: Record<postscriptName, filename>
   _systemFonts: Record<string, string> | null = null
 
-  private _workingDirectory: string | null = null
+  private _env: Env = new Env()
   private _destroyTokenController = createCancelToken()
 
   _console: Console
@@ -43,18 +44,12 @@ export class SystemFontManager {
     this._fontkit = createFontkit()
   }
 
+  setEnv(env: Env) {
+    this._env = env
+  }
+
   destroy() {
     this._destroyTokenController.cancel()
-  }
-
-  getWorkingDirectory() {
-    return this._workingDirectory || resolvePath('.')
-  }
-
-  setWorkingDirectory(workingDirectory: string | null) {
-    this._workingDirectory = workingDirectory
-      ? resolvePath(workingDirectory)
-      : null
   }
 
   setGlobalFontDirectory(fontDirname: string | null) {
@@ -301,6 +296,6 @@ export class SystemFontManager {
   }
 
   _resolvePath(filePath: string) {
-    return resolvePath(this._workingDirectory || '.', `${filePath}`)
+    return resolvePath(this._env.workingDirectory || '.', `${filePath}`)
   }
 }

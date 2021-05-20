@@ -2,8 +2,10 @@ import createCancelToken, { CancelToken } from '@avocode/cancel-token'
 import { createReadStream, createWriteStream, ReadStream } from 'fs'
 import { resolve as resolvePath } from 'path'
 
+import { Env } from '../env'
+
 export class DesignFileManager {
-  private _workingDirectory: string | null = null
+  private _env: Env = new Env()
   private _destroyTokenController = createCancelToken()
 
   destroy() {
@@ -12,14 +14,8 @@ export class DesignFileManager {
     )
   }
 
-  getWorkingDirectory() {
-    return this._workingDirectory || resolvePath('.')
-  }
-
-  setWorkingDirectory(workingDirectory: string | null) {
-    this._workingDirectory = workingDirectory
-      ? resolvePath(workingDirectory)
-      : null
+  setEnv(env: Env) {
+    this._env = env
   }
 
   async readDesignFileStream(
@@ -95,6 +91,6 @@ export class DesignFileManager {
   }
 
   _resolvePath(filePath: string) {
-    return resolvePath(this._workingDirectory || '.', `${filePath}`)
+    return resolvePath(this._env.workingDirectory || '.', `${filePath}`)
   }
 }

@@ -7,6 +7,7 @@ import { inspect } from 'util'
 import { v4 as uuid } from 'uuid'
 
 import { DesignListItemFacade } from './design-list-item-facade'
+import { Env } from './env'
 
 import type { CancelToken } from '@avocode/cancel-token'
 import type {
@@ -30,6 +31,8 @@ import type { SystemFontManager } from './local/system-font-manager'
 type DesignExportTargetFormatEnum = components['schemas']['DesignExportTargetFormatEnum']
 
 export class Sdk {
+  private _env: Env = new Env()
+
   private _openDesignApi: IOpenDesignApi | null = null
   private _designFileManager: DesignFileManager | null = null
   private _localDesignCache: LocalDesignCache | null = null
@@ -151,13 +154,7 @@ export class Sdk {
    * ```
    */
   getWorkingDirectory(): string | null {
-    return (
-      this._localDesignCache?.getWorkingDirectory() ||
-      this._localDesignManager?.getWorkingDirectory() ||
-      this._designFileManager?.getWorkingDirectory() ||
-      this._systemFontManager?.getWorkingDirectory() ||
-      null
-    )
+    return this._env.workingDirectory
   }
 
   /**
@@ -189,26 +186,7 @@ export class Sdk {
    * ```
    */
   setWorkingDirectory(workingDirectory: string | null) {
-    const localDesignCache = this._localDesignCache
-    const localDesignManager = this._localDesignManager
-    const designFileManager = this._designFileManager
-    const systemFontManager = this._systemFontManager
-
-    if (
-      !localDesignCache &&
-      !localDesignManager &&
-      !designFileManager &&
-      !systemFontManager
-    ) {
-      throw new Error(
-        'Offline services are not configured. Cannot set the working directory.'
-      )
-    }
-
-    localDesignCache?.setWorkingDirectory(workingDirectory)
-    localDesignManager?.setWorkingDirectory(workingDirectory)
-    designFileManager?.setWorkingDirectory(workingDirectory)
-    systemFontManager?.setWorkingDirectory(workingDirectory)
+    this._env.workingDirectory = workingDirectory || null
   }
 
   /**
@@ -762,21 +740,25 @@ export class Sdk {
 
   /** @internal */
   useDesignFileManager(designFileManager: DesignFileManager): void {
+    designFileManager.setEnv(this._env)
     this._designFileManager = designFileManager
   }
 
   /** @internal */
   useLocalDesignManager(localDesignManager: LocalDesignManager): void {
+    localDesignManager.setEnv(this._env)
     this._localDesignManager = localDesignManager
   }
 
   /** @internal */
   useLocalDesignCache(localDesignCache: LocalDesignCache): void {
+    localDesignCache.setEnv(this._env)
     this._localDesignCache = localDesignCache
   }
 
   /** @internal */
   useSystemFontManager(systemFontManager: SystemFontManager): void {
+    systemFontManager.setEnv(this._env)
     this._systemFontManager = systemFontManager
   }
 
