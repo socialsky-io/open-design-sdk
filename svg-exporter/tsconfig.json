@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+
+  "compilerOptions": {
+    "rootDir": "./src",
+    "lib": ["es2020", "dom"],
+    "module": "CommonJS",
+    "target": "ES2015",
+    "typeRoots": ["../node_modules/@types", "../types", "./types"]
+  },
+  "exclude": ["./node_modules/@types"]
+}

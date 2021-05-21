@@ -70,6 +70,11 @@ buildPackages() {
   logSuccess "Package @opendesign/rendering@$VERSION successfully built"
 
   echo ""
+  log "Building @opendesign/svg-exporter@${VERSION}…"
+  yarn build:svg-exporter || return 1
+  logSuccess "Package @opendesign/svg-exporter@$VERSION successfully built"
+
+  echo ""
   log "Building @opendesign/sdk@${VERSION}…"
   yarn build:sdk || return 1
   logSuccess "Package @opendesign/sdk@$VERSION successfully built"
@@ -101,6 +106,11 @@ releasePackages() {
   log "Releasing @opendesign/rendering@${VERSION}…"
   yarn workspace @opendesign/rendering publish --access=public --new-version "$VERSION" --no-git-tag-version --ignore-scripts || return 1
   logSuccess "Package @opendesign/rendering@$VERSION successfully released"
+
+  echo ""
+  log "Releasing @opendesign/svg-exporter@${VERSION}…"
+  yarn workspace @opendesign/svg-exporter publish --access=public --new-version "$VERSION" --no-git-tag-version --ignore-scripts || return 1
+  logSuccess "Package @opendesign/svg-exporter@$VERSION successfully released"
 
   echo ""
   log "Releasing @opendesign/sdk@${VERSION}…"

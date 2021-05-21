@@ -6,6 +6,7 @@
       "api",
       "octopus-reader",
       "rendering",
+      "svg-exporter",
       "sdk",
       "sdk-docs-typedoc"
     ],
@@ -14,10 +15,11 @@
     ]
   },
   "scripts": {
-    "build": "yarn run build:octopus-reader && yarn run build:api && yarn run build:rendering && yarn run build:sdk",
+    "build": "yarn run build:octopus-reader && yarn run build:api && yarn run build:rendering && yarn run build:svg-exporter && yarn run build:sdk",
     "build:octopus-reader": "yarn workspace @opendesign/octopus-reader run build",
     "build:api": "yarn workspace @opendesign/api run build",
     "build:rendering": "yarn workspace @opendesign/rendering run build",
+    "build:svg-exporter": "yarn workspace @opendesign/svg-exporter run build",
     "build:sdk": "yarn workspace @opendesign/sdk run build",
     "build:sdk-docs-typedoc": "./scripts/sdk-docs-typedoc.sh",
     "docs": "yarn run docs:octopus-reader && yarn run docs:sdk",

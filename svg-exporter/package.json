@@ -1,0 +1,13 @@
+{
+  "name": "@opendesign/svg-exporter",
+  "version": "0.0.0-dev",
+  "main": "dist",
+  "scripts": {
+    "build": "yarn run clean-build && yarn run build:ts",
+    "build:ts": "tsc --outDir dist --sourceMap --declaration --project ./tsconfig-build.json",
+    "clean-build": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "4.1.2"
+  }
+}
