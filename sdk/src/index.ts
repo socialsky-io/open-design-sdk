@@ -1,4 +1,5 @@
 import { OpenDesignApi } from '@opendesign/api'
+import { SvgExporter } from '@opendesign/svg-exporter'
 import { createRenderingEngine } from '@opendesign/rendering'
 import { createCancelToken } from './utils/cancel-token-utils'
 import { ConsoleConfig, getConsole } from './utils/console-utils'
@@ -83,6 +84,7 @@ export type { PageFacade } from './page-facade'
  * @param params.cached Whether to use a local (file system) cache in the form for `.octopus` files. This is enabled by default.
  * @param params.rendering Whether to use a local rendering engine for rendering designs. This is enabled by default. `cached` must not be set to `false` for the rendering engine to be available.
  * @param params.systemFonts Whether to use local system fonts for rendering designs via the rendering engine. This is enabled by default.
+ * @param params.svgExport Whether to use a local SVG exporter. This is enabled by default.
  * @param params.console Configuration of the console/logger. This can either be a log level configuration for the bundled logger or a custom console object. The bundled logger can be replaced with the default node.js console via `{ console: console }`.
  * @returns An SDK instance.
  */
@@ -93,6 +95,7 @@ export function createSdk(params: {
   cached?: boolean
   rendering?: boolean
   systemFonts?: boolean
+  svgExport?: boolean
   console?: ConsoleConfig | null
 }): Sdk {
   if (params.rendering && !params.cached) {
@@ -130,6 +133,14 @@ export function createSdk(params: {
 
   if (params.rendering !== false) {
     sdk.useRenderingEngineFactory(createRenderingEngine)
+  }
+
+  if (params.svgExport !== false) {
+    sdk.useSvgExporter(
+      new SvgExporter({
+        console: sdkConsole,
+      })
+    )
   }
 
   sdk.setWorkingDirectory(params.workingDirectory || null)

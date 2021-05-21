@@ -20,7 +20,9 @@ import type {
   createRenderingEngine,
   IRenderingEngine,
 } from '@opendesign/rendering'
+import type { ISvgExporter } from '@opendesign/svg-exporter'
 import type { components } from 'open-design-api-types'
+import type { components as octopusComponents } from 'open-design-api-types/typescript/octopus'
 import type { DesignFacade } from './design-facade'
 import type { FileManager } from './local/file-manager'
 import type { LocalDesign } from './local/local-design'
@@ -29,6 +31,8 @@ import type { LocalDesignManager } from './local/local-design-manager'
 import type { SystemFontManager } from './local/system-font-manager'
 
 type DesignExportTargetFormatEnum = components['schemas']['DesignExportTargetFormatEnum']
+type LayerOctopusData = octopusComponents['schemas']['Layer']
+type LayerId = LayerOctopusData['id']
 
 export class Sdk {
   private _env: Env = new Env()
@@ -39,6 +43,7 @@ export class Sdk {
   private _localDesignManager: LocalDesignManager | null = null
   private _renderingEngineFactory: typeof createRenderingEngine | null = null
   private _systemFontManager: SystemFontManager | null = null
+  private _svgExporter: ISvgExporter | null = null
 
   private _destroyed = false
 
@@ -118,6 +123,11 @@ export class Sdk {
     const localDesignManager = this._localDesignManager
     if (localDesignManager) {
       localDesignManager.destroy()
+    }
+
+    const svgExporter = this._svgExporter
+    if (svgExporter) {
+      svgExporter.destroy()
     }
 
     const renderingEngine = await this._renderingEngine
@@ -767,10 +777,40 @@ export class Sdk {
   }
 
   /** @internal */
+  useSvgExporter(svgExporter: ISvgExporter): void {
+    this._svgExporter = svgExporter
+  }
+
+  /** @internal */
   useRenderingEngineFactory(
     renderingEngineFactory: typeof createRenderingEngine
   ): void {
     this._renderingEngineFactory = renderingEngineFactory
+  }
+
+  /** @internal */
+  exportLayersToSvgCode(
+    layerOctopusDataList: Array<LayerOctopusData>,
+    options: {
+      bitmapAssetFilenames?: Record<string, string>
+      scale?: number
+      parentLayers?: Record<LayerId, LayerOctopusData>
+      parentLayerIds?: Record<LayerId, Array<LayerId>>
+      viewBoxBounds?: {
+        left: number
+        top: number
+        width: number
+        height: number
+      }
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<string> {
+    const svgExporter = this._svgExporter
+    if (!svgExporter) {
+      throw new Error('The SVG exporter is not configured.')
+    }
+
+    return svgExporter.exportSvg(layerOctopusDataList, options)
   }
 
   /**

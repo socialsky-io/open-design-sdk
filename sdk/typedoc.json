@@ -14,6 +14,7 @@
     "Iteration",
     "Collection Manipulation",
     "Rendering",
+    "SVG Export",
     "Utility"
   ],
   "entryPoints": ["./src/index.ts"],

@@ -19,6 +19,7 @@ import {
   ManifestData,
   PageId,
   PageSelector,
+  LayerOctopusData,
 } from '@opendesign/octopus-reader'
 import { sequence } from './utils/async-utils'
 import { toFileKey } from './utils/id-utils'
@@ -1285,6 +1286,173 @@ export class DesignFacade {
       filePath,
       layerOptions
     )
+  }
+
+  /**
+   * Returns an SVG document string of the specified layer from the specified artboard.
+   *
+   * In case of group layers, all visible nested layers are also included.
+   *
+   * Bitmap assets are serialized as base64 data URIs.
+   *
+   * Uncached items (artboard content and bitmap assets of exported layers) are downloaded and cached.
+   *
+   * The SVG exporter has to be configured when using this methods. The local cache has to also be configured when working with layers with bitmap assets.
+   *
+   * @category SVG Export
+   * @param artboardId The ID of the artboard from which to export the layer.
+   * @param layerId The IDs of the artboard layer to export.
+   * @param options Export options
+   * @param options.scale The scale (zoom) factor to use instead of the default 1x factor.
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns An SVG document string.
+   *
+   * @example With default options (1x)
+   * ```typescript
+   * const svg = await design.exportArtboardLayerToSvgCode('<ARTBOARD_ID>', '<LAYER_ID>')
+   * ```
+   *
+   * @example With a custom scale
+   * ```typescript
+   * const svg = await design.exportArtboardLayerToSvgCode('<ARTBOARD_ID>', '<LAYER_ID>', {
+   *   scale: 2,
+   * })
+   * ```
+   */
+  async exportArtboardLayerToSvgCode(
+    artboardId: ArtboardId,
+    layerId: LayerId,
+    options: {
+      scale?: number
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<string> {
+    return this.exportArtboardLayersToSvgCode(artboardId, [layerId], options)
+  }
+
+  /**
+   * Returns an SVG document string of the specified layers from the specified artboard.
+   *
+   * In case of group layers, all visible nested layers are also included.
+   *
+   * Bitmap assets are serialized as base64 data URIs.
+   *
+   * Uncached items (artboard content and bitmap assets of exported layers) are downloaded and cached.
+   *
+   * The SVG exporter has to be configured when using this methods. The local cache has to also be configured when working with layers with bitmap assets.
+   *
+   * @category SVG Export
+   * @param artboardId The ID of the artboard from which to export the layers.
+   * @param layerIds The IDs of the artboard layers to export.
+   * @param options Export options.
+   * @param options.scale The scale (zoom) factor to use instead of the default 1x factor.
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns An SVG document string.
+   *
+   * @example With default options (1x)
+   * ```typescript
+   * await design.exportArtboardLayersToSvgCode(
+   *   '<ARTBOARD_ID>',
+   *   ['<LAYER1>', '<LAYER2>']
+   * )
+   * ```
+   *
+   * @example With custom scale
+   * ```typescript
+   * await design.exportArtboardLayersToSvgCode(
+   *   '<ARTBOARD_ID>',
+   *   ['<LAYER1>', '<LAYER2>'],
+   *   { scale: 2 }
+   * )
+   * ```
+   */
+  async exportArtboardLayersToSvgCode(
+    artboardId: ArtboardId,
+    layerIds: Array<LayerId>,
+    options: {
+      scale?: number
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<string> {
+    const artboard = this.getArtboardById(artboardId)
+    if (!artboard) {
+      throw new Error('No such artboard')
+    }
+
+    const { scale = 1, cancelToken = null } = options
+
+    await artboard.load({ cancelToken })
+
+    const renderingDesign = this._renderingDesign
+    if (!renderingDesign) {
+      throw new Error('The rendering engine is not configured')
+    }
+
+    const data = await layerIds.reduce(
+      async (prevResultPromise, layerId) => {
+        const [prevResult, layer] = await Promise.all([
+          prevResultPromise,
+          artboard.getLayerById(layerId, { cancelToken }),
+        ])
+        if (!layer) {
+          return prevResult
+        }
+
+        const parentLayers = layer.getParentLayers().getLayers()
+
+        return {
+          bitmapAssetDescs: prevResult.bitmapAssetDescs.concat(
+            layer.getBitmapAssets()
+          ),
+          fonts: prevResult.fonts.concat(layer.getFonts()),
+          parentLayers: parentLayers.reduce((layers, parentLayer) => {
+            return {
+              ...layers,
+              [parentLayer.id]: parentLayer.octopus,
+            }
+          }, prevResult.parentLayers),
+          parentLayerIds: {
+            ...prevResult.parentLayerIds,
+            [layerId]: layer.getParentLayerIds(),
+          },
+          layerOctopusDataList: prevResult.layerOctopusDataList.concat([
+            layer.octopus,
+          ]),
+        }
+      },
+      Promise.resolve({
+        bitmapAssetDescs: [] as Array<BitmapAssetDescriptor>,
+        fonts: [] as Array<FontDescriptor>,
+        parentLayers: {} as Record<LayerId, LayerOctopusData>,
+        parentLayerIds: {} as Record<LayerId, Array<LayerId>>,
+        layerOctopusDataList: [] as Array<LayerOctopusData>,
+      })
+    )
+
+    const [bitmapAssetFilenames] = await Promise.all([
+      this.downloadBitmapAssets(data.bitmapAssetDescs, { cancelToken }),
+      this._loadFontsToRendering(data.fonts, { cancelToken }),
+    ])
+
+    await this._loadRenderingDesignArtboard(artboardId, {
+      loadAssets: false,
+      cancelToken,
+    })
+
+    const viewBoxBounds = await renderingDesign.getArtboardLayerCompositionBounds(
+      artboardId,
+      layerIds,
+      { scale }
+    )
+
+    return this._sdk.exportLayersToSvgCode(data.layerOctopusDataList, {
+      scale,
+      parentLayerIds: data.parentLayerIds,
+      parentLayers: data.parentLayers,
+      viewBoxBounds,
+      bitmapAssetFilenames,
+      cancelToken,
+    })
   }
 
   /**

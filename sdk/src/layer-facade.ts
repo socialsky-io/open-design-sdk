@@ -930,6 +930,54 @@ export class LayerFacade {
   }
 
   /**
+   * Returns an SVG document string of the layer.
+   *
+   * In case the layer is a group layer, all visible nested layers are also included.
+   *
+   * Bitmap assets are serialized as base64 data URIs.
+   *
+   * Uncached items (bitmap assets of rendered layers) are downloaded and cached.
+   *
+   * The SVG exporter has to be configured when using this methods. The local cache has to also be configured when working with layers with bitmap assets.
+   *
+   * @category SVG export
+   * @param options Export options
+   * @param options.scale The scale (zoom) factor to use for rendering instead of the default 1x factor.
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the created image file is not deleted when cancelled during actual rendering). A cancellation token can be created via {@link createCancelToken}.
+   * @returns An SVG document string.
+   *
+   * @example With default options (1x)
+   * ```typescript
+   * const svg = await layer.exportToSvgCode()
+   * ```
+   *
+   * @example With custom scale and opacity
+   * ```typescript
+   * const svg = await layer.exportToSvgCode({
+   *   opacity: 0.6,
+   *   scale: 2,
+   * })
+   * ```
+   */
+  async exportToSvgCode(
+    options: {
+      scale?: number
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<string> {
+    const artboardId = this.artboardId
+    if (!artboardId) {
+      throw new Error('Detached layers cannot be exported')
+    }
+
+    return this._designFacade.exportArtboardLayerToSvgCode(
+      artboardId,
+      this.id,
+      options
+    )
+  }
+
+  /**
    * Returns various bounds of the layer.
    *
    * The rendering engine and the local cache have to be configured when using this method.

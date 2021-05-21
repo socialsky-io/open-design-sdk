@@ -561,4 +561,56 @@ export class LayerCollectionFacade {
       options
     )
   }
+
+  /**
+   * Return an SVG document string of all layers in the collection.
+   *
+   * In case of group layers, all visible nested layers are also included.
+   *
+   * This can only be done for collections containing layers from a single artboards. When there are layers from multiple artboards, the operation is rejected.
+   *
+   * Uncached items (artboard content and bitmap assets of exported layers) are downloaded and cached.
+   *
+   * The rendering engine and the local cache have to be configured when using this method.
+   *
+   * @category SVG Export
+   * @param options Options
+   * @param options.scale The scale (zoom) factor to use for rendering instead of the default 1x factor.
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the created image file is not deleted when cancelled during actual rendering). A cancellation token can be created via {@link createCancelToken}.
+   * @returns An SVG document string.
+   *
+   * @example With default options (1x)
+   * ```typescript
+   * const svg = await collection.exportToSvgCode()
+   * ```
+   *
+   * @example With a custom scale
+   * ```typescript
+   * const svg = await collection.exportToSvgCode({ scale: 2 })
+   * ```
+   */
+  async exportToSvgCode(
+    options: {
+      scale?: number
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<string> {
+    const layerIds = this.getLayers().map((layer) => {
+      return layer.id
+    })
+
+    const artboardIds = [...new Set(this.getLayers().map((layer) => layer.id))]
+    const artboardId = artboardIds.length === 1 ? artboardIds[0] : null
+    if (!artboardId) {
+      throw new Error(
+        'The number of artboards from which to export layers must be exactly 1'
+      )
+    }
+
+    return this._designFacade.exportArtboardLayersToSvgCode(
+      artboardId,
+      layerIds,
+      options
+    )
+  }
 }

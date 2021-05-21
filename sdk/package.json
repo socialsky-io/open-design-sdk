@@ -32,6 +32,7 @@
     "@opendesign/api": "0.2.1",
     "@opendesign/octopus-reader": "0.2.1",
     "@opendesign/rendering": "0.2.1",
+    "@opendesign/svg-exporter": "0.0.0-dev",
     "cplus": "2.0.1",
     "fs-extra": "^9.1.0",
     "mkdirp": "1.0.4",
