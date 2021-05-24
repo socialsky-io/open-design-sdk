@@ -1094,52 +1094,13 @@ export class DesignFacade {
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<void> {
-    const artboard = this.getArtboardById(artboardId)
-    if (!artboard) {
-      throw new Error('No such artboard')
-    }
-
-    const renderingDesign = this._renderingDesign
-    if (!renderingDesign) {
-      throw new Error('The rendering engine is not configured')
-    }
-
-    const layer = await artboard.getLayerById(layerId)
-    if (!layer) {
-      throw new Error('No such layer')
-    }
-
     const { bounds, scale, cancelToken = null, ...layerAttributes } = options
 
-    await this._loadRenderingDesignArtboard(artboardId, {
-      loadAssets: false,
-      cancelToken,
+    return this.renderArtboardLayersToFile(artboardId, [layerId], filePath, {
+      ...(bounds ? { bounds } : {}),
+      scale: scale || 1,
+      layerAttributes: { [layerId]: layerAttributes },
     })
-
-    const bitmapAssetDescs = layer.getBitmapAssets()
-    await this.downloadBitmapAssets(bitmapAssetDescs)
-
-    const fonts = layer.getFonts()
-    await this._loadFontsToRendering(fonts, { cancelToken })
-
-    await renderingDesign.markArtboardAsReady(artboardId)
-
-    const resolvedLayerIds = await this._resolveVisibleArtboardLayerSubtree(
-      artboardId,
-      layerId,
-      { cancelToken }
-    )
-
-    return renderingDesign.renderArtboardLayersToFile(
-      artboardId,
-      resolvedLayerIds,
-      filePath,
-      {
-        ...(bounds ? { bounds } : {}),
-        scale: scale || 1,
-        layerAttributes: { [layerId]: layerAttributes },
-      }
-    )
   }
 
   /**
@@ -1223,6 +1184,9 @@ export class DesignFacade {
       })
     )
     const resolvedLayerIds = resolvedLayerSubtrees.flat(1)
+    if (resolvedLayerIds.length === 0) {
+      throw new Error('No such layer')
+    }
 
     const bitmapAssetDescs = (
       await Promise.all(
