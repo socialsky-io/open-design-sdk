@@ -1143,7 +1143,7 @@ export class DesignFacade {
   }
 
   /**
-   * Renders the specified layers from the specified artboard into as a single composed PNG image file.
+   * Renders the specified layers from the specified artboard as a single composed PNG image file.
    *
    * In case of group layers, all visible nested layers are also included.
    *
@@ -1152,7 +1152,7 @@ export class DesignFacade {
    * The rendering engine and the local cache have to be configured when using this method.
    *
    * @category Rendering
-   * @param artboardId The ID of the artboard from which to render the layer.
+   * @param artboardId The ID of the artboard from which to render the layers.
    * @param layerIds The IDs of the artboard layers to render.
    * @param filePath The target location of the produced PNG image file.
    * @param options.bounds The area (in the coordinate system of the artboard) to include. This can be used to either crop or expand (add empty space to) the default layer area.
