@@ -20,11 +20,11 @@ import {
   PageId,
   PageSelector,
 } from '@opendesign/octopus-reader'
-import { sequence } from './utils/async'
+import { sequence } from './utils/async-utils'
 import { toFileKey } from './utils/id-utils'
-import { memoize } from './utils/memoize'
+import { memoize } from './utils/memoize-utils'
 import { getDesignFormatByFileName } from './utils/design-format-utils'
-import { enumerablizeWithPrototypeGetters } from './utils/object'
+import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
 import type { CancelToken } from '@avocode/cancel-token'

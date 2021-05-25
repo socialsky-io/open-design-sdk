@@ -1,7 +1,7 @@
 import {
   keepUniqueFileBitmapAssetDescriptors,
   keepUniqueFileFontDescriptors,
-} from './assets'
+} from './assets-utils'
 
 import type { IArtboard } from '../types/artboard.iface'
 import type { AggregatedFileBitmapAssetDescriptor } from '../types/bitmap-assets.type'

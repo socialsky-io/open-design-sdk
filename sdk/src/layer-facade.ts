@@ -1,6 +1,6 @@
 import { inspect } from 'util'
 import { toFileKey } from './utils/id-utils'
-import { enumerablizeWithPrototypeGetters } from './utils/object'
+import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
 import { DesignLayerCollectionFacade } from './design-layer-collection-facade'

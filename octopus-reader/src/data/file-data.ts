@@ -1,7 +1,7 @@
 import { Artboard } from '../nodes/artboard'
 import { Page } from '../nodes/page'
 
-import { memoize } from '../utils/memoize'
+import { memoize } from '../utils/memoize-utils'
 
 import type { IArtboard } from '../types/artboard.iface'
 import type { IFile } from '../types/file.iface'

@@ -2,7 +2,7 @@ import createCancelToken, { CancelToken } from '@avocode/cancel-token'
 import { stat } from 'fs'
 import { extname, join as joinPaths, resolve as resolvePath } from 'path'
 import { promisify } from 'util'
-import { writeJsonFile } from '../utils/fs'
+import { writeJsonFile } from '../utils/fs-utils'
 import mkdirp from 'mkdirp'
 import { v4 as uuid } from 'uuid'
 

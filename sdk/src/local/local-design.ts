@@ -11,7 +11,7 @@ import {
   copyDirectory,
   moveDirectory,
   deleteFile,
-} from '../utils/fs'
+} from '../utils/fs-utils'
 
 import {
   ARTBOARD_CONTENT_BASENAME,

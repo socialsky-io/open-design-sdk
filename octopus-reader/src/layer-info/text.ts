@@ -1,4 +1,4 @@
-import { memoize } from '../utils/memoize'
+import { memoize } from '../utils/memoize-utils'
 
 import type { components } from 'open-design-api-types/typescript/octopus'
 import type { TextFontDescriptor } from '../types/fonts.type'

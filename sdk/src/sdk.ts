@@ -1,8 +1,8 @@
-import { createCancelToken } from './utils/cancel-token'
+import { createCancelToken } from './utils/cancel-token-utils'
 import {
   createDesignFromLocalDesign,
   createDesignFromOpenDesignApiDesign,
-} from './utils/design-factories'
+} from './utils/design-factories-utils'
 import { inspect } from 'util'
 import { v4 as uuid } from 'uuid'
 

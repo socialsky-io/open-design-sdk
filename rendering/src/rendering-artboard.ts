@@ -1,5 +1,5 @@
 import { dirname } from 'path'
-import { sequence } from './utils/async'
+import { sequence } from './utils/async-utils'
 import { mergeBounds, parseBounds, serializeBounds } from './utils/bounds-utils'
 import { serializeLayerAttributes } from './utils/layer-attributes-utils'
 import mkdirp from 'mkdirp'

@@ -1,7 +1,7 @@
 import createCancelToken, { CancelToken } from '@avocode/cancel-token'
 import { OpenDesignApi } from '@opendesign/api'
 import { Sdk } from './sdk'
-import { ConsoleConfig, getConsole } from './utils/console'
+import { ConsoleConfig, getConsole } from './utils/console-utils'
 
 /**
  * Creates an SDK instance with the API configured.

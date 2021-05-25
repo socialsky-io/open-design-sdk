@@ -1,5 +1,5 @@
 import { inspect } from 'util'
-import { enumerablizeWithPrototypeGetters } from './utils/object'
+import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 
 import type { CancelToken } from '@avocode/cancel-token'
 import type { IApiDesign } from '@opendesign/api'

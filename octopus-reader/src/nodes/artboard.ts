@@ -1,8 +1,11 @@
 import { LayerCollection } from '../collections/layer-collection'
 
-import { matchArtboard } from '../utils/artboard-lookup'
-import { createFlattenedLayers, createLayers } from '../utils/layer-factories'
-import { memoize } from '../utils/memoize'
+import { matchArtboard } from '../utils/artboard-lookup-utils'
+import {
+  createFlattenedLayers,
+  createLayers,
+} from '../utils/layer-factories-utils'
+import { memoize } from '../utils/memoize-utils'
 
 import type { ArtboardBounds, IArtboard } from '../types/artboard.iface'
 import type { AggregatedFileBitmapAssetDescriptor } from '../types/bitmap-assets.type'

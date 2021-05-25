@@ -1,6 +1,6 @@
 import { inspect } from 'util'
-import { memoize } from './utils/memoize'
-import { enumerablizeWithPrototypeGetters } from './utils/object'
+import { memoize } from './utils/memoize-utils'
+import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
 import type { CancelToken } from '@avocode/cancel-token'

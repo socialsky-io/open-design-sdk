@@ -7,11 +7,11 @@ import { Text } from '../layer-info/text'
 import {
   keepUniqueBitmapAssetDescriptors,
   keepUniqueFontDescriptors,
-} from '../utils/assets'
-import { getLayerBitmapAssets } from '../utils/layer-bitmaps'
-import { createLayers } from '../utils/layer-factories'
-import { matchLayer } from '../utils/layer-lookup'
-import { memoize } from '../utils/memoize'
+} from '../utils/assets-utils'
+import { getLayerBitmapAssets } from '../utils/layer-bitmaps-utils'
+import { createLayers } from '../utils/layer-factories-utils'
+import { matchLayer } from '../utils/layer-lookup-utils'
+import { memoize } from '../utils/memoize-utils'
 
 import type { IArtboard } from '../types/artboard.iface'
 import type { IBitmap } from '../types/bitmap.iface'

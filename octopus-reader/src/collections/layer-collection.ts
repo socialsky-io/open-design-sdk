@@ -1,9 +1,12 @@
 import {
   keepUniqueFileBitmapAssetDescriptors,
   keepUniqueFileFontDescriptors,
-} from '../utils/assets'
-import { createLayerMap } from '../utils/layer-factories'
-import { findLayerInLayers, findLayersInLayers } from '../utils/layer-lookup'
+} from '../utils/assets-utils'
+import { createLayerMap } from '../utils/layer-factories-utils'
+import {
+  findLayerInLayers,
+  findLayersInLayers,
+} from '../utils/layer-lookup-utils'
 
 import type { ILayerCollection } from '../types/layer-collection.iface'
 import type { LayerId } from '../types/ids.type'

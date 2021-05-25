@@ -1,4 +1,4 @@
-import { createQueue } from './utils/queue'
+import { createQueue } from './utils/queue-utils'
 import { spawn_cli as spawnMonroeCli } from '@avocode/monroe-cli'
 
 import type { ChildProcess } from 'child_process'

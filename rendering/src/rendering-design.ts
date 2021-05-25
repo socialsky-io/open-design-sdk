@@ -1,7 +1,7 @@
 import { RenderingArtboard } from './rendering-artboard'
 
 import { dirname } from 'path'
-import { sequence } from './utils/async'
+import { sequence } from './utils/async-utils'
 import { serializeBounds } from './utils/bounds-utils'
 import mkdirp from 'mkdirp'
 

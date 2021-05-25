@@ -1,6 +1,6 @@
 import { Bitmap } from './bitmap'
 
-import { memoize } from '../utils/memoize'
+import { memoize } from '../utils/memoize-utils'
 
 import type { IBitmap } from '../types/bitmap.iface'
 import type { IBitmapMask } from '../types/bitmap-mask.iface'

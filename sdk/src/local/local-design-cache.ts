@@ -1,5 +1,5 @@
 import { relative, resolve as resolvePath } from 'path'
-import { checkFile, readJsonFile, writeJsonFile } from '../utils/fs'
+import { checkFile, readJsonFile, writeJsonFile } from '../utils/fs-utils'
 
 import { Env } from '../env'
 

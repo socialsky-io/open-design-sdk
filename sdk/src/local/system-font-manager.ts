@@ -6,7 +6,7 @@ import { readFile } from 'fs'
 import { promisify } from 'util'
 import { Env } from '../env'
 import { FontSource } from './font-source'
-import { mapFind } from '../utils/async'
+import { mapFind } from '../utils/async-utils'
 
 const readFilePromised = promisify(readFile)
 

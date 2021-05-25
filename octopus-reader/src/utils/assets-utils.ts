@@ -1,4 +1,4 @@
-import { mergeArrays, mergeArrayMaps } from './array'
+import { mergeArrays, mergeArrayMaps } from './array-utils'
 
 import type {
   AggregatedBitmapAssetDescriptor,

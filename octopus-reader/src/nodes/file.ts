@@ -10,9 +10,9 @@ import {
   getBitmapAssets,
   getFlattenedLayers,
   getFonts,
-} from '../utils/aggregation'
-import { matchArtboard } from '../utils/artboard-lookup'
-import { matchPage } from '../utils/page-lookup'
+} from '../utils/aggregation-utils'
+import { matchArtboard } from '../utils/artboard-lookup-utils'
+import { matchPage } from '../utils/page-lookup-utils'
 
 import type { IFile } from '../types/file.iface'
 import type { ILayer } from '../types/layer.iface'
