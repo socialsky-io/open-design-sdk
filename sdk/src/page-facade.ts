@@ -18,6 +18,7 @@ import type { ArtboardFacade } from './artboard-facade'
 import type { DesignFacade } from './design-facade'
 import type { FontDescriptor, LayerFacade } from './layer-facade'
 import type { BitmapAssetDescriptor } from './local/local-design'
+import { toFileKey } from './utils/id-utils'
 
 export class PageFacade {
   private _pageEntity: IPage
@@ -33,10 +34,33 @@ export class PageFacade {
 
   /**
    * The ID of the page.
+   *
+   * Beware that this value may not be safely usable for naming files in the file system and the {@link fileKey} value should be instead.
+   *
    * @category Identification
    */
   get id() {
     return this._pageEntity.id
+  }
+
+  /**
+   * The key which can be used to name files in the file system. It SHOULD be unique within a design.
+   *
+   * IDs can include characters invalid for use in file names (such as `:`).
+   *
+   * @category Identification
+   *
+   * @example
+   * ```typescript
+   * // Safe:
+   * page.renderToFile(`./pages/${page.fileKey}.png`)
+   *
+   * // Unsafe:
+   * page.renderToFile(`./pages/${page.id}.png`)
+   * ```
+   */
+  get fileKey() {
+    return toFileKey(this.id)
   }
 
   /**

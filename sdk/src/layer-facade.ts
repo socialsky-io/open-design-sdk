@@ -1,4 +1,5 @@
 import { inspect } from 'util'
+import { toFileKey } from './utils/id-utils'
 import { enumerablizeWithPrototypeGetters } from './utils/object'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
@@ -47,10 +48,33 @@ export class LayerFacade {
 
   /**
    * The ID of the layer.
+   *
+   * Beware that this value may not be safely usable for naming files in the file system and the {@link fileKey} value should be instead.
+   *
    * @category Identification
    */
   get id() {
     return this._layerEntity.id
+  }
+
+  /**
+   * The key which can be used to name files in the file system. It SHOULD be unique within an artboard.
+   *
+   * IDs can include characters invalid for use in file names (such as `:`).
+   *
+   * @category Identification
+   *
+   * @example
+   * ```typescript
+   * // Safe:
+   * layer.renderToFile(`./layers/${layer.fileKey}.png`)
+   *
+   * // Unsafe:
+   * layer.renderToFile(`./layers/${layer.id}.png`)
+   * ```
+   */
+  get fileKey() {
+    return toFileKey(this.id)
   }
 
   /**

@@ -21,6 +21,7 @@ import {
   PageSelector,
 } from '@opendesign/octopus-reader'
 import { sequence } from './utils/async'
+import { toFileKey } from './utils/id-utils'
 import { memoize } from './utils/memoize'
 import { getDesignFormatByFileName } from './utils/design-format-utils'
 import { enumerablizeWithPrototypeGetters } from './utils/object'
@@ -97,6 +98,35 @@ export class DesignFacade {
   }
 
   /**
+   * The key which can be used to name files in the file system.
+   *
+   * This is the ID of the referenced server-side design or (if the API is not configured) the basename of the local file.
+   *
+   * It can theoretically be `null` when the design is created only virtually in memory but such feature is yet to be implemented thus the value can safely be assumed as always available and for that reason, it is annotated as non-nullable.
+   *
+   * @category Identification
+   *
+   * @example
+   * ```typescript
+   * design.renderArtboardToFile(`./artboards/${design.fileKey}/${artboard.fileKey}.png`)
+   * ```
+   */
+  get fileKey(): string {
+    const id = this.id
+    if (id) {
+      return toFileKey(id)
+    }
+
+    const localDesign = this._localDesign
+    if (localDesign) {
+      return basename(localDesign.filename)
+    }
+
+    // @ts-expect-error
+    return null
+  }
+
+  /**
    * The name of the design. This is the basename of the file by default or a custom name provided during design import.
    * @category Data
    */
@@ -108,7 +138,7 @@ export class DesignFacade {
 
     const localDesign = this._localDesign
     if (localDesign) {
-      return basename(localDesign?.filename)
+      return basename(localDesign.filename)
     }
 
     return null
