@@ -1,12 +1,14 @@
 import { RenderingArtboard } from './rendering-artboard'
 
+import { dirname } from 'path'
+import { sequence } from './utils/async'
 import { serializeBounds } from './utils/bounds-utils'
+import mkdirp from 'mkdirp'
 
 import type { RenderingProcess } from './rendering-process'
 import type { Bounds } from './types/bounds.type'
 import type { LayerAttributesConfig } from './types/layer-attributes.type'
 import type { IRenderingDesign } from './types/rendering-design.iface'
-import { sequence } from './utils/async'
 
 export class RenderingDesign implements IRenderingDesign {
   readonly id: string
@@ -151,6 +153,8 @@ export class RenderingDesign implements IRenderingDesign {
     filePath: string,
     options: { scale?: number; bounds?: Bounds } = {}
   ): Promise<void> {
+    await mkdirp(dirname(filePath))
+
     const result = await this._renderingProcess.execCommand('render-page', {
       'design': this.id,
       'page': pageId,

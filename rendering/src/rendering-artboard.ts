@@ -1,6 +1,8 @@
+import { dirname } from 'path'
 import { sequence } from './utils/async'
 import { mergeBounds, parseBounds, serializeBounds } from './utils/bounds-utils'
 import { serializeLayerAttributes } from './utils/layer-attributes-utils'
+import mkdirp from 'mkdirp'
 
 import type { RenderingProcess } from './rendering-process'
 import type { Bounds } from './types/bounds.type'
@@ -149,6 +151,8 @@ export class RenderingArtboard implements IRenderingArtboard {
       throw new Error('The artboard is not ready')
     }
 
+    await mkdirp(dirname(filePath))
+
     const result = await this._renderingProcess.execCommand('render-artboard', {
       'design': this._designId,
       'artboard': this.id,
@@ -179,6 +183,8 @@ export class RenderingArtboard implements IRenderingArtboard {
     const bounds =
       boundsOverride ||
       (await this._getLayerRenderBounds(layerId, layerAttributes))
+
+    await mkdirp(dirname(filePath))
 
     const result = await this._renderingProcess.execCommand('render-layer', {
       'design': this._designId,
@@ -212,6 +218,8 @@ export class RenderingArtboard implements IRenderingArtboard {
     const bounds =
       options.bounds ||
       (await this._getCompoundLayerRenderBounds(layerIds, layerAttributes))
+
+    await mkdirp(dirname(filePath))
 
     const result = await this._renderingProcess.execCommand(
       'render-artboard-composition',
