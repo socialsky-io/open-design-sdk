@@ -27,14 +27,20 @@ import type { BitmapAssetDescriptor } from './local/local-design'
 
 export type { FontDescriptor }
 
-type LayerType = LayerOctopusData['type']
+type LayerType = LayerOctopusDataType['type']
+
+export type LayerAttributes = {
+  blendingMode: BlendingMode
+  opacity: number
+  visible: boolean
+}
 
 // HACK: This makes TypeDoc not inline the whole type in the documentation.
 /**
  * @octopusschema Layer
  */
 type LayerOctopusData = LayerOctopusDataType & {
-  type: LayerOctopusDataType['type']
+  type: LayerType
 }
 
 export class LayerFacade {
@@ -915,5 +921,27 @@ export class LayerFacade {
       this.id,
       options
     )
+  }
+
+  /**
+   * Returns the attributes of the layer.
+   *
+   * @category Data
+   * @returns Layer attributes.
+   *
+   * @example
+   * ```typescript
+   * const { blendingMode, opacity, visible } = await layer.getAttributes()
+   * ```
+   */
+  async getAttributes(): Promise<LayerAttributes> {
+    const octopus = this.octopus
+    return {
+      blendingMode:
+        octopus['blendMode'] ||
+        (this.type === 'groupLayer' ? 'PASS_THROUGH' : 'NORMAL'),
+      opacity: octopus['opacity'] == null ? 1 : octopus['opacity'],
+      visible: octopus['visible'] !== false,
+    }
   }
 }

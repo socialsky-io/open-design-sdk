@@ -36,7 +36,11 @@ import type {
   LayerBounds,
 } from '@opendesign/rendering'
 import type { components } from 'open-design-api-types'
-import type { FontDescriptor, LayerFacade } from './layer-facade'
+import type {
+  FontDescriptor,
+  LayerAttributes,
+  LayerFacade,
+} from './layer-facade'
 import type { Sdk } from './sdk'
 import type { FontSource } from './local/font-source'
 import type { BitmapAssetDescriptor, LocalDesign } from './local/local-design'
@@ -1362,6 +1366,42 @@ export class DesignFacade {
     await this._loadFontsToRendering(fonts, options)
 
     return renderingDesign.getArtboardLayerBounds(artboardId, layerId)
+  }
+
+  /**
+   * Returns the attributes of the spececified layer.
+   *
+   * @category Data
+   * @param artboardId The ID of the artboard from which to inspect the layer.
+   * @param layerId The ID of the layer to inspect.
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns Layer attributes.
+   *
+   * @example
+   * ```typescript
+   * const attrs = await design.getArtboardLayerAttributes('<ARTBOARD_ID>', '<LAYER_ID>')
+   * const { blendingMode, opacity, visible } = attrs
+   * ```
+   */
+  async getArtboardLayerAttributes(
+    artboardId: ArtboardId,
+    layerId: LayerId,
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<LayerAttributes> {
+    const artboard = this.getArtboardById(artboardId)
+    if (!artboard) {
+      throw new Error('No such artboard')
+    }
+
+    const layer = await artboard.getLayerById(layerId, options)
+    if (!layer) {
+      throw new Error('No such layer')
+    }
+
+    return layer.getAttributes()
   }
 
   /**

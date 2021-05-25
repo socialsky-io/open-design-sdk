@@ -4,7 +4,7 @@ import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
 import { LayerCollectionFacade } from './layer-collection-facade'
-import { LayerFacade } from './layer-facade'
+import { LayerAttributes, LayerFacade } from './layer-facade'
 
 import type { CancelToken } from '@avocode/cancel-token'
 import type {
@@ -901,6 +901,33 @@ export class ArtboardFacade {
     } = {}
   ): Promise<LayerBounds> {
     return this._designFacade.getArtboardLayerBounds(this.id, layerId, options)
+  }
+
+  /**
+   * Returns the attributes of the specified layer.
+   *
+   * @category Data
+   * @param layerId The ID of the layer to inspect.
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns An SVG document string.
+   *
+   * @example
+   * ```typescript
+   * const { blendingMode, opacity, visible } = await layer.getLayerAttributes('<LAYER_ID>')
+   * ```
+   */
+  async getLayerAttributes(
+    layerId: LayerId,
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<LayerAttributes> {
+    return this._designFacade.getArtboardLayerAttributes(
+      this.id,
+      layerId,
+      options
+    )
   }
 
   /**
