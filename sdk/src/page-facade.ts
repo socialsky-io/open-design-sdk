@@ -2,7 +2,7 @@ import { inspect } from 'util'
 import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
-import { DesignLayerCollectionFacade } from './design-layer-collection-facade'
+import { LayerCollectionFacade } from './layer-collection-facade'
 
 import type { CancelToken } from '@avocode/cancel-token'
 import type {
@@ -393,13 +393,13 @@ export class PageFacade {
       depth?: number
       cancelToken?: CancelToken | null
     } = {}
-  ): Promise<DesignLayerCollectionFacade> {
+  ): Promise<LayerCollectionFacade> {
     const { cancelToken = null, ...layerOptions } = options
 
     await this.load({ cancelToken })
 
     const layerCollection = this._pageEntity.getFlattenedLayers(layerOptions)
-    return new DesignLayerCollectionFacade(layerCollection, {
+    return new LayerCollectionFacade(layerCollection, {
       designFacade: this._designFacade,
     })
   }
@@ -481,7 +481,7 @@ export class PageFacade {
       depth?: number
       cancelToken?: CancelToken | null
     } = {}
-  ): Promise<DesignLayerCollectionFacade> {
+  ): Promise<LayerCollectionFacade> {
     const { cancelToken = null, ...layerOptions } = options
 
     await this.load({ cancelToken })
@@ -490,7 +490,7 @@ export class PageFacade {
       layerId,
       layerOptions
     )
-    return new DesignLayerCollectionFacade(layerCollection, {
+    return new LayerCollectionFacade(layerCollection, {
       designFacade: this._designFacade,
     })
   }
@@ -609,7 +609,7 @@ export class PageFacade {
       depth?: number
       cancelToken?: CancelToken | null
     } = {}
-  ): Promise<DesignLayerCollectionFacade> {
+  ): Promise<LayerCollectionFacade> {
     const { cancelToken = null, ...layerOptions } = options
 
     await this.load({ cancelToken })
@@ -623,7 +623,7 @@ export class PageFacade {
       layerOptions
     )
 
-    return new DesignLayerCollectionFacade(layerCollection, {
+    return new LayerCollectionFacade(layerCollection, {
       designFacade: this._designFacade,
     })
   }

@@ -17,7 +17,7 @@ import type { DesignFacade } from './design-facade'
 import type { FontDescriptor, LayerFacade } from './layer-facade'
 import type { BitmapAssetDescriptor } from './local/local-design'
 
-export class DesignLayerCollectionFacade {
+export class LayerCollectionFacade {
   private _layerCollection: ILayerCollection
   private _designFacade: DesignFacade;
 
@@ -79,7 +79,7 @@ export class DesignLayerCollectionFacade {
   /**
    * Returns the number of layers explicitly included in the collection.
    *
-   * This count reflects the number of items returned by {@link DesignLayerCollectionFacade.getLayers} and the native iterator.
+   * This count reflects the number of items returned by {@link LayerCollectionFacade.getLayers} and the native iterator.
    *
    * @category Iteration
    */
@@ -211,7 +211,7 @@ export class DesignLayerCollectionFacade {
   findLayers(
     selector: DesignLayerSelector | ((layer: LayerFacade) => boolean),
     options: { depth?: number } = {}
-  ): DesignLayerCollectionFacade {
+  ): LayerCollectionFacade {
     const entitySelector = createLayerEntitySelector(
       this._designFacade,
       selector
@@ -221,7 +221,7 @@ export class DesignLayerCollectionFacade {
       options
     )
 
-    return new DesignLayerCollectionFacade(layerCollection, {
+    return new LayerCollectionFacade(layerCollection, {
       designFacade: this._designFacade,
     })
   }
@@ -243,7 +243,7 @@ export class DesignLayerCollectionFacade {
    */
   filter(
     filter: (layer: LayerFacade, index: number) => boolean
-  ): DesignLayerCollectionFacade {
+  ): LayerCollectionFacade {
     const layerCollection = this._layerCollection.filter(
       (layerEntity, index) => {
         const layerFacade = this._resolveArtboardLayer(layerEntity)
@@ -251,7 +251,7 @@ export class DesignLayerCollectionFacade {
       }
     )
 
-    return new DesignLayerCollectionFacade(layerCollection, {
+    return new LayerCollectionFacade(layerCollection, {
       designFacade: this._designFacade,
     })
   }
@@ -371,8 +371,8 @@ export class DesignLayerCollectionFacade {
    * ```
    */
   concat(
-    addedLayers: DesignLayerCollectionFacade | Array<LayerFacade>
-  ): DesignLayerCollectionFacade {
+    addedLayers: LayerCollectionFacade | Array<LayerFacade>
+  ): LayerCollectionFacade {
     const addedLayerList = Array.isArray(addedLayers)
       ? addedLayers.map((layerFacade) => {
           return layerFacade.getLayerEntity()
@@ -381,7 +381,7 @@ export class DesignLayerCollectionFacade {
 
     const nextLayerCollection = this._layerCollection.concat(addedLayerList)
 
-    return new DesignLayerCollectionFacade(nextLayerCollection, {
+    return new LayerCollectionFacade(nextLayerCollection, {
       designFacade: this._designFacade,
     })
   }
@@ -400,10 +400,10 @@ export class DesignLayerCollectionFacade {
    * const groupLayersWithAllChildren = groupLayers.flatten()
    * ```
    */
-  flatten(options: { depth?: number } = {}): DesignLayerCollectionFacade {
+  flatten(options: { depth?: number } = {}): LayerCollectionFacade {
     const flattenedLayerCollection = this._layerCollection.flatten(options)
 
-    return new DesignLayerCollectionFacade(flattenedLayerCollection, {
+    return new LayerCollectionFacade(flattenedLayerCollection, {
       designFacade: this._designFacade,
     })
   }

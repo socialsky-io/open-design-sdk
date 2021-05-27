@@ -1,6 +1,6 @@
 import { ArtboardFacade, LayerAttributesConfig } from './artboard-facade'
 import { DesignExportFacade } from './design-export-facade'
-import { DesignLayerCollectionFacade } from './design-layer-collection-facade'
+import { LayerCollectionFacade } from './layer-collection-facade'
 import { PageFacade } from './page-facade'
 
 import { basename } from 'path'
@@ -616,7 +616,7 @@ export class DesignFacade {
    */
   async getFlattenedLayers(
     options: { depth?: number; cancelToken?: CancelToken | null } = {}
-  ): Promise<DesignLayerCollectionFacade> {
+  ): Promise<LayerCollectionFacade> {
     await this.load({ cancelToken: options.cancelToken || null })
 
     const entity = this._getDesignEntity()
@@ -624,7 +624,7 @@ export class DesignFacade {
       depth: options.depth || 0,
     })
 
-    return new DesignLayerCollectionFacade(layerCollection, {
+    return new LayerCollectionFacade(layerCollection, {
       designFacade: this,
     })
   }
@@ -698,13 +698,13 @@ export class DesignFacade {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ): Promise<DesignLayerCollectionFacade> {
+  ): Promise<LayerCollectionFacade> {
     await this.load(options)
 
     const entity = this._getDesignEntity()
     const layerCollection = entity.findLayersById(layerId)
 
-    return new DesignLayerCollectionFacade(layerCollection, {
+    return new LayerCollectionFacade(layerCollection, {
       designFacade: this,
     })
   }
@@ -812,7 +812,7 @@ export class DesignFacade {
   async findLayers(
     selector: DesignLayerSelector | ((layer: LayerFacade) => boolean),
     options: { depth?: number; cancelToken?: CancelToken | null } = {}
-  ): Promise<DesignLayerCollectionFacade> {
+  ): Promise<LayerCollectionFacade> {
     await this.load({ cancelToken: options.cancelToken || null })
 
     const entitySelector = createLayerEntitySelector(this, selector)
@@ -822,7 +822,7 @@ export class DesignFacade {
       depth: options.depth || 0,
     })
 
-    return new DesignLayerCollectionFacade(layerCollection, {
+    return new LayerCollectionFacade(layerCollection, {
       designFacade: this,
     })
   }

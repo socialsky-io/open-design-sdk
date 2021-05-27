@@ -3,7 +3,7 @@ import { toFileKey } from './utils/id-utils'
 import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
-import { DesignLayerCollectionFacade } from './design-layer-collection-facade'
+import { LayerCollectionFacade } from './layer-collection-facade'
 
 import type { CancelToken } from '@avocode/cancel-token'
 import type {
@@ -236,9 +236,9 @@ export class LayerFacade {
    * deeperNestedLayer.getParentLayers() // DesignLayerCollection [nestedLayer, rootLayer]
    * ```
    */
-  getParentLayers(): DesignLayerCollectionFacade {
+  getParentLayers(): LayerCollectionFacade {
     const layerEntities = this._layerEntity.getParentLayers()
-    return new DesignLayerCollectionFacade(layerEntities, {
+    return new LayerCollectionFacade(layerEntities, {
       designFacade: this._designFacade,
     })
   }
@@ -310,9 +310,9 @@ export class LayerFacade {
    * // DesignLayerCollection [ Layer { id: 'z' }, Layer { id: 'x' } ]
    * ```
    */
-  findParentLayers(selector: LayerSelector): DesignLayerCollectionFacade {
+  findParentLayers(selector: LayerSelector): LayerCollectionFacade {
     const layerEntities = this._layerEntity.findParentLayers(selector)
-    return new DesignLayerCollectionFacade(layerEntities, {
+    return new LayerCollectionFacade(layerEntities, {
       designFacade: this._designFacade,
     })
   }
@@ -372,11 +372,9 @@ export class LayerFacade {
    * // ]
    * ```
    */
-  getNestedLayers(
-    options: { depth?: number } = {}
-  ): DesignLayerCollectionFacade {
+  getNestedLayers(options: { depth?: number } = {}): LayerCollectionFacade {
     const layerEntities = this._layerEntity.getNestedLayers(options)
-    return new DesignLayerCollectionFacade(layerEntities, {
+    return new LayerCollectionFacade(layerEntities, {
       designFacade: this._designFacade,
     })
   }
@@ -474,7 +472,7 @@ export class LayerFacade {
   findNestedLayers(
     selector: LayerSelector | ((layer: LayerFacade) => boolean),
     options: { depth?: number } = {}
-  ): DesignLayerCollectionFacade {
+  ): LayerCollectionFacade {
     const entitySelector = createLayerEntitySelector(
       this._designFacade,
       selector
@@ -484,7 +482,7 @@ export class LayerFacade {
       options
     )
 
-    return new DesignLayerCollectionFacade(layerEntities, {
+    return new LayerCollectionFacade(layerEntities, {
       designFacade: this._designFacade,
     })
   }

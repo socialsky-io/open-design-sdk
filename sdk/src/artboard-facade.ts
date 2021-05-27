@@ -3,7 +3,7 @@ import { toFileKey } from './utils/id-utils'
 import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
-import { DesignLayerCollectionFacade } from './design-layer-collection-facade'
+import { LayerCollectionFacade } from './layer-collection-facade'
 import { LayerFacade } from './layer-facade'
 
 import type { CancelToken } from '@avocode/cancel-token'
@@ -417,11 +417,11 @@ export class ArtboardFacade {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ): Promise<DesignLayerCollectionFacade> {
+  ): Promise<LayerCollectionFacade> {
     await this.load(options)
 
     const layerCollection = this._artboardEntity.getRootLayers()
-    return new DesignLayerCollectionFacade(layerCollection, {
+    return new LayerCollectionFacade(layerCollection, {
       designFacade: this._designFacade,
     })
   }
@@ -452,7 +452,7 @@ export class ArtboardFacade {
       depth?: number
       cancelToken?: CancelToken | null
     } = {}
-  ): Promise<DesignLayerCollectionFacade> {
+  ): Promise<LayerCollectionFacade> {
     const { cancelToken = null, ...layerOptions } = options
 
     await this.load({ cancelToken })
@@ -460,7 +460,7 @@ export class ArtboardFacade {
     const layerCollection = this._artboardEntity.getFlattenedLayers(
       layerOptions
     )
-    return new DesignLayerCollectionFacade(layerCollection, {
+    return new LayerCollectionFacade(layerCollection, {
       designFacade: this._designFacade,
     })
   }
@@ -625,7 +625,7 @@ export class ArtboardFacade {
       depth?: number
       cancelToken?: CancelToken | null
     } = {}
-  ): Promise<DesignLayerCollectionFacade> {
+  ): Promise<LayerCollectionFacade> {
     const { cancelToken = null, ...layerOptions } = options
 
     await this.load({ cancelToken })
@@ -639,7 +639,7 @@ export class ArtboardFacade {
       layerOptions
     )
 
-    return new DesignLayerCollectionFacade(layerCollection, {
+    return new LayerCollectionFacade(layerCollection, {
       designFacade: this._designFacade,
     })
   }
