@@ -24,36 +24,41 @@ export class Text implements IText {
         ...(this.octopus['styles'] || []),
       ]
 
-      const fontTypeByPostScriptName: {
-        [postScriptName: string]: Set<string>
+      const fontDescsByPostScriptName: {
+        [postScriptName: string]: {
+          types: Set<string>
+          postScriptNameSynthetic: boolean
+        }
       } = {}
-      const syntheticPostScriptNames = new Set()
 
       styles.forEach((style) => {
         const font = style ? style['font'] : null
         const postScriptName = font ? font['postScriptName'] : null
         if (font && postScriptName) {
-          const fontTypes =
-            fontTypeByPostScriptName[postScriptName] || new Set()
-          fontTypes.add(font['type'] || '')
-          fontTypeByPostScriptName[postScriptName] = fontTypes
+          const types =
+            fontDescsByPostScriptName[postScriptName]?.types || new Set()
+          types.add(font['type'] || '')
 
-          if (font['syntheticPostScriptName']) {
-            syntheticPostScriptNames.add(postScriptName)
+          fontDescsByPostScriptName[postScriptName] = {
+            types,
+            postScriptNameSynthetic: Boolean(font['syntheticPostScriptName']),
           }
         }
       })
 
-      return Object.keys(fontTypeByPostScriptName).map((fontPostScriptName) => {
-        const fontTypes = fontTypeByPostScriptName[fontPostScriptName] || []
-        return {
-          fontPostScriptName,
-          fontPostScriptNameSynthetic: syntheticPostScriptNames.has(
-            fontPostScriptName
-          ),
-          fontTypes: [...fontTypes],
+      return Object.keys(fontDescsByPostScriptName).map(
+        (fontPostScriptName) => {
+          const fontDesc = fontDescsByPostScriptName[fontPostScriptName] || {
+            types: [],
+            postScriptNameSynthetic: false,
+          }
+          return {
+            fontPostScriptName,
+            fontPostScriptNameSynthetic: fontDesc.postScriptNameSynthetic,
+            fontTypes: [...fontDesc.types],
+          }
         }
-      })
+      )
     }
   )
 }
