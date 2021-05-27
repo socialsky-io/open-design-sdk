@@ -31,14 +31,14 @@ export class Text implements IText {
 
       styles.forEach((style) => {
         const font = style ? style['font'] : null
-        const postScriptName = font ? font.postScriptName : null
+        const postScriptName = font ? font['postScriptName'] : null
         if (font && postScriptName) {
           const fontTypes =
             fontTypeByPostScriptName[postScriptName] || new Set()
-          fontTypes.add(font.type || '')
+          fontTypes.add(font['type'] || '')
           fontTypeByPostScriptName[postScriptName] = fontTypes
 
-          if (font.syntheticPostScriptName) {
+          if (font['syntheticPostScriptName']) {
             syntheticPostScriptNames.add(postScriptName)
           }
         }
