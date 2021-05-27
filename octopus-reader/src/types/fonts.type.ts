@@ -17,6 +17,13 @@ export type TextFontDescriptor = {
    * The needed types/weights of the font used.
    */
   fontTypes: Array<string>
+
+  /**
+   * A human-readable name of the font.
+   *
+   * This value is not always available.
+   */
+  fontName: string | null
 }
 
 export type FontDescriptor = TextFontDescriptor & {
@@ -43,6 +50,13 @@ export type AggregatedFontDescriptor = {
    * The needed types/weights of the font used.
    */
   fontTypes: Array<string>
+
+  /**
+   * A human-readable name of the font.
+   *
+   * This value is not always available.
+   */
+  fontName: string | null
 
   /**
    * IDs of layers which use the font.
@@ -74,6 +88,13 @@ export type AggregatedFileFontDescriptor = {
    * The needed types/weights of the font used.
    */
   fontTypes: Array<string>
+
+  /**
+   * A human-readable name of the font.
+   *
+   * This value is not always available.
+   */
+  fontName: string | null
 
   /**
    * IDs of layers which use the font grouped by their containing artboard.

@@ -41,6 +41,7 @@ export function keepUniqueFontDescriptors(
       fontPostScriptName: assetDesc.fontPostScriptName,
       fontPostScriptNameSynthetic: assetDesc.fontPostScriptNameSynthetic,
       fontTypes: assetDesc.fontTypes,
+      fontName: assetDesc.fontName,
       layerIds: [],
     }
 
@@ -93,6 +94,7 @@ export function keepUniqueFileFontDescriptors(
       fontPostScriptName: assetDesc.fontPostScriptName,
       fontPostScriptNameSynthetic: assetDesc.fontPostScriptNameSynthetic,
       fontTypes: assetDesc.fontTypes,
+      fontName: assetDesc.fontName,
       artboardLayerIds: {},
     }
 

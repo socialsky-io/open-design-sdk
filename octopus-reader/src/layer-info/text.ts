@@ -26,6 +26,7 @@ export class Text implements IText {
 
       const fontDescsByPostScriptName: {
         [postScriptName: string]: {
+          name: string | null
           types: Set<string>
           postScriptNameSynthetic: boolean
         }
@@ -40,6 +41,7 @@ export class Text implements IText {
           types.add(font['type'] || '')
 
           fontDescsByPostScriptName[postScriptName] = {
+            name: font['name'] || null,
             types,
             postScriptNameSynthetic: Boolean(font['syntheticPostScriptName']),
           }
@@ -49,12 +51,14 @@ export class Text implements IText {
       return Object.keys(fontDescsByPostScriptName).map(
         (fontPostScriptName) => {
           const fontDesc = fontDescsByPostScriptName[fontPostScriptName] || {
+            name: null,
             types: [],
             postScriptNameSynthetic: false,
           }
           return {
             fontPostScriptName,
             fontPostScriptNameSynthetic: fontDesc.postScriptNameSynthetic,
+            fontName: fontDesc.name,
             fontTypes: [...fontDesc.types],
           }
         }
