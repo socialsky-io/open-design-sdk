@@ -8,7 +8,7 @@ This part of the Open Design SDK is responsible for **traversing Octopus file da
 
 There are four main levels of the design file contents:
 
-- **Files** (the whole design file)
+- **Designs** (the whole design file)
 - **Pages** (design artboard collection; optional feature)
 - **Artboards** (a single frame of the design or a main component definition)
 - **Layers** (individual shapes, texts and other graphical elements)
@@ -30,24 +30,24 @@ yarn add @avocode/open-design-octopus-reader
 ### Usage
 
 ```bash
-import { createEmptyFile } from '@avocode/open-design-octopus-reader'
+import { createEmptyDesign } from '@avocode/open-design-octopus-reader'
 
-const file = createEmptyFile()
+const design = createEmptyDesign()
 ```
 
 ### Open Designs
 
-The Octopus Reader is **not responsible for loading any data** from a data source (e.g. the file system or the network). The user needs to manually retrieve the data and construct the Octopus Reader file structure.
+The Octopus Reader is **not responsible for loading any data** from a data source (e.g. the file system or the network). The user needs to manually retrieve the data and construct the Octopus Reader design structure.
 
 ```typescript
-const file = OctopusReader.createEmptyFile()
+const design = OctopusReader.createEmptyDesign()
 
-const artboard1 = file.addArtboard('artboard-1', artboardOctopusData1, {
+const artboard1 = design.addArtboard('artboard-1', artboardOctopusData1, {
   name: 'A',
   pageId: 'page-1',
 })
 
-const artboard2 = file.addArtboard('artboard-2', artboardOctopusData2, {
+const artboard2 = design.addArtboard('artboard-2', artboardOctopusData2, {
   name: 'B',
   pageId: 'page-2',
 })
@@ -55,7 +55,7 @@ const artboard2 = file.addArtboard('artboard-2', artboardOctopusData2, {
 
 ### Layer Lookup
 
-It is possible to **look up layers by IDs and by selectors**. Each content level (file, artboard, layer subtree) allows such lookup.
+It is possible to **look up layers by IDs and by selectors**. Each content level (design, artboard, layer subtree) allows such lookup.
 
 ```typescript
 const layerA1 = artboard.getLayerById('a1')
@@ -68,8 +68,8 @@ const textLayersABC = artboard.findLayers({
 
 Lookup methods can either:
 
-- **query the immediate layer level** of its context (file – root layers of all artboards; artboard – root layers of the artboard; layer – first-level nested layers in the layer); such methods are prefixed with `get`.
-- **query any number of nesting levels** within its context (file – all layers from all artboards; artboard – all layers in the artboard; layer – all layers nested in the layer); such methods are prefixed with `find` and accept selectors; the depth can also be limited to a specific number of levels.
+- **query the immediate layer level** of its context (design – root layers of all artboards; artboard – root layers of the artboard; layer – first-level nested layers in the layer); such methods are prefixed with `get`.
+- **query any number of nesting levels** within its context (design – all layers from all artboards; artboard – all layers in the artboard; layer – all layers nested in the layer); such methods are prefixed with `find` and accept selectors; the depth can also be limited to a specific number of levels.
 
 ```typescript
 artboard.getLayerById('id')
@@ -79,10 +79,10 @@ artboard.findLayers({ name: 'query' })
 
 These methods are further split into single-result and multi-result ones where the single-result methods return either a layer match or `null` while the multi-result methods always return a layer collection object.
 
-File-level lookup methods wrap matched layers in a descriptor objects which contain information about the artboard from which the matched layer originates.
+Design-level lookup methods wrap matched layers in a descriptor objects which contain information about the artboard from which the matched layer originates.
 
 ```typescript
-file.findLayer({ type: 'shapeLayer' }) // Type: { artboardId: 'artboard-1', layer: Layer } | null
+design.findLayer({ type: 'shapeLayer' }) // Type: { artboardId: 'artboard-1', layer: Layer } | null
 ```
 
 Layer collection objects are array-like by providing general-purpose methods such as `forEach`, `map` or `filter`:
@@ -111,7 +111,7 @@ Each content level exposes methods for obtaining lists of assets (bitmaps, fonts
 #### Bitmap Assets
 
 ```typescript
-const fileAssets = file.getBitmapAssets()
+const designAssets = design.getBitmapAssets()
 // Type: Array<{ artboardId, layerId, name }>
 
 const artboardAssets = artboard.getBitmapAssets()
@@ -124,7 +124,7 @@ const layerAssets = layer.getBitmapAssets({ depth: 2 })
 #### Font Assets
 
 ```typescript
-const fileAssets = file.getFonts()
+const designAssets = design.getFonts()
 // Type: Array<{ artboardId, layerId, fontPostScriptName: string, fontTypes: Array<string> }>
 
 const artboardAssets = artboard.getFonts()

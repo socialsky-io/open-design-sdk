@@ -1,5 +1,5 @@
 import { Artboard } from './artboard'
-import { FileData } from '../data/file-data'
+import { DesignData } from '../data/design-data'
 import { LayerCollection } from '../collections/layer-collection'
 
 import {
@@ -14,7 +14,7 @@ import {
 import { matchArtboard } from '../utils/artboard-lookup-utils'
 import { matchPage } from '../utils/page-lookup-utils'
 
-import type { IFile } from '../types/file.iface'
+import type { IDesign } from '../types/design.iface'
 import type { ILayer } from '../types/layer.iface'
 import type {
   ArtboardId,
@@ -26,19 +26,19 @@ import type { IArtboard } from '../types/artboard.iface'
 import type { OctopusDocument } from '../types/octopus.type'
 import type {
   ArtboardSelector,
-  FileLayerSelector,
+  DesignLayerSelector,
   PageSelector,
 } from '../types/selectors.type'
-import type { AggregatedFileBitmapAssetDescriptor } from '../types/bitmap-assets.type'
-import type { AggregatedFileFontDescriptor } from '../types/fonts.type'
+import type { AggregatedDesignBitmapAssetDescriptor } from '../types/bitmap-assets.type'
+import type { AggregatedDesignFontDescriptor } from '../types/fonts.type'
 import type { ArtboardManifestData, ManifestData } from '../types/manifest.type'
 import type { IPage } from '../types/page.iface'
 
-export class File implements IFile {
-  private _fileData = new FileData(this)
+export class Design implements IDesign {
+  private _designData = new DesignData(this)
 
   isLoaded(): boolean {
-    return this._fileData.isLoaded()
+    return this._designData.isLoaded()
   }
 
   unloadPage(pageId: PageId) {
@@ -63,11 +63,11 @@ export class File implements IFile {
   }
 
   getManifest(): ManifestData {
-    return this._fileData.getManifest()
+    return this._designData.getManifest()
   }
 
   setManifest(nextManifest: ManifestData) {
-    this._fileData.setManifest(nextManifest)
+    this._designData.setManifest(nextManifest)
   }
 
   addPage(
@@ -76,26 +76,26 @@ export class File implements IFile {
       name: string | null
     }> = {}
   ): IPage {
-    return this._fileData.addPage(pageId, params)
+    return this._designData.addPage(pageId, params)
   }
 
   removePage(
     pageId: PageId,
     options: Partial<{ unassignArtboards: boolean }> = {}
   ): boolean {
-    return this._fileData.removePage(pageId, options)
+    return this._designData.removePage(pageId, options)
   }
 
   isPaged(): boolean {
-    return this._fileData.isPaged()
+    return this._designData.isPaged()
   }
 
   getPages(): Array<IPage> {
-    return this._fileData.getPageList()
+    return this._designData.getPageList()
   }
 
   getPageById(pageId: PageId): IPage | null {
-    const pagesById = this._fileData.getPageMap()
+    const pagesById = this._designData.getPageMap()
     return pagesById[pageId] || null
   }
 
@@ -144,32 +144,32 @@ export class File implements IFile {
       name: string | null
     }> = {}
   ): Artboard {
-    return this._fileData.addArtboard(artboardId, octopus, params)
+    return this._designData.addArtboard(artboardId, octopus, params)
   }
 
   removeArtboard(artboardId: ArtboardId): boolean {
-    return this._fileData.removeArtboard(artboardId)
+    return this._designData.removeArtboard(artboardId)
   }
 
   getArtboards(): Array<IArtboard> {
-    return this._fileData.getArtboardList()
+    return this._designData.getArtboardList()
   }
 
   getPageArtboards(pageId: PageId): Array<IArtboard> {
-    return this._fileData.getPageArtboards(pageId)
+    return this._designData.getPageArtboards(pageId)
   }
 
   getComponentArtboards(): Array<IArtboard> {
-    return this._fileData.getComponentArtboards()
+    return this._designData.getComponentArtboards()
   }
 
   getArtboardById(artboardId: ArtboardId): IArtboard | null {
-    const artboardsById = this._fileData.getArtboardMap()
+    const artboardsById = this._designData.getArtboardMap()
     return artboardsById[artboardId] || null
   }
 
   getArtboardByComponentId(componentId: ComponentId): IArtboard | null {
-    const artboardsByComponentId = this._fileData.getComponentArtboardMap()
+    const artboardsByComponentId = this._designData.getComponentArtboardMap()
     return artboardsByComponentId[componentId] || null
   }
 
@@ -224,13 +224,13 @@ export class File implements IFile {
 
   getBitmapAssets(
     options: Partial<{ depth: number; includePrerendered: boolean }> = {}
-  ): Array<AggregatedFileBitmapAssetDescriptor> {
+  ): Array<AggregatedDesignBitmapAssetDescriptor> {
     return getBitmapAssets(this.getArtboards(), options)
   }
 
   getFonts(
     options: Partial<{ depth: number }> = {}
-  ): Array<AggregatedFileFontDescriptor> {
+  ): Array<AggregatedDesignFontDescriptor> {
     return getFonts(this.getArtboards(), options)
   }
 
@@ -253,14 +253,14 @@ export class File implements IFile {
   }
 
   findLayer(
-    selector: FileLayerSelector,
+    selector: DesignLayerSelector,
     options: Partial<{ depth: number }> = {}
   ): ILayer | null {
     return findLayer(this.getArtboards(), selector, options)
   }
 
   findLayers(
-    selector: FileLayerSelector,
+    selector: DesignLayerSelector,
     options: Partial<{ depth: number }> = {}
   ): LayerCollection {
     const layers = findLayers(this.getArtboards(), selector, options)

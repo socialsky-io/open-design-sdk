@@ -7,7 +7,7 @@ import { DesignLayerCollectionFacade } from './design-layer-collection-facade'
 
 import type { CancelToken } from '@avocode/cancel-token'
 import type {
-  FileLayerSelector,
+  DesignLayerSelector,
   IBitmap,
   IBitmapMask,
   IEffects,
@@ -504,7 +504,7 @@ export class LayerFacade {
    * layer.matches({ text: 'This is text.' }) // true
    * ```
    */
-  matches(selector: FileLayerSelector): boolean {
+  matches(selector: DesignLayerSelector): boolean {
     return this._layerEntity.matches(selector)
   }
 

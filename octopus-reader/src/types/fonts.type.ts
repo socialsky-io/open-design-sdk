@@ -71,7 +71,7 @@ export type FileFontDescriptor = FontDescriptor & {
   artboardId: ArtboardId
 }
 
-export type AggregatedFileFontDescriptor = {
+export type AggregatedDesignFontDescriptor = {
   /**
    * The postscript name of the font.
    *

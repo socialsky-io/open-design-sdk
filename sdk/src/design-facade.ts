@@ -6,14 +6,14 @@ import { PageFacade } from './page-facade'
 import { basename } from 'path'
 import { inspect } from 'util'
 import {
-  createEmptyFile,
+  createEmptyDesign,
   ArtboardId,
   OctopusDocument,
   ArtboardSelector,
   ComponentId,
-  FileLayerSelector,
+  DesignLayerSelector,
   IArtboard,
-  IFile,
+  IDesign,
   IPage,
   LayerId,
   ManifestData,
@@ -53,7 +53,7 @@ export class DesignFacade {
   private _sdk: Sdk
   private _console: Console
 
-  private _designEntity: IFile | null = null
+  private _designEntity: IDesign | null = null
   private _localDesign: LocalDesign | null = null
   private _apiDesign: IApiDesign | null = null
   private _renderingDesign: IRenderingDesign | null = null
@@ -191,8 +191,8 @@ export class DesignFacade {
   }
 
   private _getDesignEntity = memoize(
-    (): IFile => {
-      const entity = this._designEntity || createEmptyFile()
+    (): IDesign => {
+      const entity = this._designEntity || createEmptyDesign()
 
       const pendingManifestUpdate = this._pendingManifestUpdate
       if (pendingManifestUpdate) {
@@ -750,7 +750,7 @@ export class DesignFacade {
    * ```
    */
   async findLayer(
-    selector: FileLayerSelector | ((layer: LayerFacade) => boolean),
+    selector: DesignLayerSelector | ((layer: LayerFacade) => boolean),
     options: { depth?: number; cancelToken?: CancelToken | null } = {}
   ): Promise<LayerFacade | null> {
     await this.load({ cancelToken: options.cancelToken || null })
@@ -810,7 +810,7 @@ export class DesignFacade {
    * ```
    */
   async findLayers(
-    selector: FileLayerSelector | ((layer: LayerFacade) => boolean),
+    selector: DesignLayerSelector | ((layer: LayerFacade) => boolean),
     options: { depth?: number; cancelToken?: CancelToken | null } = {}
   ): Promise<DesignLayerCollectionFacade> {
     await this.load({ cancelToken: options.cancelToken || null })

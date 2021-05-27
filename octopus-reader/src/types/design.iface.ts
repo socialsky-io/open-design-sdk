@@ -1,6 +1,6 @@
 import type { IArtboard } from './artboard.iface'
-import type { AggregatedFileBitmapAssetDescriptor } from './bitmap-assets.type'
-import type { AggregatedFileFontDescriptor } from './fonts.type'
+import type { AggregatedDesignBitmapAssetDescriptor } from './bitmap-assets.type'
+import type { AggregatedDesignFontDescriptor } from './fonts.type'
 import type { ArtboardId, ComponentId, LayerId, PageId } from './ids.type'
 import type { ILayer } from './layer.iface'
 import type { ILayerCollection } from './layer-collection.iface'
@@ -9,11 +9,11 @@ import type { OctopusDocument } from './octopus.type'
 import type { IPage } from './page.iface'
 import type {
   ArtboardSelector,
-  FileLayerSelector,
+  DesignLayerSelector,
   PageSelector,
 } from './selectors.type'
 
-export interface IFile {
+export interface IDesign {
   isLoaded(): boolean
   unloadArtboards(): void
   unloadArtboard(artboardId: ArtboardId): void
@@ -93,21 +93,21 @@ export interface IFile {
   findLayersById(layerId: LayerId): ILayerCollection
   /** @category Layer Lookup */
   findLayer(
-    selector: FileLayerSelector | ((layer: ILayer) => boolean),
+    selector: DesignLayerSelector | ((layer: ILayer) => boolean),
     options?: Partial<{ depth: number }>
   ): ILayer | null
   /** @category Layer Lookup */
   findLayers(
-    selector: FileLayerSelector | ((layer: ILayer) => boolean),
+    selector: DesignLayerSelector | ((layer: ILayer) => boolean),
     options?: Partial<{ depth: number }>
   ): ILayerCollection
 
   /** @category Asset */
   getBitmapAssets(
     options?: Partial<{ depth: number; includePrerendered: boolean }>
-  ): Array<AggregatedFileBitmapAssetDescriptor>
+  ): Array<AggregatedDesignBitmapAssetDescriptor>
   /** @category Asset */
   getFonts(
     options?: Partial<{ depth: number }>
-  ): Array<AggregatedFileFontDescriptor>
+  ): Array<AggregatedDesignFontDescriptor>
 }

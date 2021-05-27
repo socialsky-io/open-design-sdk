@@ -2,10 +2,10 @@ import { mergeArrays, mergeArrayMaps } from './array-utils'
 
 import type {
   AggregatedBitmapAssetDescriptor,
-  AggregatedFileBitmapAssetDescriptor,
+  AggregatedDesignBitmapAssetDescriptor,
 } from '../types/bitmap-assets.type'
 import type {
-  AggregatedFileFontDescriptor,
+  AggregatedDesignFontDescriptor,
   AggregatedFontDescriptor,
 } from '../types/fonts.type'
 
@@ -59,10 +59,10 @@ export function keepUniqueFontDescriptors(
   return [...uniqueDescs.values()]
 }
 
-export function keepUniqueFileBitmapAssetDescriptors(
-  bitmapAssetDescs: Array<AggregatedFileBitmapAssetDescriptor>
-): Array<AggregatedFileBitmapAssetDescriptor> {
-  const uniqueDescs = new Map<string, AggregatedFileBitmapAssetDescriptor>()
+export function keepUniqueDesignBitmapAssetDescriptors(
+  bitmapAssetDescs: Array<AggregatedDesignBitmapAssetDescriptor>
+): Array<AggregatedDesignBitmapAssetDescriptor> {
+  const uniqueDescs = new Map<string, AggregatedDesignBitmapAssetDescriptor>()
 
   bitmapAssetDescs.forEach((assetDesc) => {
     const uniqueDesc = uniqueDescs.get(assetDesc.name) || {
@@ -84,10 +84,10 @@ export function keepUniqueFileBitmapAssetDescriptors(
   return [...uniqueDescs.values()]
 }
 
-export function keepUniqueFileFontDescriptors(
-  fontDescs: Array<AggregatedFileFontDescriptor>
-): Array<AggregatedFileFontDescriptor> {
-  const uniqueDescs = new Map<string, AggregatedFileFontDescriptor>()
+export function keepUniqueDesignFontDescriptors(
+  fontDescs: Array<AggregatedDesignFontDescriptor>
+): Array<AggregatedDesignFontDescriptor> {
+  const uniqueDescs = new Map<string, AggregatedDesignFontDescriptor>()
 
   fontDescs.forEach((assetDesc) => {
     const uniqueDesc = uniqueDescs.get(assetDesc.fontPostScriptName) || {

@@ -8,9 +8,9 @@ import {
 import { memoize } from '../utils/memoize-utils'
 
 import type { ArtboardBounds, IArtboard } from '../types/artboard.iface'
-import type { AggregatedFileBitmapAssetDescriptor } from '../types/bitmap-assets.type'
-import type { IFile } from '../types/file.iface'
-import type { AggregatedFileFontDescriptor } from '../types/fonts.type'
+import type { AggregatedDesignBitmapAssetDescriptor } from '../types/bitmap-assets.type'
+import type { IDesign } from '../types/design.iface'
+import type { AggregatedDesignFontDescriptor } from '../types/fonts.type'
 import type { ArtboardId, LayerId, PageId } from '../types/ids.type'
 import type { ILayer } from '../types/layer.iface'
 import type { ILayerCollection } from '../types/layer-collection.iface'
@@ -27,7 +27,7 @@ import { IPage } from '../types/page.iface'
 export class Artboard implements IArtboard {
   private _manifest: ArtboardManifestData
   private _octopus: OctopusDocument | null
-  private _file: IFile | null
+  private _design: IDesign | null
 
   constructor(
     id: ArtboardId,
@@ -37,10 +37,10 @@ export class Artboard implements IArtboard {
       pageId: PageId | null
       componentId: ComponentId | null
       name: string | null
-      file: IFile | null
+      design: IDesign | null
     }> = {}
   ) {
-    const { file, pageId, manifest, ...manifestParams } = params
+    const { design, pageId, manifest, ...manifestParams } = params
 
     this._manifest = this._createManifest(params.manifest || null, octopus, {
       id,
@@ -49,7 +49,7 @@ export class Artboard implements IArtboard {
     })
 
     this._octopus = octopus || null
-    this._file = file || null
+    this._design = design || null
   }
 
   getManifest(): ArtboardManifestData {
@@ -109,8 +109,8 @@ export class Artboard implements IArtboard {
     this.getFlattenedLayers.clear()
   }
 
-  getFile(): IFile | null {
-    return this._file
+  getDesign(): IDesign | null {
+    return this._design
   }
 
   getPage(): IPage | null {
@@ -119,12 +119,12 @@ export class Artboard implements IArtboard {
       return null
     }
 
-    const file = this._file
-    if (!file) {
+    const design = this._design
+    if (!design) {
       throw new Error('Cannot retrieve a detached artboard page')
     }
 
-    return file.getPageById(pageId)
+    return design.getPageById(pageId)
   }
 
   setPage(nextPageId: PageId) {
@@ -192,7 +192,7 @@ export class Artboard implements IArtboard {
 
   getBitmapAssets(
     options: Partial<{ depth: number; includePrerendered: boolean }> = {}
-  ): Array<AggregatedFileBitmapAssetDescriptor> {
+  ): Array<AggregatedDesignBitmapAssetDescriptor> {
     const depth = options.depth || Infinity
 
     return this.getFlattenedLayers({ depth }).getBitmapAssets({
@@ -203,7 +203,7 @@ export class Artboard implements IArtboard {
 
   getFonts(
     options: Partial<{ depth: number }> = {}
-  ): Array<AggregatedFileFontDescriptor> {
+  ): Array<AggregatedDesignFontDescriptor> {
     const depth = options.depth || Infinity
 
     return this.getFlattenedLayers({ depth }).getFonts({ depth: 1 })
@@ -241,7 +241,8 @@ export class Artboard implements IArtboard {
       name = prevManifest?.['artboard_name'],
     } = params
 
-    const page = this._file && pageId ? this._file.getPageById(pageId) : null
+    const page =
+      this._design && pageId ? this._design.getPageById(pageId) : null
 
     return {
       ...(prevManifest || {

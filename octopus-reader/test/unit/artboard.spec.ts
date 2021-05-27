@@ -1,5 +1,5 @@
 import { Artboard } from '../../src/nodes/artboard'
-import { File } from '../../src/nodes/file'
+import { Design } from '../../src/nodes/design'
 
 import { deepStrictEqual, ok, strictEqual } from 'assert'
 import { OctopusDocument, LayerOctopusData } from '../../src/types/octopus.type'
@@ -73,11 +73,11 @@ describe('Artboard', () => {
       strictEqual(artboard.pageId, null)
     })
 
-    it('should return the provided file', () => {
-      const file = new File()
-      const artboard = new Artboard('a', createOctopus({}), { file })
+    it('should return the provided design', () => {
+      const design = new Design()
+      const artboard = new Artboard('a', createOctopus({}), { design })
 
-      strictEqual(artboard.getFile(), file)
+      strictEqual(artboard.getDesign(), design)
     })
   })
 

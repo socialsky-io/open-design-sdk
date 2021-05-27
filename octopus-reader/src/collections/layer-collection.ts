@@ -1,6 +1,6 @@
 import {
-  keepUniqueFileBitmapAssetDescriptors,
-  keepUniqueFileFontDescriptors,
+  keepUniqueDesignBitmapAssetDescriptors,
+  keepUniqueDesignFontDescriptors,
 } from '../utils/assets-utils'
 import { createLayerMap } from '../utils/layer-factories-utils'
 import {
@@ -12,8 +12,8 @@ import type { ILayerCollection } from '../types/layer-collection.iface'
 import type { LayerId } from '../types/ids.type'
 import type { ILayer } from '../types/layer.iface'
 import type { LayerSelector } from '../types/selectors.type'
-import type { AggregatedFileBitmapAssetDescriptor } from '../types/bitmap-assets.type'
-import type { AggregatedFileFontDescriptor } from '../types/fonts.type'
+import type { AggregatedDesignBitmapAssetDescriptor } from '../types/bitmap-assets.type'
+import type { AggregatedDesignFontDescriptor } from '../types/fonts.type'
 
 export class LayerCollection implements ILayerCollection {
   readonly length: number
@@ -113,8 +113,8 @@ export class LayerCollection implements ILayerCollection {
 
   getBitmapAssets(
     options: Partial<{ depth: number; includePrerendered: boolean }> = {}
-  ): Array<AggregatedFileBitmapAssetDescriptor> {
-    return keepUniqueFileBitmapAssetDescriptors(
+  ): Array<AggregatedDesignBitmapAssetDescriptor> {
+    return keepUniqueDesignBitmapAssetDescriptors(
       this.getLayers().flatMap((layer) => {
         return layer.getBitmapAssets(options).flatMap((bitmapAssetDesc) => {
           const artboardId = layer.artboardId
@@ -131,8 +131,8 @@ export class LayerCollection implements ILayerCollection {
 
   getFonts(
     options: Partial<{ depth: number }> = {}
-  ): Array<AggregatedFileFontDescriptor> {
-    return keepUniqueFileFontDescriptors(
+  ): Array<AggregatedDesignFontDescriptor> {
+    return keepUniqueDesignFontDescriptors(
       this.getLayers().flatMap((layer) => {
         return layer.getFonts(options).flatMap((fontDesc) => {
           const artboardId = layer.artboardId

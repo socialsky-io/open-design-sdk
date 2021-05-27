@@ -1,7 +1,7 @@
 import { IArtboard } from '../types/artboard.iface'
-import { AggregatedFileBitmapAssetDescriptor } from '../types/bitmap-assets.type'
-import { IFile } from '../types/file.iface'
-import { AggregatedFileFontDescriptor } from '../types/fonts.type'
+import { AggregatedDesignBitmapAssetDescriptor } from '../types/bitmap-assets.type'
+import { IDesign } from '../types/design.iface'
+import { AggregatedDesignFontDescriptor } from '../types/fonts.type'
 import { ArtboardId, ComponentId, LayerId, PageId } from '../types/ids.type'
 import { ILayer } from '../types/layer.iface'
 import { LayerCollection } from '../collections/layer-collection'
@@ -26,13 +26,13 @@ import { matchPage } from '../utils/page-lookup-utils'
 export class Page implements IPage {
   readonly id: PageId
 
-  private _file: IFile
+  private _design: IDesign
   private _name: string | null
 
-  constructor(id: PageId, params: { name?: string | null; file: IFile }) {
+  constructor(id: PageId, params: { name?: string | null; design: IDesign }) {
     this.id = id
 
-    this._file = params.file
+    this._design = params.design
     this._name = params.name || null
   }
 
@@ -69,7 +69,7 @@ export class Page implements IPage {
       return false
     }
 
-    return this._file.removeArtboard(artboardId)
+    return this._design.removeArtboard(artboardId)
   }
 
   unassignArtboard(artboardId: ArtboardId): boolean {
@@ -83,11 +83,11 @@ export class Page implements IPage {
   }
 
   getArtboards(): Array<IArtboard> {
-    return this._file.getPageArtboards(this.id)
+    return this._design.getPageArtboards(this.id)
   }
 
   getArtboardById(artboardId: ArtboardId): IArtboard | null {
-    const artboard = this._file.getArtboardById(artboardId)
+    const artboard = this._design.getArtboardById(artboardId)
     if (!artboard || artboard.pageId !== this.id) {
       return null
     }
@@ -96,7 +96,7 @@ export class Page implements IPage {
   }
 
   getArtboardByComponentId(componentId: ComponentId): IArtboard | null {
-    const artboard = this._file.getArtboardByComponentId(componentId)
+    const artboard = this._design.getArtboardByComponentId(componentId)
     if (!artboard || artboard.pageId !== this.id) {
       return null
     }
@@ -161,13 +161,13 @@ export class Page implements IPage {
 
   getBitmapAssets(
     options: Partial<{ depth: number; includePrerendered: boolean }>
-  ): Array<AggregatedFileBitmapAssetDescriptor> {
+  ): Array<AggregatedDesignBitmapAssetDescriptor> {
     return getBitmapAssets(this.getArtboards(), options)
   }
 
   getFonts(
     options: Partial<{ depth: number }>
-  ): Array<AggregatedFileFontDescriptor> {
+  ): Array<AggregatedDesignFontDescriptor> {
     return getFonts(this.getArtboards(), options)
   }
 

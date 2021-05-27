@@ -4,22 +4,22 @@ import { Page } from '../nodes/page'
 import { memoize } from '../utils/memoize-utils'
 
 import type { IArtboard } from '../types/artboard.iface'
-import type { IFile } from '../types/file.iface'
+import type { IDesign } from '../types/design.iface'
 import type { ArtboardId, PageId } from '../types/ids.type'
 import type { ArtboardManifestData, ManifestData } from '../types/manifest.type'
 import type { ComponentId, OctopusDocument } from '../types/octopus.type'
 import type { IPage } from '../types/page.iface'
 
-export class FileData {
-  private _file: IFile
+export class DesignData {
+  private _design: IDesign
 
   private _loaded: boolean = false
   private _paged: boolean = false
   private _pageList: Array<IPage> = []
   private _artboardList: Array<IArtboard> = []
 
-  constructor(file: IFile) {
-    this._file = file
+  constructor(design: IDesign) {
+    this._design = design
   }
 
   isLoaded(): boolean {
@@ -89,7 +89,7 @@ export class FileData {
       throw new Error('Duplicate page')
     }
 
-    const page = new Page(pageId, { ...params, file: this._file })
+    const page = new Page(pageId, { ...params, design: this._design })
     this._replacePageList((prevPageList) => {
       return [...prevPageList, page]
     })
@@ -157,7 +157,7 @@ export class FileData {
 
     const artboard = new Artboard(artboardId, octopus, {
       ...params,
-      file: this._file,
+      design: this._design,
     })
     this._replaceArtboardList((prevArtboardList) => {
       return [...prevArtboardList, artboard]

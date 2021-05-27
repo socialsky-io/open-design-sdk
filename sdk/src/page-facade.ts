@@ -9,7 +9,7 @@ import type {
   ArtboardId,
   ArtboardSelector,
   ComponentId,
-  FileLayerSelector,
+  DesignLayerSelector,
   IPage,
   LayerId,
   PageSelector,
@@ -536,7 +536,7 @@ export class PageFacade {
    * ```
    */
   async findLayer(
-    selector: FileLayerSelector | ((layer: LayerFacade) => boolean),
+    selector: DesignLayerSelector | ((layer: LayerFacade) => boolean),
     options: {
       depth?: number
       cancelToken?: CancelToken | null
@@ -604,7 +604,7 @@ export class PageFacade {
    * ```
    */
   async findLayers(
-    selector: FileLayerSelector | ((layer: LayerFacade) => boolean),
+    selector: DesignLayerSelector | ((layer: LayerFacade) => boolean),
     options: {
       depth?: number
       cancelToken?: CancelToken | null

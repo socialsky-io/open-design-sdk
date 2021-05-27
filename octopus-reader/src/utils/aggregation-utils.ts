@@ -1,20 +1,20 @@
 import {
-  keepUniqueFileBitmapAssetDescriptors,
-  keepUniqueFileFontDescriptors,
+  keepUniqueDesignBitmapAssetDescriptors,
+  keepUniqueDesignFontDescriptors,
 } from './assets-utils'
 
 import type { IArtboard } from '../types/artboard.iface'
-import type { AggregatedFileBitmapAssetDescriptor } from '../types/bitmap-assets.type'
+import type { AggregatedDesignBitmapAssetDescriptor } from '../types/bitmap-assets.type'
 import type { ILayer } from '../types/layer.iface'
-import type { AggregatedFileFontDescriptor } from '../types/fonts.type'
+import type { AggregatedDesignFontDescriptor } from '../types/fonts.type'
 import type { LayerId } from '../types/ids.type'
 import type { LayerSelector } from '../types/selectors.type'
 
 export function getBitmapAssets(
   artboards: Array<IArtboard>,
   options: Partial<{ depth: number; includePrerendered: boolean }>
-): Array<AggregatedFileBitmapAssetDescriptor> {
-  return keepUniqueFileBitmapAssetDescriptors(
+): Array<AggregatedDesignBitmapAssetDescriptor> {
+  return keepUniqueDesignBitmapAssetDescriptors(
     artboards.flatMap((artboard) => {
       return artboard.getBitmapAssets(options)
     })
@@ -24,8 +24,8 @@ export function getBitmapAssets(
 export function getFonts(
   artboards: Array<IArtboard>,
   options: Partial<{ depth: number }>
-): Array<AggregatedFileFontDescriptor> {
-  return keepUniqueFileFontDescriptors(
+): Array<AggregatedDesignFontDescriptor> {
+  return keepUniqueDesignFontDescriptors(
     artboards.flatMap((artboard) => {
       return artboard.getFonts(options)
     })

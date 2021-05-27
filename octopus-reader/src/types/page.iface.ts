@@ -1,6 +1,6 @@
 import type { IArtboard } from './artboard.iface'
-import type { AggregatedFileBitmapAssetDescriptor } from './bitmap-assets.type'
-import type { AggregatedFileFontDescriptor } from './fonts.type'
+import type { AggregatedDesignBitmapAssetDescriptor } from './bitmap-assets.type'
+import type { AggregatedDesignFontDescriptor } from './fonts.type'
 import type { ArtboardId, ComponentId, LayerId, PageId } from './ids.type'
 import type { ILayer } from './layer.iface'
 import type { ILayerCollection } from './layer-collection.iface'
@@ -37,10 +37,10 @@ export interface IPage {
 
   getBitmapAssets(
     options?: Partial<{ includePrerendered: boolean }>
-  ): Array<AggregatedFileBitmapAssetDescriptor>
+  ): Array<AggregatedDesignBitmapAssetDescriptor>
   getFonts(
     options?: Partial<{ depth: number }>
-  ): Array<AggregatedFileFontDescriptor>
+  ): Array<AggregatedDesignFontDescriptor>
 
   getFlattenedLayers(options?: Partial<{ depth: number }>): ILayerCollection
 

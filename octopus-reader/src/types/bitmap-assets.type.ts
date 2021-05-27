@@ -12,11 +12,11 @@ export type AggregatedBitmapAssetDescriptor = {
   prerendered: boolean
 }
 
-export type FileBitmapAssetDescriptor = BitmapAssetDescriptor & {
+export type DesignBitmapAssetDescriptor = BitmapAssetDescriptor & {
   artboardId: ArtboardId
 }
 
-export type AggregatedFileBitmapAssetDescriptor = {
+export type AggregatedDesignBitmapAssetDescriptor = {
   name: string
   artboardLayerIds: Record<ArtboardId, Array<LayerId>>
   prerendered: boolean

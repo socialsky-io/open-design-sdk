@@ -14,7 +14,7 @@ export type {
   OctopusDocument,
   ArtboardSelector,
   ComponentId,
-  FileLayerSelector,
+  DesignLayerSelector,
   IBitmap,
   IBitmapMask,
   IEffects,

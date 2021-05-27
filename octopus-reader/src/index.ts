@@ -1,18 +1,18 @@
-import { File } from './nodes/file'
+import { Design } from './nodes/design'
 
-import type { IFile } from './types/file.iface'
+import type { IDesign } from './types/design.iface'
 import type { ManifestData } from './types/manifest.type'
 
-export function createEmptyFile(): IFile {
-  return new File()
+export function createEmptyDesign(): IDesign {
+  return new Design()
 }
 
-export function createFileFromManifest(manifest: ManifestData): IFile {
-  const file = new File()
+export function createDesignFromManifest(manifest: ManifestData): IDesign {
+  const design = new Design()
 
-  file.setManifest(manifest)
+  design.setManifest(manifest)
 
-  return file
+  return design
 }
 
 export * from './types/artboard.iface'
@@ -20,7 +20,7 @@ export * from './types/bitmap-assets.type'
 export * from './types/bitmap.iface'
 export * from './types/bitmap-mask.iface'
 export * from './types/effects.iface'
-export * from './types/file.iface'
+export * from './types/design.iface'
 export * from './types/fonts.type'
 export * from './types/ids.type'
 export * from './types/layer-collection.iface'

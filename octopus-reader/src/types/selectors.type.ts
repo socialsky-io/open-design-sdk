@@ -64,7 +64,7 @@ export type LayerSelector = {
  * An object used for looking up layers within a design by various properties. Properties can be combined freely.
  * @category Layer Lookup
  */
-export type FileLayerSelector = {
+export type DesignLayerSelector = {
   /** A single artboard ID or a list of IDs within which to search for layers. */
   artboardId?: ArtboardId | Array<ArtboardId>
 

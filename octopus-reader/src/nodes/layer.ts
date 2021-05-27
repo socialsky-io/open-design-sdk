@@ -25,7 +25,10 @@ import type { LayerId } from '../types/ids.type'
 import type { ILayer } from '../types/layer.iface'
 import type { ILayerCollection } from '../types/layer-collection.iface'
 import type { ComponentId, LayerOctopusData } from '../types/octopus.type'
-import type { FileLayerSelector, LayerSelector } from '../types/selectors.type'
+import type {
+  DesignLayerSelector,
+  LayerSelector,
+} from '../types/selectors.type'
 import type { IShape } from '../types/shape.iface'
 import type { IText } from '../types/text.iface'
 import { BitmapMask } from '../layer-info/bitmap-mask'
@@ -200,7 +203,7 @@ export class Layer implements ILayer {
     }
   )
 
-  matches(selector: FileLayerSelector): boolean {
+  matches(selector: DesignLayerSelector): boolean {
     return matchLayer(selector, this)
   }
 
@@ -311,17 +314,17 @@ export class Layer implements ILayer {
       throw new Error('Cannot retrieve detached layer component artboard info')
     }
 
-    const file = artboard.getFile()
-    if (!file) {
+    const design = artboard.getDesign()
+    if (!design) {
       throw new Error(
         'Cannot retrieve detached artboard layer component artboard info'
       )
     }
 
     return componentArtboardId
-      ? file.getArtboardById(componentArtboardId)
+      ? design.getArtboardById(componentArtboardId)
       : componentId
-      ? file.getArtboardByComponentId(componentId)
+      ? design.getArtboardByComponentId(componentId)
       : null
   }
 

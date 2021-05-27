@@ -6,7 +6,7 @@ import { createLayerEntitySelector } from './utils/selector-utils'
 import type { CancelToken } from '@avocode/cancel-token'
 import {
   ILayerCollection,
-  FileLayerSelector,
+  DesignLayerSelector,
   ILayer,
   ArtboardId,
   LayerId,
@@ -155,7 +155,7 @@ export class DesignLayerCollectionFacade {
    * ```
    */
   findLayer(
-    selector: FileLayerSelector | ((layer: LayerFacade) => boolean),
+    selector: DesignLayerSelector | ((layer: LayerFacade) => boolean),
     options: { depth?: number } = {}
   ): LayerFacade | null {
     const entitySelector = createLayerEntitySelector(
@@ -209,7 +209,7 @@ export class DesignLayerCollectionFacade {
    * ```
    */
   findLayers(
-    selector: FileLayerSelector | ((layer: LayerFacade) => boolean),
+    selector: DesignLayerSelector | ((layer: LayerFacade) => boolean),
     options: { depth?: number } = {}
   ): DesignLayerCollectionFacade {
     const entitySelector = createLayerEntitySelector(

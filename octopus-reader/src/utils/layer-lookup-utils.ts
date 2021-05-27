@@ -1,5 +1,8 @@
 import type { ILayer } from '../types/layer.iface'
-import type { FileLayerSelector, LayerSelector } from '../types/selectors.type'
+import type {
+  DesignLayerSelector,
+  LayerSelector,
+} from '../types/selectors.type'
 
 const layerDataMatchers = {
   id: (idSelector: LayerSelector['id'], layer: ILayer) => {
@@ -72,7 +75,7 @@ const layerDataMatchers = {
 }
 
 export function matchLayer(
-  selector: LayerSelector | FileLayerSelector | ((layer: ILayer) => boolean),
+  selector: LayerSelector | DesignLayerSelector | ((layer: ILayer) => boolean),
   layer: ILayer
 ): boolean {
   if (typeof selector === 'function') {
@@ -105,7 +108,7 @@ export function matchLayer(
 export function findLayerInLayers(
   selector:
     | LayerSelector
-    | FileLayerSelector
+    | DesignLayerSelector
     | ((layerDesc: ILayer) => boolean),
   layerSubtrees: Array<ILayer>,
   options: Partial<{ depth: number }> = {}
@@ -140,7 +143,7 @@ export function findLayerInLayers(
 }
 
 export function findLayersInLayers(
-  selector: FileLayerSelector | ((layer: ILayer) => boolean),
+  selector: DesignLayerSelector | ((layer: ILayer) => boolean),
   layerSubtrees: Array<ILayer>,
   options: Partial<{ depth: number }> = {}
 ): Array<ILayer> {
