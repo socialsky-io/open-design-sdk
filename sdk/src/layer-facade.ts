@@ -251,13 +251,13 @@ export class LayerFacade {
    * @example
    * ```typescript
    * const rootLayer = artboard.getRootLayers()[0]
-   * rootLayer.getParentLayerIds() // DesignLayerCollection []
+   * rootLayer.getParentLayerIds() // []
    *
    * const nestedLayer = rootLayer.getNestedLayers()[0]
-   * nestedLayer.getParentLayerIds() // DesignLayerCollection [rootLayer.id]
+   * nestedLayer.getParentLayerIds() // [rootLayer.id]
    *
    * const deeperNestedLayer = nestedLayer.getNestedLayers()[0]
-   * deeperNestedLayer.getParentLayerIds() // DesignLayerCollection [nestedLayer.id, rootLayer.id]
+   * deeperNestedLayer.getParentLayerIds() // [nestedLayer.id, rootLayer.id]
    * ```
    */
   getParentLayerIds(): Array<LayerId> {
