@@ -731,7 +731,7 @@ export class DesignFacade {
    * })
    * ```
    *
-   * @example Layer by name from a certain artboad subset
+   * @example Layer by name from a certain artboard subset
    * ```typescript
    * const layer = await design.findLayer({
    *   name: 'Share icon',
