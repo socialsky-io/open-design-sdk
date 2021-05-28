@@ -34,7 +34,12 @@ export type { DesignExportFacade } from './design-export-facade'
 export type { DesignFacade } from './design-facade'
 export type { DesignListItemFacade } from './design-list-item-facade'
 export type { LayerCollectionFacade } from './layer-collection-facade'
-export type { FontDescriptor, LayerFacade } from './layer-facade'
+export type {
+  FontDescriptor,
+  LayerFacade,
+  LayerAttributes,
+  LayerOctopusAttributesConfig,
+} from './layer-facade'
 export type { BitmapAssetDescriptor } from './local/local-design'
 export type { PageFacade } from './page-facade'
 

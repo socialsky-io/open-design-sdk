@@ -35,6 +35,17 @@ export type LayerAttributes = {
   visible: boolean
 }
 
+export type LayerOctopusAttributesConfig = {
+  /** Whether to apply layer effects of the layer. Rendering of effects of nested layers is not affected. By defaults, effects of the layer are applied. */
+  includeEffects?: boolean
+  /** Whether to apply clipping by a mask layer if any such mask is set for the layer (see {@link LayerFacade.isMasked}). Clipping is disabled by default. Setting this flag for layers which do not have a mask layer set has no effect on the results. */
+  clip?: boolean
+  /** The blending mode to use for rendering the layer instead of its default blending mode. */
+  blendingMode?: BlendingMode
+  /** The opacity to use for the layer instead of its default opacity. */
+  opacity?: number
+}
+
 // HACK: This makes TypeDoc not inline the whole type in the documentation.
 /**
  * @octopusschema Layer
@@ -145,6 +156,34 @@ export class LayerFacade {
   /** @internal */
   toJSON(): unknown {
     return { ...this }
+  }
+
+  /** @internal */
+  getOctopusForAttributes(
+    attrs: LayerOctopusAttributesConfig & { visible?: boolean }
+  ): LayerOctopusData {
+    const originalOctopus = this.octopus
+
+    return {
+      ...originalOctopus,
+
+      'blendMode':
+        attrs.blendingMode == null
+          ? originalOctopus['blendMode']
+          : attrs.blendingMode,
+      'opacity':
+        attrs.opacity == null ? originalOctopus['opacity'] : attrs.opacity,
+      'visible':
+        attrs.visible == null ? originalOctopus['visible'] : attrs.visible,
+      'effects': attrs.includeEffects == null ? originalOctopus['effects'] : {},
+
+      ...(attrs.clip === false
+        ? {
+            'clipped': Boolean(attrs.clip),
+            'maskedBy': undefined,
+          }
+        : {}),
+    }
   }
 
   /**
