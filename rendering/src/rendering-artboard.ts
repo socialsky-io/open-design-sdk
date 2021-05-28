@@ -244,9 +244,8 @@ export class RenderingArtboard implements IRenderingArtboard {
     )
     if (!result['ok']) {
       this._console.error(
-        'Rendering: render-artboard-',
-        'omposi',
-        '->ion:',
+        'Rendering: render-artboard-composition',
+        '->',
         result
       )
       throw new Error('Failed to render artboard layers')
