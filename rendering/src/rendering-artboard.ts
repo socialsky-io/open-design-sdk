@@ -3,6 +3,7 @@ import { sequence } from './utils/async-utils'
 import { mergeBounds, parseBounds, serializeBounds } from './utils/bounds-utils'
 import { serializeLayerAttributes } from './utils/layer-attributes-utils'
 import mkdirp from 'mkdirp'
+import { v4 as uuid } from 'uuid'
 
 import type { RenderingProcess } from './rendering-process'
 import type { Bounds } from './types/bounds.type'
@@ -203,45 +204,21 @@ export class RenderingArtboard implements IRenderingArtboard {
       bounds?: Bounds
     } = {}
   ): Promise<void> {
-    if (!this.ready) {
-      throw new Error('The artboard is not ready')
-    }
+    const [{ imageName, releaseImage }] = await Promise.all([
+      this._composeLayers(layerIds, options),
+      mkdirp(dirname(filePath)),
+    ])
 
-    const layerAttributes = options.layerAttributes || {}
-    const bounds =
-      options.bounds ||
-      (await this._getCompoundLayerRenderBounds(layerIds, layerAttributes))
+    const result = await this._renderingProcess.execCommand('save-image', {
+      'image': imageName,
+      'file': filePath,
+    })
 
-    await mkdirp(dirname(filePath))
+    await releaseImage()
 
-    const result = await this._renderingProcess.execCommand(
-      'render-artboard-composition',
-      {
-        'design': this._designId,
-        'artboard': this.id,
-        'bounds': serializeBounds(bounds),
-        'scale': options.scale || 1,
-        'background': { 'enable': false },
-        'draw-shown-only': true,
-        'layer-attributes': layerIds.map((layerId): {
-          'layer': string
-        } & LayerAttributes => {
-          return {
-            'layer': layerId,
-            'visibility': 'force-show',
-            ...serializeLayerAttributes(layerAttributes[layerId] || {}),
-          }
-        }),
-        'file': filePath,
-      }
-    )
     if (!result['ok']) {
-      this._console.error(
-        'Rendering: render-artboard-composition',
-        '->',
-        result
-      )
-      throw new Error('Failed to render artboard layers')
+      this._console.error('Rendering: save-image', '->', result)
+      throw new Error('Failed to save layer composition')
     }
   }
 
@@ -352,5 +329,67 @@ export class RenderingArtboard implements IRenderingArtboard {
     return layerBoundsList.reduce((compoundBounds, partialBounds) => {
       return mergeBounds(compoundBounds, partialBounds)
     })
+  }
+
+  async _composeLayers(
+    layerIds: Array<string>,
+    options: {
+      layerAttributes?: Record<string, LayerAttributesConfig>
+      scale?: number
+      bounds?: Bounds
+    }
+  ): Promise<{
+    imageName: string
+    releaseImage: () => void
+  }> {
+    if (!this.ready) {
+      throw new Error('The artboard is not ready')
+    }
+
+    const layerAttributes = options.layerAttributes || {}
+    const bounds =
+      options.bounds ||
+      (await this._getCompoundLayerRenderBounds(layerIds, layerAttributes))
+
+    const imageName = uuid()
+
+    const result = await this._renderingProcess.execCommand(
+      'render-artboard-composition',
+      {
+        'design': this._designId,
+        'artboard': this.id,
+        'bounds': serializeBounds(bounds),
+        'scale': options.scale || 1,
+        'background': { 'enable': false },
+        'draw-shown-only': true,
+        'layer-attributes': layerIds.map((layerId): LayerAttributes & {
+          'layer': string
+        } => {
+          return {
+            'layer': layerId,
+            'visibility': 'force-show',
+            ...serializeLayerAttributes(layerAttributes[layerId] || {}),
+          }
+        }),
+        'image': imageName,
+      }
+    )
+    if (!result['ok']) {
+      this._console.error(
+        'Rendering: render-artboard-composition',
+        '->',
+        result
+      )
+      throw new Error('Failed to render artboard layers')
+    }
+
+    return {
+      imageName,
+      releaseImage: () => {
+        return this._renderingProcess.execCommand('release-image', {
+          'image': imageName,
+        })
+      },
+    }
   }
 }
