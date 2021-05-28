@@ -246,6 +246,32 @@ export class RenderingArtboard implements IRenderingArtboard {
     }
   }
 
+  async getLayerCompositionBounds(
+    layerIds: Array<string>,
+    options: {
+      layerAttributes?: Record<string, LayerAttributesConfig>
+      scale?: number
+    } = {}
+  ): Promise<Bounds> {
+    const { imageName, releaseImage } = await this._composeLayers(
+      layerIds,
+      options
+    )
+
+    const result = await this._renderingProcess.execCommand('get-image', {
+      'image': imageName,
+    })
+
+    await releaseImage()
+
+    if (!result['ok']) {
+      this._console.error('Rendering:', 'get-image', '->', result)
+      throw new Error('Failed to trim image')
+    }
+
+    return parseBounds(result['bounds'])
+  }
+
   async getLayerAtPosition(x: number, y: number): Promise<string | null> {
     if (!this.ready) {
       throw new Error('The artboard is not ready')

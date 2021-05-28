@@ -307,4 +307,14 @@ export type CommandResults = {
         'layers': Array<string>
       })
     | ErrorResult
+
+  'get-image':
+    | (SuccessResult & {
+        'id': string
+        'image': string
+        'bounds': [number, number, number, number]
+        'dimensions': [number, number]
+        'scale': number
+      })
+    | ErrorResult
 }

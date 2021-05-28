@@ -78,6 +78,14 @@ export interface IRenderingArtboard {
 
   getLayerBounds(layerId: string): Promise<LayerBounds>
 
+  getLayerCompositionBounds(
+    layerIds: Array<string>,
+    options?: {
+      layerAttributes?: Record<string, LayerAttributesConfig>
+      scale?: number
+    }
+  ): Promise<Bounds>
+
   getLayerAtPosition(x: number, y: number): Promise<string | null>
 
   getLayersInArea(

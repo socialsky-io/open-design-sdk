@@ -77,6 +77,15 @@ export interface IRenderingDesign {
     layerId: string
   ): Promise<LayerBounds>
 
+  getArtboardLayerCompositionBounds(
+    artboardId: string,
+    layerIds: Array<string>,
+    options?: {
+      layerAttributes?: Record<string, LayerAttributesConfig>
+      scale?: number
+    }
+  ): Promise<Bounds>
+
   getArtboardLayerAtPosition(
     artboardId: string,
     x: number,

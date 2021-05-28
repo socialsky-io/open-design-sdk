@@ -204,6 +204,22 @@ export class RenderingDesign implements IRenderingDesign {
     return artboard.renderLayersToFile(layerIds, filePath, options)
   }
 
+  getArtboardLayerCompositionBounds(
+    artboardId: string,
+    layerIds: Array<string>,
+    options?: {
+      layerAttributes?: Record<string, LayerAttributesConfig>
+      scale?: number
+    }
+  ): Promise<Bounds> {
+    const artboard = this._artboards.get(artboardId)
+    if (!artboard) {
+      throw new Error('No such artboard')
+    }
+
+    return artboard.getLayerCompositionBounds(layerIds, options)
+  }
+
   async getArtboardLayerBounds(
     artboardId: string,
     layerId: string
