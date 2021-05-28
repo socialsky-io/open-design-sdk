@@ -22,7 +22,7 @@ import type {
 } from '@opendesign/rendering'
 import type { components } from 'open-design-api-types'
 import type { DesignFacade } from './design-facade'
-import type { DesignFileManager } from './local/design-file-manager'
+import type { FileManager } from './local/file-manager'
 import type { LocalDesign } from './local/local-design'
 import type { LocalDesignCache } from './local/local-design-cache'
 import type { LocalDesignManager } from './local/local-design-manager'
@@ -34,7 +34,7 @@ export class Sdk {
   private _env: Env = new Env()
 
   private _openDesignApi: IOpenDesignApi | null = null
-  private _designFileManager: DesignFileManager | null = null
+  private _fileManager: FileManager | null = null
   private _localDesignCache: LocalDesignCache | null = null
   private _localDesignManager: LocalDesignManager | null = null
   private _renderingEngineFactory: typeof createRenderingEngine | null = null
@@ -109,9 +109,9 @@ export class Sdk {
       systemFontManager.destroy()
     }
 
-    const designFileManager = this._designFileManager
-    if (designFileManager) {
-      designFileManager.destroy()
+    const fileManager = this._fileManager
+    if (fileManager) {
+      fileManager.destroy()
     }
 
     const localDesignManager = this._localDesignManager
@@ -374,15 +374,12 @@ export class Sdk {
       throw new Error('Open Design API is not configured.')
     }
 
-    const designFileManager = this._designFileManager
-    if (!designFileManager) {
+    const fileManager = this._fileManager
+    if (!fileManager) {
       throw new Error('Design file manager is not configured.')
     }
 
-    const designFileStream = await designFileManager.readDesignFileStream(
-      filePath,
-      options
-    )
+    const designFileStream = await fileManager.readFileStream(filePath, options)
     const apiDesign = await openDesignApi.importDesignFile(
       designFileStream,
       options
@@ -726,22 +723,18 @@ export class Sdk {
       cancelToken?: CancelToken | null
     }
   ): Promise<void> {
-    const designFileManager = this._designFileManager
-    if (!designFileManager) {
+    const fileManager = this._fileManager
+    if (!fileManager) {
       throw new Error('Design file manager is not configured.')
     }
 
-    return designFileManager.saveDesignFileStream(
-      filePath,
-      designFileStream,
-      options
-    )
+    return fileManager.saveFileStream(filePath, designFileStream, options)
   }
 
   /** @internal */
-  useDesignFileManager(designFileManager: DesignFileManager): void {
-    designFileManager.setEnv(this._env)
-    this._designFileManager = designFileManager
+  useFileManager(fileManager: FileManager): void {
+    fileManager.setEnv(this._env)
+    this._fileManager = fileManager
   }
 
   /** @internal */

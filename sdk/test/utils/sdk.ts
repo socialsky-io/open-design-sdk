@@ -1,4 +1,4 @@
-import { DesignFileManager } from '../../src/local/design-file-manager'
+import { FileManager } from '../../src/local/file-manager'
 import { LocalDesignManager } from '../../src/local/local-design-manager'
 import { Sdk } from '../../src/sdk'
 
@@ -16,7 +16,7 @@ export async function createSdk(params: {
     sdk.useLocalDesignManager(new LocalDesignManager())
   }
   if (params.designFiles) {
-    sdk.useDesignFileManager(new DesignFileManager())
+    sdk.useFileManager(new FileManager())
   }
 
   const { openDesignApi, apiRoot, token } = params.api

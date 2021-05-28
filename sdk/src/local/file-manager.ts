@@ -4,21 +4,19 @@ import { resolve as resolvePath } from 'path'
 
 import { Env } from '../env'
 
-export class DesignFileManager {
+export class FileManager {
   private _env: Env = new Env()
   private _destroyTokenController = createCancelToken()
 
   destroy() {
-    this._destroyTokenController.cancel(
-      'The design file manager has been destroyed.'
-    )
+    this._destroyTokenController.cancel('The file manager has been destroyed.')
   }
 
   setEnv(env: Env) {
     this._env = env
   }
 
-  async readDesignFileStream(
+  async readFileStream(
     filePath: string,
     options: {
       cancelToken?: CancelToken | null
@@ -51,9 +49,9 @@ export class DesignFileManager {
     })
   }
 
-  async saveDesignFileStream(
+  async saveFileStream(
     filePath: string,
-    designFileStream: NodeJS.ReadableStream,
+    fileStream: NodeJS.ReadableStream,
     options: {
       cancelToken?: CancelToken | null
     } = {}
@@ -82,11 +80,11 @@ export class DesignFileManager {
         resolve()
       }
 
-      designFileStream.once('error', handleError)
+      fileStream.once('error', handleError)
       writeStream.once('close', handleClose)
       writeStream.once('error', handleError)
 
-      designFileStream.pipe(writeStream)
+      fileStream.pipe(writeStream)
     })
   }
 

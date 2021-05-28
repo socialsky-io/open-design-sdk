@@ -2,7 +2,7 @@ import { OpenDesignApi } from '@opendesign/api'
 import { createRenderingEngine } from '@opendesign/rendering'
 import { createCancelToken } from './utils/cancel-token-utils'
 import { ConsoleConfig, getConsole } from './utils/console-utils'
-import { DesignFileManager } from './local/design-file-manager'
+import { FileManager } from './local/file-manager'
 import { LocalDesignCache } from './local/local-design-cache'
 import { LocalDesignManager } from './local/local-design-manager'
 import { SystemFontManager } from './local/system-font-manager'
@@ -98,7 +98,7 @@ export function createSdk(params: {
 
   const sdk = new Sdk({ console: sdkConsole })
 
-  sdk.useDesignFileManager(new DesignFileManager())
+  sdk.useFileManager(new FileManager())
   sdk.useLocalDesignManager(
     new LocalDesignManager({
       console: sdkConsole,
