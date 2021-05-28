@@ -187,21 +187,11 @@ export class RenderingArtboard implements IRenderingArtboard {
       boundsOverride ||
       (await this._getLayerRenderBounds(layerId, layerAttributes))
 
-    await mkdirp(dirname(filePath))
-
-    const result = await this._renderingProcess.execCommand('render-layer', {
-      'design': this._designId,
-      'artboard': this.id,
-      'layer': layerId,
-      'file': filePath,
-      'bounds': serializeBounds(bounds),
-      'scale': scale,
-      ...serializeLayerAttributes(options),
+    return this.renderLayersToFile([layerId], filePath, {
+      layerAttributes: { [layerId]: layerAttributes },
+      scale,
+      bounds,
     })
-    if (!result['ok']) {
-      this._console.error('Rendering:', 'render-layer', '->', result)
-      throw new Error('Failed to render artboard layer')
-    }
   }
 
   async renderLayersToFile(
