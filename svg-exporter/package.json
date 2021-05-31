@@ -8,6 +8,16 @@
     "clean-build": "rm -rf dist"
   },
   "devDependencies": {
+    "open-design-api-types": "0.3.5",
     "typescript": "4.1.2"
+  },
+  "dependencies": {
+    "@avocode/cancel-token": "1.4.0",
+    "@avocode/svg-exporter": "1.2.30",
+    "base64-stream": "1.0.0",
+    "canvas": "2.8.0",
+    "cplus": "2.0.1",
+    "image-type": "4.1.0",
+    "svgdom": "0.1.8"
   }
 }
