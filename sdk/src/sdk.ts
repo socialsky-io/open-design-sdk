@@ -40,7 +40,7 @@ export class Sdk {
   private _renderingEngineFactory: typeof createRenderingEngine | null = null
   private _systemFontManager: SystemFontManager | null = null
 
-  private _destroyed: boolean = false
+  private _destroyed = false
 
   private _console: Console
   private _renderingEngine: Promise<IRenderingEngine | null> | null = null

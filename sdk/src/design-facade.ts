@@ -62,7 +62,7 @@ export class DesignFacade {
   private _artboardFacades: Map<ArtboardId, ArtboardFacade> = new Map()
   private _pageFacades: Map<PageId, PageFacade> = new Map()
 
-  private _manifestLoaded: boolean = false
+  private _manifestLoaded = false
   private _pendingManifestUpdate: ManifestData | null = null
   private _loadingArtboardPromises: Map<ArtboardId, Promise<void>> = new Map()
 

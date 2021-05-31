@@ -13,8 +13,8 @@ import type { IPage } from '../types/page.iface'
 export class DesignData {
   private _design: IDesign
 
-  private _loaded: boolean = false
-  private _paged: boolean = false
+  private _loaded = false
+  private _paged = false
   private _pageList: Array<IPage> = []
   private _artboardList: Array<IArtboard> = []
 

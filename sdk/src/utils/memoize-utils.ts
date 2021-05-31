@@ -1,4 +1,4 @@
-function shallowEqual(a: unknown, b: unknown, depth: number = 1): boolean {
+function shallowEqual(a: unknown, b: unknown, depth = 1): boolean {
   if (Array.isArray(a) && Array.isArray(b)) {
     return shallowEqualArrays(a, b, depth)
   }
@@ -10,7 +10,7 @@ function shallowEqual(a: unknown, b: unknown, depth: number = 1): boolean {
   return a === b
 }
 
-function shallowEqualObjects(a: object, b: object, depth: number = 1): boolean {
+function shallowEqualObjects(a: object, b: object, depth = 1): boolean {
   return [...Object.keys(a), ...Object.keys(b)].every((key) => {
     return (
       key in a &&
@@ -24,7 +24,7 @@ function shallowEqualObjects(a: object, b: object, depth: number = 1): boolean {
 function shallowEqualArrays(
   a: Array<unknown>,
   b: Array<unknown>,
-  depth: number = 1
+  depth = 1
 ): boolean {
   const length = Math.max(a.length, b.length)
 
@@ -39,7 +39,7 @@ function shallowEqualArrays(
 
 export function memoize<A extends Array<unknown>, R>(
   fn: (...args: A) => R,
-  depth: number = 1
+  depth = 1
 ) {
   const cache: Array<{ args: A; result: R }> = []
 

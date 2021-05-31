@@ -13,7 +13,7 @@ export class RenderingProcess implements IRenderingProcess {
   private _console: Console
 
   private _process: ChildProcess | null = null
-  private _destroyed: boolean = false
+  private _destroyed = false
 
   constructor(params: { console?: Console | null } = {}) {
     this._console = params.console || console
