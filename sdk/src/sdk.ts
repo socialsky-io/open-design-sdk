@@ -748,6 +748,22 @@ export class Sdk {
   }
 
   /** @internal */
+  async saveTextFile(
+    filePath: string,
+    content: string,
+    options: {
+      cancelToken?: CancelToken | null
+    }
+  ): Promise<void> {
+    const fileManager = this._fileManager
+    if (!fileManager) {
+      throw new Error('Design file manager is not configured.')
+    }
+
+    return fileManager.saveTextFile(filePath, content, options)
+  }
+
+  /** @internal */
   useFileManager(fileManager: FileManager): void {
     fileManager.setEnv(this._env)
     this._fileManager = fileManager

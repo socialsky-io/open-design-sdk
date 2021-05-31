@@ -1,5 +1,5 @@
 import createCancelToken, { CancelToken } from '@avocode/cancel-token'
-import { createReadStream, createWriteStream, ReadStream } from 'fs'
+import { createReadStream, createWriteStream, ReadStream, promises } from 'fs'
 import { resolve as resolvePath } from 'path'
 
 import { Env } from '../env'
@@ -86,6 +86,24 @@ export class FileManager {
 
       fileStream.pipe(writeStream)
     })
+  }
+
+  async saveTextFile(
+    filePath: string,
+    content: string,
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<void> {
+    const cancelToken = createCancelToken.race([
+      options.cancelToken,
+      this._destroyTokenController.token,
+    ])
+
+    const filename = this._resolvePath(filePath)
+    await promises.writeFile(filename, content)
+
+    cancelToken.throwIfCancelled()
   }
 
   _resolvePath(filePath: string): string {
