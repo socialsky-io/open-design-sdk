@@ -23,15 +23,21 @@
     "docs": "yarn run docs:octopus-reader && yarn run docs:sdk",
     "docs:octopus-reader": "yarn workspace @opendesign/octopus-reader docs",
     "docs:sdk": "yarn workspace @opendesign/sdk run docs",
-    "lint": "yarn run lint:prettier",
-    "lint:prettier": "yarn run prettier -c .",
+    "lint": "yarn run lint:prettier && yarn run lint:eslint",
+    "lint:eslint": "eslint . --ext .ts",
+    "lint:prettier": "prettier -c .",
     "test": "yarn run test:octopus-reader",
     "test:octopus-reader": "yarn workspace @opendesign/octopus-reader run test",
     "release": "./scripts/release.sh"
   },
   "devDependencies": {
     "@types/node": "*",
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
     "dotenv": "8.2.0",
+    "eslint": "7.27.0",
+    "eslint-plugin-jest": "24.3.6",
+    "eslint-plugin-jsdoc": "35.1.1",
     "prettier": "2.2.1",
     "typescript": "4.1.2"
   }
