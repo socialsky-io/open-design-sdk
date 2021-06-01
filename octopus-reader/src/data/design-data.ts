@@ -40,7 +40,7 @@ export class DesignData {
     }
   })
 
-  setManifest(nextManifest: ManifestData) {
+  setManifest(nextManifest: ManifestData): void {
     const pageNames = nextManifest['pages']
 
     this._paged = Boolean(pageNames)
@@ -74,7 +74,7 @@ export class DesignData {
     this._loaded = true
   }
 
-  isPaged() {
+  isPaged(): boolean {
     return this._paged
   }
 

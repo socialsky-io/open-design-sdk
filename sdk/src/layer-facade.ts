@@ -7,6 +7,7 @@ import { LayerCollectionFacade } from './layer-collection-facade'
 
 import type { CancelToken } from '@avocode/cancel-token'
 import type {
+  ArtboardId,
   DesignLayerSelector,
   IBitmap,
   IBitmapMask,
@@ -25,6 +26,8 @@ import type { DesignFacade } from './design-facade'
 import type { BitmapAssetDescriptor } from './local/local-design'
 
 export type { FontDescriptor }
+
+type LayerType = LayerOctopusData['type']
 
 // HACK: This makes TypeDoc not inline the whole type in the documentation.
 /**
@@ -53,7 +56,7 @@ export class LayerFacade {
    *
    * @category Identification
    */
-  get id() {
+  get id(): LayerId {
     return this._layerEntity.id
   }
 
@@ -73,7 +76,7 @@ export class LayerFacade {
    * layer.renderToFile(`./layers/${layer.id}.png`)
    * ```
    */
-  get fileKey() {
+  get fileKey(): string {
     return toFileKey(this.id)
   }
 
@@ -81,7 +84,7 @@ export class LayerFacade {
    * The name of the layer.
    * @category Data
    */
-  get name() {
+  get name(): string | null {
     return this._layerEntity.name
   }
 
@@ -89,7 +92,7 @@ export class LayerFacade {
    * The type of the layer.
    * @category Data
    */
-  get type() {
+  get type(): LayerType {
     return this._layerEntity.type
   }
 
@@ -118,23 +121,23 @@ export class LayerFacade {
    * The ID of the artboard in which the layer is placed.
    * @category Reference
    */
-  get artboardId() {
+  get artboardId(): ArtboardId | null {
     return this._layerEntity.artboardId
   }
 
   /** @internal */
-  toString() {
+  toString(): string {
     const layerInfo = this.toJSON()
     return `Layer ${inspect(layerInfo)}`
   }
 
   /** @internal */
-  [inspect.custom]() {
+  [inspect.custom](): string {
     return this.toString()
   }
 
   /** @internal */
-  toJSON() {
+  toJSON(): unknown {
     return { ...this }
   }
 

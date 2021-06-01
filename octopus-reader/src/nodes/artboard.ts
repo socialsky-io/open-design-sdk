@@ -56,7 +56,7 @@ export class Artboard implements IArtboard {
     return this._manifest
   }
 
-  setManifest(nextManifest: ArtboardManifestData) {
+  setManifest(nextManifest: ArtboardManifestData): void {
     if (nextManifest['artboard_original_id'] !== this.id) {
       throw new Error('Cannot replace existing artboard ID')
     }
@@ -90,15 +90,15 @@ export class Artboard implements IArtboard {
     return Boolean(this._octopus)
   }
 
-  unload() {
+  unload(): void {
     this._octopus = null
   }
 
-  getOctopus() {
+  getOctopus(): OctopusDocument | null {
     return this._octopus
   }
 
-  setOctopus(nextOctopus: OctopusDocument) {
+  setOctopus(nextOctopus: OctopusDocument): void {
     this._octopus = nextOctopus
 
     this._manifest = this._createManifest(this._manifest, nextOctopus, {
@@ -127,14 +127,14 @@ export class Artboard implements IArtboard {
     return design.getPageById(pageId)
   }
 
-  setPage(nextPageId: PageId) {
+  setPage(nextPageId: PageId): void {
     this._manifest = this._createManifest(this._manifest, this._octopus, {
       id: this.id,
       pageId: nextPageId,
     })
   }
 
-  unassignFromPage() {
+  unassignFromPage(): void {
     this._manifest = this._createManifest(this._manifest, this._octopus, {
       id: this.id,
       pageId: null,

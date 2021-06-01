@@ -12,6 +12,7 @@ import type {
   DesignLayerSelector,
   IPage,
   LayerId,
+  PageId,
   PageSelector,
 } from '@opendesign/octopus-reader'
 import type { ArtboardFacade } from './artboard-facade'
@@ -39,7 +40,7 @@ export class PageFacade {
    *
    * @category Identification
    */
-  get id() {
+  get id(): PageId {
     return this._pageEntity.id
   }
 
@@ -59,7 +60,7 @@ export class PageFacade {
    * page.renderToFile(`./pages/${page.id}.png`)
    * ```
    */
-  get fileKey() {
+  get fileKey(): string {
     return toFileKey(this.id)
   }
 
@@ -67,28 +68,28 @@ export class PageFacade {
    * The name of the artboard.
    * @category Identification
    */
-  get name() {
+  get name(): string | null {
     return this._pageEntity.name
   }
 
   /** @internal */
-  toString() {
+  toString(): string {
     const artboardInfo = this.toJSON()
     return `Page ${inspect(artboardInfo)}`
   }
 
   /** @internal */
-  [inspect.custom]() {
+  [inspect.custom](): string {
     return this.toString()
   }
 
   /** @internal */
-  toJSON() {
+  toJSON(): unknown {
     return { ...this }
   }
 
   /** @internal */
-  setPageEntity(pageEntity: IPage) {
+  setPageEntity(pageEntity: IPage): void {
     this._pageEntity = pageEntity
   }
 
@@ -655,12 +656,12 @@ export class PageFacade {
    * })
    * ```
    */
-  renderToFile(
+  async renderToFile(
     filePath: string,
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
-    return this._designFacade.renderPageToFile(this.id, filePath, options)
+  ): Promise<void> {
+    await this._designFacade.renderPageToFile(this.id, filePath, options)
   }
 }

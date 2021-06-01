@@ -7,7 +7,10 @@ import mkdirp from 'mkdirp'
 import type { RenderingProcess } from './rendering-process'
 import type { Bounds } from './types/bounds.type'
 import type { LayerAttributes } from './types/commands.type'
-import type { IRenderingArtboard } from './types/rendering-artboard.iface'
+import type {
+  IRenderingArtboard,
+  LayerBounds,
+} from './types/rendering-artboard.iface'
 import type { LayerAttributesConfig } from './types/layer-attributes.type'
 
 export class RenderingArtboard implements IRenderingArtboard {
@@ -48,11 +51,11 @@ export class RenderingArtboard implements IRenderingArtboard {
     this._ready = params.ready !== false && this._pendingSymbolIds.length === 0
   }
 
-  get ready() {
+  get ready(): boolean {
     return this._ready
   }
 
-  get pendingSymbolIds() {
+  get pendingSymbolIds(): Array<string> {
     return this._pendingSymbolIds
   }
 
@@ -61,7 +64,7 @@ export class RenderingArtboard implements IRenderingArtboard {
     bitmapAssetDirectoryPath?: string | null
     fontDirectoryPath?: string | null
     offset?: { x: number; y: number } | null
-  }) {
+  }): Promise<void> {
     const loadResult = await this._renderingProcess.execCommand(
       'load-artboard',
       {
@@ -83,7 +86,7 @@ export class RenderingArtboard implements IRenderingArtboard {
     this._pendingSymbolIds = pendingSymbolIds
   }
 
-  async setPage(nextPageId: string | null) {
+  async setPage(nextPageId: string | null): Promise<void> {
     const setPageResult = await this._renderingProcess.execCommand(
       'set-artboard-page',
       {
@@ -99,7 +102,7 @@ export class RenderingArtboard implements IRenderingArtboard {
     this._pageId = nextPageId
   }
 
-  async setOffset(nextOffset: { x: number; y: number }) {
+  async setOffset(nextOffset: { x: number; y: number }): Promise<void> {
     const setOffsetResult = await this._renderingProcess.execCommand(
       'set-artboard-offset',
       {
@@ -252,7 +255,7 @@ export class RenderingArtboard implements IRenderingArtboard {
     }
   }
 
-  async getLayerBounds(layerId: string) {
+  async getLayerBounds(layerId: string): Promise<LayerBounds> {
     if (!this.ready) {
       throw new Error('The artboard is not ready')
     }
@@ -316,7 +319,7 @@ export class RenderingArtboard implements IRenderingArtboard {
     return result['layers']
   }
 
-  async unload() {
+  async unload(): Promise<void> {
     if (!this.ready) {
       throw new Error('The artboard is not ready')
     }

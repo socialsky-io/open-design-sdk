@@ -29,7 +29,7 @@ export class LayerCollection implements ILayerCollection {
     this._layersById = createLayerMap(layerList)
   }
 
-  [Symbol.iterator]() {
+  [Symbol.iterator](): Iterator<ILayer> {
     return this._layerList[Symbol.iterator]()
   }
 
@@ -65,7 +65,7 @@ export class LayerCollection implements ILayerCollection {
 
   forEach(
     fn: (layer: ILayer, index: number, layers: Array<ILayer>) => boolean
-  ) {
+  ): void {
     this.getLayers().forEach(fn)
   }
 

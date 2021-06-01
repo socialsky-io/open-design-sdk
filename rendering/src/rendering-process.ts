@@ -19,11 +19,11 @@ export class RenderingProcess implements IRenderingProcess {
     this._console = params.console || console
   }
 
-  isDestroyed() {
+  isDestroyed(): boolean {
     return this._destroyed
   }
 
-  async destroy() {
+  async destroy(): Promise<void> {
     if (!this._process) {
       return
     }
@@ -72,7 +72,7 @@ export class RenderingProcess implements IRenderingProcess {
     })
   }
 
-  _registerOutputListeners(process: ChildProcess) {
+  _registerOutputListeners(process: ChildProcess): void {
     process.on('error', (err) => {
       this._console.error('Rendering: error>', err)
     })

@@ -11,6 +11,7 @@ import type {
   ArtboardId,
   ArtboardManifestData,
   ArtboardSelector,
+  ComponentId,
   OctopusDocument as OctopusDocumentType,
   IArtboard,
   LayerId,
@@ -64,7 +65,7 @@ export class ArtboardFacade {
    *
    * @category Identification
    */
-  get id() {
+  get id(): ArtboardId {
     return this._artboardEntity.id
   }
 
@@ -84,7 +85,7 @@ export class ArtboardFacade {
    * artboard.renderToFile(`./artboards/${artboard.id}.png`)
    * ```
    */
-  get fileKey() {
+  get fileKey(): string {
     return toFileKey(this.id)
   }
 
@@ -127,7 +128,7 @@ export class ArtboardFacade {
    * The ID of the page in which the artboard is placed.
    * @category Reference
    */
-  get pageId() {
+  get pageId(): PageId | null {
     return this._artboardEntity.pageId
   }
 
@@ -135,7 +136,7 @@ export class ArtboardFacade {
    * The ID of the component this artboard represents.
    * @category Reference
    */
-  get componentId() {
+  get componentId(): ComponentId | null {
     return this._artboardEntity.componentId
   }
 
@@ -143,30 +144,30 @@ export class ArtboardFacade {
    * The name of the artboard.
    * @category Identification
    */
-  get name() {
+  get name(): string | null {
     return this._artboardEntity.name
   }
 
   /** @internal */
-  toString() {
+  toString(): string {
     const artboardInfo = this.toJSON()
     return `Artboard ${inspect(artboardInfo)}`
   }
 
   /** @internal */
-  [inspect.custom]() {
+  [inspect.custom](): string {
     return this.toString()
   }
 
   /** @internal */
-  toJSON() {
+  toJSON(): unknown {
     return {
       ...this,
     }
   }
 
   /** @internal */
-  setArtboardEntity(artboardEntity: IArtboard) {
+  setArtboardEntity(artboardEntity: IArtboard): void {
     this._artboardEntity = artboardEntity
   }
 
@@ -210,8 +211,8 @@ export class ArtboardFacade {
   }
 
   /** @internal */
-  setManifest(nextManifestData: ArtboardManifestData) {
-    return this._artboardEntity.setManifest(nextManifestData)
+  setManifest(nextManifestData: ArtboardManifestData): void {
+    this._artboardEntity.setManifest(nextManifestData)
   }
 
   /**
@@ -229,7 +230,7 @@ export class ArtboardFacade {
    * console.log(artboard.isLoaded()) // true
    * ```
    */
-  isLoaded() {
+  isLoaded(): boolean {
     return this._artboardEntity.isLoaded()
   }
 
@@ -246,8 +247,8 @@ export class ArtboardFacade {
    * Releases data related to the artboard from memory.
    * @category Status
    */
-  unload() {
-    return this._designFacade.unloadArtboard(this.id)
+  async unload(): Promise<void> {
+    await this._designFacade.unloadArtboard(this.id)
   }
 
   /**
@@ -266,12 +267,12 @@ export class ArtboardFacade {
   }
 
   /** @internal */
-  setPage(nextPageId: PageId) {
+  setPage(nextPageId: PageId): void {
     this._artboardEntity.setPage(nextPageId)
   }
 
   /** @internal */
-  unassignFromPage() {
+  unassignFromPage(): void {
     this._artboardEntity.unassignFromPage()
   }
 
@@ -679,7 +680,7 @@ export class ArtboardFacade {
    * const isComponentArtboard = artboard.isComponent()
    * ```
    */
-  isComponent() {
+  isComponent(): boolean {
     return this._artboardEntity.isComponent()
   }
 

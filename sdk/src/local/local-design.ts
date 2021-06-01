@@ -80,7 +80,7 @@ export class LocalDesign {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<void> {
     const cancelToken = createCancelToken.race([
       options.cancelToken,
       this._destroyToken,
@@ -99,7 +99,7 @@ export class LocalDesign {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<void> {
     const cancelToken = createCancelToken.race([
       options.cancelToken,
       this._destroyToken,
@@ -490,7 +490,9 @@ export class LocalDesign {
     return this._bitmapMapping
   }
 
-  async _loadBitmapMapping(options: { cancelToken?: CancelToken | null }) {
+  async _loadBitmapMapping(options: {
+    cancelToken?: CancelToken | null
+  }): Promise<void> {
     if (this._bitmapMapping) {
       return
     }
@@ -516,11 +518,11 @@ export class LocalDesign {
     )) as BitmapMapping
   }
 
-  unload() {
+  unload(): void {
     this._unloadBitmapMapping()
   }
 
-  _unloadBitmapMapping() {
+  _unloadBitmapMapping(): void {
     this._bitmapMapping = null
   }
 
@@ -565,7 +567,9 @@ export class LocalDesign {
     return this._apiDesignInfo
   }
 
-  async _loadApiDesignInfo(options: { cancelToken?: CancelToken | null }) {
+  async _loadApiDesignInfo(options: {
+    cancelToken?: CancelToken | null
+  }): Promise<void> {
     if (this._apiDesignInfo) {
       return
     }

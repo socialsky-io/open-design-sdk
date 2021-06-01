@@ -8,11 +8,11 @@ export class FileManager {
   private _env: Env = new Env()
   private _destroyTokenController = createCancelToken()
 
-  destroy() {
+  destroy(): void {
     this._destroyTokenController.cancel('The file manager has been destroyed.')
   }
 
-  setEnv(env: Env) {
+  setEnv(env: Env): void {
     this._env = env
   }
 
@@ -88,7 +88,7 @@ export class FileManager {
     })
   }
 
-  _resolvePath(filePath: string) {
+  _resolvePath(filePath: string): string {
     return resolvePath(this._env.workingDirectory || '.', `${filePath}`)
   }
 }

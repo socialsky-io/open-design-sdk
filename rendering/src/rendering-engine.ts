@@ -22,12 +22,12 @@ export class RenderingEngine implements IRenderingEngine {
     this._console = params.console || console
   }
 
-  isDestroyed() {
+  isDestroyed(): boolean {
     return this._renderingProcess.isDestroyed()
   }
 
-  destroy() {
-    return this._renderingProcess.destroy()
+  async destroy(): Promise<void> {
+    await this._renderingProcess.destroy()
   }
 
   async createDesign(

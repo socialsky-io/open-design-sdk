@@ -16,7 +16,7 @@ export class LocalDesignCache {
   private _env: Env = new Env()
   private _cacheInfo: DesignCacheInfo | null = null
 
-  setEnv(env: Env) {
+  setEnv(env: Env): void {
     this._env = env
   }
 
@@ -40,7 +40,7 @@ export class LocalDesignCache {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<void> {
     const octopusFilenames = await this._loadOctopusFilenames(apiRoot, options)
 
     const optimizedFilename = this._getRelativePath(octopusFilename)
@@ -54,7 +54,7 @@ export class LocalDesignCache {
     options: {
       cancelToken?: CancelToken | null
     }
-  ) {
+  ): Promise<Record<string, string>> {
     const cacheInfo = await this._loadCacheInfo(options)
     return cacheInfo['design_cache'][apiRoot] || {}
   }
@@ -91,7 +91,7 @@ export class LocalDesignCache {
   async _saveOctopusFilenames(
     apiRoot: string,
     octopusFilenames: Record<string, string>
-  ) {
+  ): Promise<void> {
     const prevCacheInfo = this._getCacheInfo()
     const nextCacheInfo = {
       ...prevCacheInfo,
@@ -120,15 +120,15 @@ export class LocalDesignCache {
     }
   }
 
-  _getCacheFilename() {
+  _getCacheFilename(): string {
     return this._resolvePath('./.opendesign/temp/design-cache.json')
   }
 
-  _resolvePath(filePath: string) {
+  _resolvePath(filePath: string): string {
     return resolvePath(this._env.workingDirectory || '.', `${filePath}`)
   }
 
-  _getRelativePath(filePath: string) {
+  _getRelativePath(filePath: string): string {
     return relative(this._resolvePath('.'), this._resolvePath(filePath))
   }
 }

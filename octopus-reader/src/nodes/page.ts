@@ -36,7 +36,7 @@ export class Page implements IPage {
     this._name = params.name || null
   }
 
-  get name() {
+  get name(): string | null {
     return this._name
   }
 
@@ -48,7 +48,7 @@ export class Page implements IPage {
     return matchPage(selector, this)
   }
 
-  unloadArtboards() {
+  unloadArtboards(): void {
     this.getArtboards().forEach((artboard) => {
       artboard.unload()
     })

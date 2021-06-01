@@ -28,7 +28,7 @@ import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
 import type { CancelToken } from '@avocode/cancel-token'
-import type { IApiDesign } from '@opendesign/api'
+import type { DesignId, IApiDesign } from '@opendesign/api'
 import type {
   Bounds,
   IRenderingDesign,
@@ -92,7 +92,7 @@ export class DesignFacade {
    * The ID of the referenced server-side design. This is not available when the API is not configured for the SDK.
    * @category Identification
    */
-  get id() {
+  get id(): DesignId | null {
     const apiDesign = this._apiDesign
     return apiDesign?.id || null
   }
@@ -130,7 +130,7 @@ export class DesignFacade {
    * The name of the design. This is the basename of the file by default or a custom name provided during design import.
    * @category Data
    */
-  get name() {
+  get name(): string | null {
     const apiDesign = this._apiDesign
     if (apiDesign) {
       return apiDesign.name
@@ -149,24 +149,24 @@ export class DesignFacade {
    * @internal
    * @category Identification
    */
-  get octopusFilename() {
+  get octopusFilename(): string | null {
     const localDesign = this._localDesign
     return localDesign?.filename || null
   }
 
   /** @internal */
-  toString() {
+  toString(): string {
     const designInfo = this.toJSON()
     return `Design ${inspect(designInfo)}`
   }
 
   /** @internal */
-  [inspect.custom]() {
+  [inspect.custom](): string {
     return this.toString()
   }
 
   /** @internal */
-  toJSON() {
+  toJSON(): unknown {
     return { ...this }
   }
 
@@ -181,7 +181,7 @@ export class DesignFacade {
   }
 
   /** @internal */
-  setManifest(nextManifest: ManifestData) {
+  setManifest(nextManifest: ManifestData): void {
     this._pendingManifestUpdate = nextManifest
     this._manifestLoaded = true
 
@@ -218,7 +218,7 @@ export class DesignFacade {
     options: {
       cancelToken?: CancelToken | null
     }
-  ) {
+  ): Promise<void> {
     if (!this._manifestLoaded) {
       this.setManifest(await localDesign.getManifest(options))
     }
@@ -232,7 +232,7 @@ export class DesignFacade {
     options: {
       cancelToken?: CancelToken | null
     }
-  ) {
+  ): Promise<void> {
     if (!this._manifestLoaded) {
       this.setManifest(await apiDesign.getManifest(options))
     }
@@ -241,7 +241,7 @@ export class DesignFacade {
   }
 
   /** @internal */
-  setRenderingDesign(renderingDesign: IRenderingDesign) {
+  setRenderingDesign(renderingDesign: IRenderingDesign): void {
     this._renderingDesign = renderingDesign
   }
 
@@ -899,7 +899,7 @@ export class DesignFacade {
   }
 
   /** @internal */
-  setFontSource(fontSource: FontSource | null) {
+  setFontSource(fontSource: FontSource | null): void {
     this._fontSource = fontSource
   }
 
@@ -919,7 +919,7 @@ export class DesignFacade {
    * design.setFontDirectory('/var/custom-fonts')
    * ```
    */
-  setFontDirectory(fontDirectoryPath: string) {
+  setFontDirectory(fontDirectoryPath: string): void {
     const renderingDesign = this._renderingDesign
     if (!renderingDesign) {
       throw new Error(
@@ -950,7 +950,7 @@ export class DesignFacade {
    * design.setFallbackFonts([ 'Calibri', './custom-fonts/Carolina.otf', 'Arial' ])
    * ```
    */
-  setFallbackFonts(fallbackFonts: Array<string>) {
+  setFallbackFonts(fallbackFonts: Array<string>): void {
     const fontSource = this._fontSource
     if (fontSource) {
       fontSource.setFallbackFonts(fallbackFonts)
@@ -1441,9 +1441,10 @@ export class DesignFacade {
   }
 
   /** @internal */
-  async load(options: { cancelToken?: CancelToken | null }) {
+  async load(options: { cancelToken?: CancelToken | null }): Promise<void> {
     const artboards = this.getArtboards()
-    return Promise.all(
+
+    await Promise.all(
       artboards.map((artboard) => {
         return artboard.load(options)
       })
@@ -1491,7 +1492,7 @@ export class DesignFacade {
    *
    * @category Status
    */
-  async destroy() {
+  async destroy(): Promise<void> {
     this._designEntity = null
     this._getDesignEntity.clear()
 
@@ -1511,7 +1512,7 @@ export class DesignFacade {
    *
    * @category Status
    */
-  async unload() {
+  async unload(): Promise<void> {
     const designEntity = this._getDesignEntity()
     designEntity.unloadArtboards()
 
@@ -1531,7 +1532,7 @@ export class DesignFacade {
    *
    * @category Status
    */
-  async unloadArtboard(artboardId: ArtboardId) {
+  async unloadArtboard(artboardId: ArtboardId): Promise<void> {
     const artboard = this.getArtboardById(artboardId)
     if (!artboard) {
       throw new Error('No such artboard')
@@ -1858,7 +1859,7 @@ export class DesignFacade {
   }
 
   /** @internal */
-  addDesignExport(designExport: DesignExportFacade) {
+  addDesignExport(designExport: DesignExportFacade): void {
     const format = designExport.resultFormat
     this._designExports.set(format, designExport)
   }

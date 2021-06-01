@@ -5,7 +5,7 @@ export async function postToken(params: {
   apiRoot: string
   email: string
   name: string
-}) {
+}): Promise<string> {
   const { body } = (await post(
     params.apiRoot,
     // @ts-ignore

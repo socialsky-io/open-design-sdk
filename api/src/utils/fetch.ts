@@ -27,7 +27,7 @@ export async function fetch(
     console?: Console
     cancelToken?: CancelToken | null
   } = {}
-) {
+): ReturnType<typeof fetchInternal> {
   const {
     console: fetchConsole = console,
     cancelToken,

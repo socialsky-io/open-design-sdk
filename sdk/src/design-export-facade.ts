@@ -2,8 +2,16 @@ import { inspect } from 'util'
 import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 
 import type { CancelToken } from '@avocode/cancel-token'
-import type { IApiDesignExport } from '@opendesign/api'
+import type {
+  DesignExportId,
+  DesignId,
+  IApiDesignExport,
+} from '@opendesign/api'
+import type { components } from 'open-design-api-types'
 import type { Sdk } from './sdk'
+
+type DesignExportTargetFormatEnum = components['schemas']['DesignExportTargetFormatEnum']
+type DesignExportStatusEnum = components['schemas']['DesignExportStatusEnum']
 
 export class DesignExportFacade {
   private _sdk: Sdk
@@ -21,7 +29,7 @@ export class DesignExportFacade {
    * The ID of the export task.
    * @category Identification
    */
-  get id() {
+  get id(): DesignExportId {
     return this._designExport.id
   }
 
@@ -29,7 +37,7 @@ export class DesignExportFacade {
    * The ID of the exported design.
    * @category Reference
    */
-  get designId() {
+  get designId(): DesignId {
     return this._designExport.designId
   }
 
@@ -37,7 +45,7 @@ export class DesignExportFacade {
    * The status of the export task.
    * @category Data
    */
-  get status() {
+  get status(): DesignExportStatusEnum {
     return this._designExport.status
   }
 
@@ -45,23 +53,23 @@ export class DesignExportFacade {
    * The target format to which the design is exported.
    * @category Data
    */
-  get resultFormat() {
+  get resultFormat(): DesignExportTargetFormatEnum {
     return this._designExport.resultFormat
   }
 
   /** @internal */
-  toString() {
+  toString(): string {
     const exportInfo = this.toJSON()
     return `DesignExport ${inspect(exportInfo)}`
   }
 
   /** @internal */
-  [inspect.custom]() {
+  [inspect.custom](): string {
     return this.toString()
   }
 
   /** @internal */
-  toJSON() {
+  toJSON(): unknown {
     return { ...this }
   }
 
@@ -85,7 +93,7 @@ export class DesignExportFacade {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<string> {
     const processedDesignExport = await this._designExport.getProcessedDesignExport(
       options
     )
@@ -117,7 +125,7 @@ export class DesignExportFacade {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<NodeJS.ReadableStream> {
     return this._designExport.getResultStream(options)
   }
 
@@ -140,8 +148,8 @@ export class DesignExportFacade {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
-    return this._sdk.saveDesignFileStream(
+  ): Promise<void> {
+    await this._sdk.saveDesignFileStream(
       filePath,
       await this.getResultStream(options),
       options

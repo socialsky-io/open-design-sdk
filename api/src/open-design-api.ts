@@ -41,15 +41,15 @@ export class OpenDesignApi implements IOpenDesignApi {
     this._console = params.console || cplus.create()
   }
 
-  getApiRoot() {
+  getApiRoot(): string {
     return this._apiRoot
   }
 
-  _getAuthInfo() {
+  _getAuthInfo(): { token: string } {
     return { token: this._token }
   }
 
-  destroy() {
+  destroy(): void {
     this._destroyTokenController.cancel('The API has been destroyed.')
   }
 
@@ -568,7 +568,7 @@ export class OpenDesignApi implements IOpenDesignApi {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<NodeJS.ReadableStream> {
     const absolute = /^https?:\/\//.test(bitmapKey)
     if (!absolute) {
       throw new Error('Relative asset paths are not supported')

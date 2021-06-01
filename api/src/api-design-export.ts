@@ -25,19 +25,19 @@ export class ApiDesignExport implements IApiDesignExport {
     this._openDesignApi = params.openDesignApi
   }
 
-  get id() {
+  get id(): DesignExport['id'] {
     return this._exportData['id']
   }
 
-  get status() {
+  get status(): DesignExport['status'] {
     return this._exportData['status']
   }
 
-  get resultFormat() {
+  get resultFormat(): DesignExport['result_format'] {
     return this._exportData['result_format']
   }
 
-  get resultUrl() {
+  get resultUrl(): string | null {
     return this._exportData['result_url']
   }
 
@@ -45,7 +45,7 @@ export class ApiDesignExport implements IApiDesignExport {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<ApiDesignExport> {
     return this._openDesignApi.getDesignExportById(
       this.designId,
       this.id,

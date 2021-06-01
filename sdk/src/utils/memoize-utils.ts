@@ -40,7 +40,10 @@ function shallowEqualArrays(
 export function memoize<A extends Array<unknown>, R>(
   fn: (...args: A) => R,
   depth = 1
-) {
+): {
+  (...args: A): R
+  clear(): void
+} {
   const cache: Array<{ args: A; result: R }> = []
 
   const memoizer = (...args: A): R => {

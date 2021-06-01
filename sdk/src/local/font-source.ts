@@ -23,7 +23,7 @@ export class FontSource {
     this.setFontDirectory(params.fontDirname || null)
   }
 
-  setFontDirectory(fontDirname: string | null) {
+  setFontDirectory(fontDirname: string | null): void {
     if (this._fontDirname === fontDirname) {
       return
     }
@@ -34,7 +34,7 @@ export class FontSource {
       : null
   }
 
-  setFallbackFonts(fallbackFonts: Array<string>) {
+  setFallbackFonts(fallbackFonts: Array<string>): void {
     this._fallbackFonts = fallbackFonts
   }
 
@@ -43,7 +43,11 @@ export class FontSource {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<{
+    fontFilename: string
+    fontPostscriptName: string
+    fallback: boolean
+  } | null> {
     return this._systemFontManager.resolveFontPath(font, {
       fontFamilies: this._fontFamilies,
       fallbackFonts: this._fallbackFonts,

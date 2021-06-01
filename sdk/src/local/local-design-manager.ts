@@ -24,15 +24,15 @@ export class LocalDesignManager {
     this._console = params.console || console
   }
 
-  setEnv(env: Env) {
+  setEnv(env: Env): void {
     this._env = env
   }
 
-  destroy() {
+  destroy(): void {
     this._destroyTokenController.cancel()
   }
 
-  resolvePath(filePath: string) {
+  resolvePath(filePath: string): string {
     return resolvePath(this._env.workingDirectory || '.', `${filePath}`)
   }
 
@@ -138,7 +138,7 @@ export class LocalDesignManager {
     return localDesign
   }
 
-  _checkOctopusFileName(filename: string) {
+  _checkOctopusFileName(filename: string): void {
     const ext = extname(filename)
     if (ext !== '.octopus') {
       throw new Error('The file is not a .octopus file')

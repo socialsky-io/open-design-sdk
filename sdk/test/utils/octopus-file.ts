@@ -13,7 +13,15 @@ import { basename, dirname } from 'path'
 
 const writeFile = promisify(fs.writeFile)
 
-export async function createOctopusFile(filePath: string) {
+export async function createOctopusFile(
+  filePath: string
+): Promise<{
+  octopusFilename: string
+  manifest: ManifestData
+  artboardOctopuses: Record<ArtboardId, OctopusDocument>
+  bitmapFilenames: Record<string, string>
+  bitmapMapping: Record<string, string>
+}> {
   const octopusFilename = await createTempFileTarget(filePath)
   await mkdirp(octopusFilename)
 
@@ -80,7 +88,7 @@ export async function createOctopusFile(filePath: string) {
     JSON.stringify(artboardOctopuses['a'])
   )
 
-  const bitmapFilenames: Array<[string, string]> = [
+  const bitmapFilenameEntries: Array<[string, string]> = [
     [
       'https://example.com/images/xx.png',
       `${octopusFilename}/bitmaps/mapped-xx.png`,
@@ -98,9 +106,10 @@ export async function createOctopusFile(filePath: string) {
       `${octopusFilename}/bitmaps/mapped-mask-mm.png`,
     ],
   ]
+  const bitmapFilenames = Object.fromEntries(bitmapFilenameEntries)
   const bitmapMapping = Object.fromEntries(
     await Promise.all(
-      bitmapFilenames.map(async ([bitmapKey, bitmapFilename]) => {
+      bitmapFilenameEntries.map(async ([bitmapKey, bitmapFilename]) => {
         const bitmapBasename = basename(bitmapFilename)
         await writeBitmapFile(bitmapFilename)
         return [bitmapKey, bitmapBasename]

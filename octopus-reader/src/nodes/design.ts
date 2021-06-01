@@ -41,21 +41,21 @@ export class Design implements IDesign {
     return this._designData.isLoaded()
   }
 
-  unloadPage(pageId: PageId) {
+  unloadPage(pageId: PageId): void {
     const page = this.getPageById(pageId)
     if (page) {
       page.unloadArtboards()
     }
   }
 
-  unloadArtboards() {
+  unloadArtboards(): void {
     const artboards = this.getArtboards()
     artboards.forEach((artboard) => {
       artboard.unload()
     })
   }
 
-  unloadArtboard(artboardId: ArtboardId) {
+  unloadArtboard(artboardId: ArtboardId): void {
     const artboard = this.getArtboardById(artboardId)
     if (artboard) {
       artboard.unload()
@@ -66,7 +66,7 @@ export class Design implements IDesign {
     return this._designData.getManifest()
   }
 
-  setManifest(nextManifest: ManifestData) {
+  setManifest(nextManifest: ManifestData): void {
     this._designData.setManifest(nextManifest)
   }
 

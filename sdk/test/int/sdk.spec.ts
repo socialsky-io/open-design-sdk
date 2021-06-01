@@ -97,9 +97,11 @@ describe('DesignFacade', () => {
         bitmapMapping
       )
 
-      bitmapFilenames.forEach(([_bitmapKey, bitmapFilename]) => {
-        statSync(bitmapFilename)
-      })
+      Object.entries(bitmapFilenames).forEach(
+        ([_bitmapKey, bitmapFilename]) => {
+          statSync(bitmapFilename)
+        }
+      )
     })
 
     it('should fail opening a non-existent octopus file', async () => {

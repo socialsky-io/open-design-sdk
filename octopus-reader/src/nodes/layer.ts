@@ -21,7 +21,7 @@ import type {
   AggregatedFontDescriptor,
   FontDescriptor,
 } from '../types/fonts.type'
-import type { LayerId } from '../types/ids.type'
+import type { ArtboardId, LayerId } from '../types/ids.type'
 import type { ILayer } from '../types/layer.iface'
 import type { ILayerCollection } from '../types/layer-collection.iface'
 import type { ComponentId, LayerOctopusData } from '../types/octopus.type'
@@ -53,19 +53,19 @@ export class Layer implements ILayer {
     this._parentLayerId = params.parentLayerId || null
   }
 
-  get id() {
+  get id(): LayerId {
     return this.octopus['id']
   }
 
-  get name() {
+  get name(): string | null {
     return this.octopus['name'] == null ? null : this.octopus['name']
   }
 
-  get type() {
+  get type(): LayerOctopusData['type'] {
     return this.octopus['type']
   }
 
-  get artboardId() {
+  get artboardId(): ArtboardId | null {
     return this._artboard?.id || null
   }
 
@@ -73,7 +73,7 @@ export class Layer implements ILayer {
     return this._artboard
   }
 
-  isRootLayer() {
+  isRootLayer(): boolean {
     return !this._parentLayerId
   }
 

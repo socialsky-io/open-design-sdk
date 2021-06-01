@@ -9,6 +9,7 @@ import type { RenderingProcess } from './rendering-process'
 import type { Bounds } from './types/bounds.type'
 import type { LayerAttributesConfig } from './types/layer-attributes.type'
 import type { IRenderingDesign } from './types/rendering-design.iface'
+import type { LayerBounds } from './index'
 
 export class RenderingDesign implements IRenderingDesign {
   readonly id: string
@@ -37,11 +38,11 @@ export class RenderingDesign implements IRenderingDesign {
     this._console = params.console || console
   }
 
-  get fontDirectoryPath() {
+  get fontDirectoryPath(): string | null {
     return this._fontDirectoryPath
   }
 
-  setFontDirectory(fontDirectoryPath: string | null) {
+  setFontDirectory(fontDirectoryPath: string | null): void {
     this._fontDirectoryPath = fontDirectoryPath
   }
 
@@ -203,7 +204,10 @@ export class RenderingDesign implements IRenderingDesign {
     return artboard.renderLayersToFile(layerIds, filePath, options)
   }
 
-  async getArtboardLayerBounds(artboardId: string, layerId: string) {
+  async getArtboardLayerBounds(
+    artboardId: string,
+    layerId: string
+  ): Promise<LayerBounds> {
     const artboard = this._artboards.get(artboardId)
     if (!artboard) {
       throw new Error('No such artboard')
@@ -238,13 +242,13 @@ export class RenderingDesign implements IRenderingDesign {
     return artboard.getLayersInArea(bounds, options)
   }
 
-  async unloadArtboards() {
+  async unloadArtboards(): Promise<void> {
     await sequence([...this._artboards.entries()], async ([artboardId]) => {
       return this.unloadArtboard(artboardId)
     })
   }
 
-  async unloadArtboard(artboardId: string) {
+  async unloadArtboard(artboardId: string): Promise<void> {
     const artboard = this._artboards.get(artboardId)
     if (!artboard) {
       throw new Error('No such artboard')
@@ -255,7 +259,7 @@ export class RenderingDesign implements IRenderingDesign {
     this._artboards.delete(artboardId)
   }
 
-  async destroy() {
+  async destroy(): Promise<void> {
     const result = await this._renderingProcess.execCommand('unload-design', {
       'design': this.id,
     })

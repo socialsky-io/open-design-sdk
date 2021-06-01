@@ -1,9 +1,10 @@
+import { BitmapAssetDescriptor } from '../types/bitmap-assets.type'
 import { ILayer } from '../types/layer.iface'
 
 export function getLayerBitmapAssets(
   layer: ILayer,
   params: { includePrerendered: boolean }
-) {
+): Array<BitmapAssetDescriptor> {
   const bitmap = layer.getBitmap()
   const bitmapAssetName = bitmap ? bitmap.getBitmapAssetName() : null
 

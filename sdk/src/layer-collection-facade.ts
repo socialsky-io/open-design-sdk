@@ -50,18 +50,18 @@ export class LayerCollectionFacade {
   }
 
   /** @internal */
-  toString() {
+  toString(): string {
     const layers = this.toJSON()
     return `DesignLayerCollection ${inspect(layers)}`
   }
 
   /** @internal */
-  [inspect.custom]() {
+  [inspect.custom](): string {
     return this.toString()
   }
 
   /** @internal */
-  toJSON() {
+  toJSON(): unknown {
     return this.getLayers()
   }
 
@@ -83,12 +83,12 @@ export class LayerCollectionFacade {
    *
    * @category Iteration
    */
-  get length() {
+  get length(): number {
     return this._layerCollection.length
   }
 
   /** @internal */
-  getFileLayerCollectionEntity() {
+  getFileLayerCollectionEntity(): ILayerCollection {
     return this._layerCollection
   }
 
@@ -99,7 +99,7 @@ export class LayerCollectionFacade {
    *
    * @category Layer Lookup
    */
-  getLayers() {
+  getLayers(): Array<LayerFacade> {
     return this._getLayersMemoized()
   }
 
@@ -272,8 +272,12 @@ export class LayerCollectionFacade {
    * ```
    */
   forEach(
-    fn: (layer: LayerFacade, index: number, layers: Array<LayerFacade>) => any
-  ) {
+    fn: (
+      layer: LayerFacade,
+      index: number,
+      layers: Array<LayerFacade>
+    ) => unknown
+  ): void {
     this.getLayers().forEach(fn)
   }
 

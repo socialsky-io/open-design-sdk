@@ -27,11 +27,11 @@ export class BitmapMask implements IBitmapMask {
     })
   })
 
-  isEnabled() {
+  isEnabled(): boolean {
     return this._bitmapMaskDesc['enabled'] !== false
   }
 
-  isExtendedWithWhite() {
+  isExtendedWithWhite(): boolean {
     return Boolean(this._bitmapMaskDesc['extendWithWhite'])
   }
 }

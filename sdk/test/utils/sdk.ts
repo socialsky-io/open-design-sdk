@@ -9,7 +9,11 @@ export async function createSdk(params: {
   localDesigns?: boolean
   designFiles?: boolean
   api?: boolean
-}) {
+}): Promise<{
+  sdk: Sdk
+  apiRoot: string | null
+  token: string | null
+}> {
   const sdk = new Sdk()
 
   if (params.localDesigns) {

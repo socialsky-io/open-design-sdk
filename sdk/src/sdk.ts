@@ -51,17 +51,17 @@ export class Sdk {
   }
 
   /** @internal */
-  toString() {
+  toString(): string {
     return `OpenDesignSdk ${inspect(this.toJSON())}`
   }
 
   /** @internal */
-  [inspect.custom]() {
+  [inspect.custom](): string {
     return this.toString()
   }
 
   /** @internal */
-  toJSON() {
+  toJSON(): unknown {
     return {
       workingDirectory: this.getWorkingDirectory(),
     }
@@ -72,7 +72,7 @@ export class Sdk {
    *
    * @category Status
    */
-  isDestroyed() {
+  isDestroyed(): boolean {
     return this._destroyed
   }
 
@@ -92,7 +92,7 @@ export class Sdk {
    * sdk.importDesignFile('./design.sketch') // throws
    * ```
    */
-  async destroy() {
+  async destroy(): Promise<void> {
     if (this._destroyed) {
       return
     }
@@ -185,7 +185,7 @@ export class Sdk {
    * sdk.getWorkingDirectory() // == process.cwd()
    * ```
    */
-  setWorkingDirectory(workingDirectory: string | null) {
+  setWorkingDirectory(workingDirectory: string | null): void {
     this._env.workingDirectory = workingDirectory || null
   }
 
@@ -197,7 +197,7 @@ export class Sdk {
    * @category Configuration
    * @param fontDirectoryPath An absolute path to a directory or a path relative to the process working directory (`process.cwd()` in node.js). When `null` is provided, the global configuration is cleared.
    */
-  setGlobalFontDirectory(fontDirectoryPath: string | null) {
+  setGlobalFontDirectory(fontDirectoryPath: string | null): void {
     const systemFontManager = this._systemFontManager
     if (!systemFontManager) {
       throw new Error('Font management is not configured.')
@@ -221,7 +221,7 @@ export class Sdk {
    * @category Configuration
    * @param fallbackFonts An ordered list of font postscript names or font file paths.
    */
-  setGlobalFallbackFonts(fallbackFonts: Array<string>) {
+  setGlobalFallbackFonts(fallbackFonts: Array<string>): void {
     const systemFontManager = this._systemFontManager
     if (!systemFontManager) {
       throw new Error('Font management is not configured.')
@@ -796,7 +796,7 @@ export class Sdk {
    * }, 2000)
    * ```
    */
-  createCancelToken() {
+  createCancelToken(): ReturnType<typeof createCancelToken> {
     return createCancelToken()
   }
 

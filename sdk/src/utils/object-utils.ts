@@ -4,7 +4,7 @@ export function enumerablizeWithPrototypeGetters(
     enumerableOwnKeys?: Array<string>
     omittedPrototypeKeys?: Array<string>
   } = {}
-) {
+): void {
   const { enumerableOwnKeys = [], omittedPrototypeKeys = [] } = options
 
   const ownKeys = Object.getOwnPropertyNames(instance)

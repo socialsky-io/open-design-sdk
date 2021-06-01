@@ -44,15 +44,15 @@ export class SystemFontManager {
     this._fontkit = createFontkit()
   }
 
-  setEnv(env: Env) {
+  setEnv(env: Env): void {
     this._env = env
   }
 
-  destroy() {
+  destroy(): void {
     this._destroyTokenController.cancel()
   }
 
-  setGlobalFontDirectory(fontDirname: string | null) {
+  setGlobalFontDirectory(fontDirname: string | null): void {
     this._globalFontDirname = fontDirname
 
     this._globalFontFamilies = fontDirname
@@ -60,7 +60,7 @@ export class SystemFontManager {
       : null
   }
 
-  setGlobalFallbackFonts(fallbackFonts: Array<string>) {
+  setGlobalFallbackFonts(fallbackFonts: Array<string>): void {
     this._globalFallbackFonts = fallbackFonts
   }
 
@@ -69,7 +69,7 @@ export class SystemFontManager {
       fontDirname?: string | null
       fallbackFonts?: Array<string>
     } = {}
-  ) {
+  ): FontSource {
     return new FontSource(this, params)
   }
 
@@ -162,7 +162,7 @@ export class SystemFontManager {
     fontFamilies?: SystemFontFamilies | null
     fallbackFonts?: Array<string>
     cancelToken: CancelToken
-  }) {
+  }): Promise<{ fontFilename: string; fontPostscriptName: string } | null> {
     const fallbackFonts = [
       ...(options.fallbackFonts || []),
       ...this._globalFallbackFonts,
@@ -197,7 +197,9 @@ export class SystemFontManager {
     return systemFontFilenames[postscriptName] || null
   }
 
-  async _loadSystemFontLocations(params: { cancelToken: CancelToken }) {
+  async _loadSystemFontLocations(params: {
+    cancelToken: CancelToken
+  }): Promise<Record<string, string>> {
     if (this._systemFonts) {
       return this._systemFonts
     }
@@ -216,7 +218,7 @@ export class SystemFontManager {
     params: {
       cancelToken: CancelToken
     }
-  ) {
+  ): Promise<Record<string, string>> {
     return {
       ...(await this._parseRegularFonts(fontFamilies, params)),
       ...(await this._parseFontCollections(fontFamilies, params)),
@@ -228,7 +230,7 @@ export class SystemFontManager {
     params: {
       cancelToken: CancelToken
     }
-  ) {
+  ): Promise<Record<string, string>> {
     const fontDescs = await fontFamilies.getFontsExtended()
     params.cancelToken.throwIfCancelled()
 
@@ -255,7 +257,7 @@ export class SystemFontManager {
     params: {
       cancelToken: CancelToken
     }
-  ) {
+  ): Promise<Record<string, string>> {
     try {
       const filenames = fontFamilies.getAllFontFilesSync()
       const fontCollectionFilenames = filenames.filter((filename) => {
@@ -274,7 +276,7 @@ export class SystemFontManager {
     params: {
       cancelToken: CancelToken
     }
-  ) {
+  ): Promise<Record<string, string>> {
     const filenames: Record<string, string> = {}
 
     await Promise.all(
@@ -295,7 +297,7 @@ export class SystemFontManager {
     return filenames
   }
 
-  _resolvePath(filePath: string) {
+  _resolvePath(filePath: string): string {
     return resolvePath(this._env.workingDirectory || '.', `${filePath}`)
   }
 }

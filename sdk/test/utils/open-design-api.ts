@@ -5,7 +5,11 @@ import { OpenDesignApi } from '@opendesign/api'
 
 export async function createOpenDesignApi(
   params: { token?: string | null } = {}
-) {
+): Promise<{
+  openDesignApi: OpenDesignApi
+  apiRoot: string
+  token: string
+}> {
   const apiRoot = process.env['OPEN_DESIGN_API_URL_ROOT']
   ok(apiRoot)
 

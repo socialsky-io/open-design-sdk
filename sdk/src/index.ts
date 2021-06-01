@@ -87,7 +87,7 @@ export function createSdk(params: {
   rendering?: boolean
   systemFonts?: boolean
   console?: ConsoleConfig | null
-}) {
+}): Sdk {
   if (params.rendering && !params.cached) {
     throw new Error(
       'The local cache has to be enabled when using the rendering engine.'

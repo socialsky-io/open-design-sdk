@@ -1,8 +1,17 @@
-import type { ArtboardId, PageId } from '@opendesign/octopus-reader'
+import type {
+  ArtboardId,
+  ManifestData,
+  PageId,
+} from '@opendesign/octopus-reader'
 import type { CancelToken } from '@avocode/cancel-token'
 import type { components } from 'open-design-api-types'
-import type { OpenDesignApi } from './open-design-api'
+import type {
+  DesignSummary,
+  OctopusDocument,
+  OpenDesignApi,
+} from './open-design-api'
 import type { IApiDesign } from './types/ifaces'
+import { ApiDesignExport } from './api-design-export'
 
 type DesignExportId = components['schemas']['DesignExportId']
 type Design = components['schemas']['Design']
@@ -17,31 +26,31 @@ export class ApiDesign implements IApiDesign {
     this._openDesignApi = params.openDesignApi
   }
 
-  get id() {
+  get id(): Design['id'] {
     return this._info['id']
   }
 
-  get name() {
+  get name(): Design['name'] {
     return this._info['name']
   }
 
-  get format() {
+  get format(): Design['format'] {
     return this._info['format']
   }
 
-  get createdAt() {
+  get createdAt(): Design['created_at'] {
     return this._info['created_at']
   }
 
-  get completedAt() {
+  get completedAt(): Design['completed_at'] {
     return this._info['completed_at']
   }
 
-  get status() {
+  get status(): Design['status'] {
     return this._info['status']
   }
 
-  getApiRoot() {
+  getApiRoot(): string {
     return this._openDesignApi.getApiRoot()
   }
 
@@ -49,7 +58,7 @@ export class ApiDesign implements IApiDesign {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<ManifestData> {
     const summary = await this.getSummary(options)
     const {
       'artboards': artboardDataList,
@@ -98,7 +107,7 @@ export class ApiDesign implements IApiDesign {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<DesignSummary> {
     return this._openDesignApi.getDesignSummary(this.id, options)
   }
 
@@ -107,7 +116,7 @@ export class ApiDesign implements IApiDesign {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<OctopusDocument> {
     return this._openDesignApi.getDesignArtboardContent(
       this.id,
       artboardId,
@@ -120,7 +129,7 @@ export class ApiDesign implements IApiDesign {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<NodeJS.ReadableStream> {
     return this._openDesignApi.getDesignArtboardContentJsonStream(
       this.id,
       artboardId,
@@ -131,7 +140,7 @@ export class ApiDesign implements IApiDesign {
   exportDesign(params: {
     format: DesignExportTargetFormatEnum
     cancelToken?: CancelToken | null
-  }) {
+  }): Promise<ApiDesignExport> {
     return this._openDesignApi.exportDesign(this.id, params)
   }
 
@@ -140,7 +149,7 @@ export class ApiDesign implements IApiDesign {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<ApiDesignExport> {
     return this._openDesignApi.getDesignExportById(
       this.id,
       designExportId,
@@ -153,7 +162,7 @@ export class ApiDesign implements IApiDesign {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<NodeJS.ReadableStream> {
     return this._openDesignApi.getDesignExportResultStream(
       this.id,
       designExportId,
@@ -166,7 +175,7 @@ export class ApiDesign implements IApiDesign {
     options: {
       cancelToken?: CancelToken | null
     } = {}
-  ) {
+  ): Promise<NodeJS.ReadableStream> {
     return this._openDesignApi.getDesignBitmapAssetStream(
       this.id,
       bitmapKey,

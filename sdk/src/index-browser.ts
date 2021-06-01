@@ -17,7 +17,7 @@ export function createSdk(params: {
   token: string
   apiRoot?: string | null
   console?: ConsoleConfig | null
-}) {
+}): Sdk {
   const sdkConsole = getConsole(params.console || null)
   const sdk = new Sdk({ console: sdkConsole })
 

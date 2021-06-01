@@ -31,7 +31,7 @@ export type {
 
 export async function createRenderingEngine(
   params: { console?: Console | null } = {}
-) {
+): Promise<IRenderingEngine> {
   const renderingConsole = params.console || cplus.create()
 
   const renderingProcess = new RenderingProcess({
