@@ -38,7 +38,6 @@ export type BlendingMode =
 export type ClippingMode = string
 
 export type LayerAttributes = {
-  'layer': string
   'visibility'?: 'default' | 'hide' | 'show' | 'force-show' // optional, supported values listed below
   'blend-mode'?: BlendingMode // optional
   'opacity'?: number // optional
@@ -212,7 +211,7 @@ export type RenderingCommand =
         'color'?: [number, number, number, number] // optional, defaults to artboard's inherent background color
       }
       'draw-shown-only'?: boolean // optional, default = false
-      'layer-attributes': Array<LayerAttributes>
+      'layer-attributes': Array<{ 'layer': string } & LayerAttributes>
 
       // oneof:
       'file'?: string
@@ -222,6 +221,7 @@ export type RenderingCommand =
       'cmd': 'render-layer'
       'design'?: string // defaults to "$last" if omitted
       'artboard': string
+      'layer': string
       'scale'?: number // optional, default = 1.0
       'bounds'?: [number, number, number, number] // optional, defaults to layer's full bounds
 
