@@ -1,5 +1,4 @@
 import { post } from '@opendesign/api/src/utils/fetch'
-import { ok } from 'assert'
 
 export async function postToken(params: {
   apiRoot: string
