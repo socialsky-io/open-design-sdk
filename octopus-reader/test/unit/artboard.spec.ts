@@ -784,8 +784,4 @@ describe('Artboard', () => {
       strictEqual(artboard.isComponent(), false)
     })
   })
-
-  describe('bitmap asset list', () => {})
-
-  describe('font list', () => {})
 })

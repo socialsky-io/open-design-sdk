@@ -16,7 +16,9 @@ async function extendQueue<Result>(
 ): Promise<Result> {
   try {
     await prevQueue
-  } catch (err) {}
+  } catch (err) {
+    // eslint-disable-line no-empty
+  }
 
   return fn()
 }
