@@ -11,7 +11,7 @@ export type PathParams<
     ? Record<ParamName, string | number> & PathParams<RestOfPattern>
     : Record<never, never>
   : Pattern extends ''
-  ? {}
+  ? Record<never, never>
   : PathParams<SkipFirstCharacter<Pattern>>
 
 export function populatePathPattern<Pattern extends string>(

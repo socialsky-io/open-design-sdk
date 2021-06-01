@@ -53,20 +53,20 @@ export type OperationBodyParams<
 > = Operation['requestBody'] extends RequestBodies
   ? Operation['requestBody'][ContentType] extends RequestBody
     ? Operation['requestBody'][ContentType]
-    : {}
-  : {}
+    : Record<never, never>
+  : Record<never, never>
 
 export type OperationPathParams<
   Operation extends IOperation
 > = Operation['parameters'] extends Parameters
   ? Operation['parameters']['path']
-  : {}
+  : Record<never, never>
 
 export type OperationParams<
   Operation extends IOperation
 > = (Operation['parameters'] extends Parameters
   ? Operation['parameters']['path'] & Operation['parameters']['query']
-  : {}) &
+  : Record<never, never>) &
   OperationBodyParams<Operation, 'application/json'>
 
 export type OperationMultipartBodyParams<
