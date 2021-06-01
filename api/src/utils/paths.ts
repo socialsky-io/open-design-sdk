@@ -1,5 +1,6 @@
 import { keys } from './object'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type SkipFirstCharacter<S> = S extends `${infer _}${infer RestOfString}`
   ? RestOfString
   : ''

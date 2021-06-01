@@ -17,7 +17,6 @@ import type { ILayerCollection } from '../types/layer-collection.iface'
 import type { ArtboardManifestData } from '../types/manifest.type'
 import type {
   OctopusDocument,
-  Bounds,
   ComponentId,
   RgbaColor,
 } from '../types/octopus.type'
@@ -42,7 +41,7 @@ export class Artboard implements IArtboard {
   ) {
     const { design, pageId, manifest, ...manifestParams } = params
 
-    this._manifest = this._createManifest(params.manifest || null, octopus, {
+    this._manifest = this._createManifest(manifest || null, octopus, {
       id,
       pageId,
       ...manifestParams,

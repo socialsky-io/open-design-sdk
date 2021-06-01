@@ -73,6 +73,7 @@ describe('Design', () => {
 
     it('should include newly added artboards in the current artboard list', () => {
       const design = new Design()
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const prevArtboards = design.getArtboards()
 
       design.addArtboard('a', createOctopus())
@@ -101,6 +102,7 @@ describe('Design', () => {
 
       design.addArtboard('a', createOctopus())
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const prevArtboards = design.getArtboards()
       design.removeArtboard('a')
 
@@ -144,6 +146,7 @@ describe('Design', () => {
 
     it('should include newly added artboards in the current artboard list', () => {
       const design = new Design()
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const prevArtboards = design.getPageArtboards('p1')
 
       design.addArtboard('a', createOctopus(), { pageId: 'p1' })
@@ -206,6 +209,7 @@ describe('Design', () => {
 
     it('should include newly added artboards in the current master component artboard list', () => {
       const design = new Design()
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const prevArtboards = design.getComponentArtboards()
 
       design.addArtboard('a', { ...createOctopus(), 'symbolID': 'abc' })
@@ -234,6 +238,7 @@ describe('Design', () => {
 
       design.addArtboard('a', { ...createOctopus(), 'symbolID': 'abc' })
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const prevArtboards = design.getComponentArtboards()
       design.removeArtboard('a')
 
