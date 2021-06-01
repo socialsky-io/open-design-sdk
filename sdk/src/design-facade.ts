@@ -1130,6 +1130,7 @@ export class DesignFacade {
       ...(bounds ? { bounds } : {}),
       scale: scale || 1,
       layerAttributes: { [layerId]: layerAttributes },
+      cancelToken,
     })
   }
 
@@ -1416,7 +1417,7 @@ export class DesignFacade {
 
     await this._loadRenderingDesignArtboard(artboardId, {
       loadAssets: true,
-      cancelToken: options.cancelToken || null,
+      cancelToken,
     })
 
     const layerIds = await renderingDesign.getArtboardLayersInArea(
