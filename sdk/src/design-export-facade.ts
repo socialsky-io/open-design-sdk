@@ -76,7 +76,9 @@ export class DesignExportFacade {
   /**
    * Returns the URL of the produced design file.
    * @category Serialization
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected. A cancellation token can be created via {@link createCancelToken}.
+   * @returns A URL string.
    *
    * @example
    * ```typescript
@@ -111,7 +113,9 @@ export class DesignExportFacade {
   /**
    * Returns a readable binary stream of the produced design file.
    * @category Serialization
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected. A cancellation token can be created via {@link createCancelToken}.
+   * @returns A readable file stream.
    *
    * @example
    * ```typescript
@@ -136,6 +140,7 @@ export class DesignExportFacade {
    *
    * @category Serialization
    * @param filePath An absolute path to which to save the design file or a path relative to the current working directory.
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. a partially downloaded file is not deleted). A cancellation token can be created via {@link createCancelToken}.
    *
    * @example

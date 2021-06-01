@@ -71,13 +71,15 @@ export type { PageFacade } from './page-facade'
  * ```
  *
  * @category Primary Entry Point
+ * @param params SDK Parameters
  * @param params.token An Open Design API access token. Test tokens can be generated within the [Open Design API documentation](https://opendesign.avocode.com/docs/authentication). When no token is provided, online services (the API) is not configured.
  * @param params.apiRoot The URL base for Open Design API calls. By default, production Avocode Open Design API servers are used.
  * @param params.workingDirectory An absolute path to the directory against which should the SDK resolve relative file paths and where should it look for its cache directory.
  * @param params.cached Whether to use a local (file system) cache in the form for `.octopus` files. This is enabled by default.
  * @param params.rendering Whether to use a local rendering engine for rendering designs. This is enabled by default. `cached` must not be set to `false` for the rendering engine to be available.
  * @param params.systemFonts Whether to use local system fonts for rendering designs via the rendering engine. This is enabled by default.
- * @param params.console Configuration of the console/logger. This can either be a log level configuration for the bundled logger or a custom console object. The bundled logger can be replaced with the default node.js console via `{ console: console }`.
+ * @param params.console Configuration of the console/logger. This can either be a log level configuration for the bundled logger or a custom console object. The bundled logger can be replaced with the default node.js console via `{ console: console }`.
+ * @returns An SDK instance.
  */
 export function createSdk(params: {
   token: string

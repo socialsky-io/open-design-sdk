@@ -71,6 +71,7 @@ export class LayerCollectionFacade {
    * The layers explicitly included in the collection are iterated over, but layers nested in them are not.
    *
    * @category Iteration
+   * @returns A layer object iterator.
    */
   [Symbol.iterator](): Iterator<LayerFacade> {
     return this.getLayers().values()
@@ -98,6 +99,7 @@ export class LayerCollectionFacade {
    * The layers explicitly included in the collection are iterated over, but layers nested in them are not.
    *
    * @category Layer Lookup
+   * @returns An array of layer objects from the collection.
    */
   getLayers(): Array<LayerFacade> {
     return this._getLayersMemoized()
@@ -122,7 +124,9 @@ export class LayerCollectionFacade {
    *
    * @category Layer Lookup
    * @param selector A layer selector. All specified fields must be matched by the result.
+   * @param options Options
    * @param options.depth The maximum nesting level within the layers explictly included in the collection to search. By default, all levels are searched. `0` also means "no limit"; `1` means only the layers explicitly included in the collection should be searched.
+   * @returns A matched layer object.
    *
    * @example Layer by name from any artboard
    * ```typescript
@@ -176,7 +180,9 @@ export class LayerCollectionFacade {
    *
    * @category Layer Lookup
    * @param selector A layer selector. All specified fields must be matched by the result.
+   * @param options Options
    * @param options.depth The maximum nesting level within the layers explictly included in the collection to search. By default, all levels are searched. `0` also means "no limit"; `1` means only the layers explicitly included in the collection should be searched.
+   * @returns A layer collection of matched layers.
    *
    * @example Layers by name from all artboards
    * ```typescript
@@ -233,6 +239,7 @@ export class LayerCollectionFacade {
    *
    * @category Iteration
    * @param filter The filter to apply to the layers in the collection.
+   * @returns A filtered layer collection.
    *
    * @example
    * ```typescript
@@ -288,6 +295,7 @@ export class LayerCollectionFacade {
    *
    * @category Iteration
    * @param mapper The mapper function to apply to the layers in the collection.
+   * @returns An array of mapper function results.
    *
    * @example
    * ```typescript
@@ -310,6 +318,7 @@ export class LayerCollectionFacade {
    *
    * @category Iteration
    * @param mapper The mapper function to apply to the layers in the collection.
+   * @returns An array of flattened mapper results.
    *
    * @example
    * ```typescript
@@ -337,6 +346,7 @@ export class LayerCollectionFacade {
    * @category Iteration
    * @param reducer The reducer function to apply to the layers in the collection.
    * @param initialValue The value passed as the first argument to the reducer function applied to the first layer in the collection.
+   * @returns The reduction result.
    *
    * @example
    * ```typescript
@@ -360,6 +370,7 @@ export class LayerCollectionFacade {
    *
    * @category Collection Manipulation
    * @param addedLayers The layer collection to concatenate with the original collection. A native `Array` of layer objects can be provided instead of an actual collection object.
+   * @returns A merged layer collection.
    *
    * @example Merge two collections
    * ```typescript
@@ -394,7 +405,9 @@ export class LayerCollectionFacade {
    * Returns a new layer collection which includes all layers explicitly included in the original collection as well as layers nested within those layers (optionally down to a specific nesting level).
    *
    * @category Collection Manipulation
+   * @param options Options
    * @param options.depth The maximum nesting level within the layers explicitly included in the original collection to explicitly include in the new collection. `0` also means "no limit"; `1` means only the layers nested immediately in the collection layers should be included in the new colleciton.
+   * @returns A flattened layer collection.
    *
    * @example
    * ```typescript
@@ -418,8 +431,10 @@ export class LayerCollectionFacade {
    * Both layers explicitly included in the collection and layers nested within those layers are searched.
    *
    * @category Asset
+   * @param options Options
    * @param options.depth The maximum nesting level within the layer to search for bitmap asset usage. By default, all levels are searched. Specifying the depth of `0` leads to bitmap assets of layers nested in the explicitly included layers being omitted altogether.
    * @param options.includePrerendered Whether to also include "pre-rendered" bitmap assets. These assets can be produced by the rendering engine (if configured; future functionality) but are available as assets for either performance reasons or due to the some required data (such as font files) potentially not being available. By default, pre-rendered assets are included.
+   * @returns A list of bitmap assets.
    *
    * @example All bitmap assets from layers from any artboard
    * ```typescript
@@ -449,7 +464,9 @@ export class LayerCollectionFacade {
    * Both layers explicitly included in the collection and layers nested within those layers are searched.
    *
    * @category Asset
+   * @param options Options
    * @param options.depth The maximum nesting level within the layer to search for font usage. By default, all levels are searched. Specifying the depth of `0` leads to bitmap assets of layers nested in the explicitly included layers being omitted altogether.
+   * @returns A list of bitmap assets.
    *
    * @example All fonts from layers from any artboard
    * ```typescript
@@ -486,10 +503,12 @@ export class LayerCollectionFacade {
    *
    * @category Rendering
    * @param filePath The target location of the produced PNG image file.
+   * @param options Render options.
    * @param options.bounds The area to include. This can be used to either crop or expand (add empty space to) the default layer area.
    * @param options.scale The scale (zoom) factor to use for rendering instead of the default 1x factor.
    * @param options.layerAttributes Layer-specific options to use for the rendering instead of the default values.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the created image file is not deleted when cancelled during actual rendering). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A list of fonts.
    *
    * @example With default options (1x, whole combined layer area)
    * ```typescript

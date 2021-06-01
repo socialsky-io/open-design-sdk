@@ -76,6 +76,7 @@ export class DesignListItemFacade {
    * ```
    *
    * @category Server Side Design File Usage
+   * @param options Options.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the local cache is not cleared once created). A cancellation token can be created via {@link createCancelToken}.
    * @returns A design object which can be used for retrieving data from the design using the API.
    */

@@ -145,6 +145,7 @@ export class LayerFacade {
    * Returns the artboard object associated with the layer object.
    *
    * @category Reference
+   * @returns An artboard object.
    *
    * @example
    * ```typescript
@@ -165,6 +166,7 @@ export class LayerFacade {
    * Returns whether the layer is located at the first level within the layer tree of the artboard (i.e. it does not have a parent layer).
    *
    * @category Layer Context
+   * @returns Whether the layer is a root layer.
    *
    * @example
    * ```typescript
@@ -202,6 +204,7 @@ export class LayerFacade {
    * Returns the immediate parent layer object which contains the layer.
    *
    * @category Layer Lookup
+   * @returns A parent layer object.
    *
    * @example
    * ```typescript
@@ -226,6 +229,7 @@ export class LayerFacade {
    * Returns all parent layer objects which contain the layer sorted from the immediate parent layer to the first-level (root) layer.
    *
    * @category Layer Lookup
+   * @returns A collection of parent layer objects.
    *
    * @example
    * ```typescript
@@ -250,6 +254,7 @@ export class LayerFacade {
    * Returns the IDs of all parent layers which contain the layer sorted from the immediate parent layer to the first-level (root) layer.
    *
    * @category Layer Lookup
+   * @returns A list of parent layer IDs.
    *
    * @example
    * ```typescript
@@ -271,6 +276,8 @@ export class LayerFacade {
    * Returns the deepest parent layer objects which contains the layer and matches the provided criteria.
    *
    * @category Layer Lookup
+   * @param selector A parent layer selector.
+   * @returns A matched parent layer object.
    *
    * @example
    * ```typescript
@@ -297,6 +304,8 @@ export class LayerFacade {
    * Returns all parent layer objects which contain the layer and match the provided criteria sorted from the immediate parent layer to the first-level (root) layer.
    *
    * @category Layer Lookup
+   * @param selector A parent layer selector.
+   * @returns A collection of matched parent layer objects.
    *
    * @example
    * ```typescript
@@ -326,6 +335,7 @@ export class LayerFacade {
    * This usually applies to group layers and expanded/inlined component layers. Empty group layers return `false`.
    *
    * @category Layer Lookup
+   * @returns Whether the layer has nested layers.
    *
    * @example
    * ```typescript
@@ -348,7 +358,9 @@ export class LayerFacade {
    * Note that, in case of `depth` other than 1, the subtree is flattened in *document order*, not level by level, which means that nested layers of a layer are included before sibling layers of the layer.
    *
    * @category Layer Lookup
+   * @param options Options
    * @param options.depth The maximum nesting level within the layer to include in the collection. By default, only the immediate nesting level is included. `Infinity` can be specified to get all nesting levels.
+   * @returns A collection of nested layers.
    *
    * @example
    * ```typescript
@@ -365,7 +377,7 @@ export class LayerFacade {
    * // DesignLayerCollection [ Layer { id: 'b1' }, Layer { id: 'b2' } ]
    *
    * // All nesting levels
-   * console.log(layerA.getNestedLayers({ depth: 0 }))
+   * console.log(layerA.getNestedLayers({ depth: 0 }))
    * // DesignLayerCollection [
    * //   Layer { id: 'b1' },
    * //   Layer { id: 'c1' },
@@ -389,7 +401,9 @@ export class LayerFacade {
    *
    * @category Layer Lookup
    * @param selector A layer selector. All specified fields must be matched by the result.
+   * @param options Options
    * @param options.depth The maximum nesting level within the layer to search. By default, all levels are searched. `0` also means "no limit"; `1` means only layers nested directly in the layer should be searched.
+   * @returns A matched layer object.
    *
    * @example
    * ```typescript
@@ -441,7 +455,9 @@ export class LayerFacade {
    *
    * @category Layer Lookup
    * @param selector A layer selector. All specified fields must be matched by the result.
+   * @param options Options
    * @param options.depth The maximum nesting level within the layer to search. By default, all levels are searched. `0` also means "no limit"; `1` means only layers nested directly in the layer should be searched.
+   * @returns A collection of matched layers.
    *
    * @example
    * ```typescript
@@ -495,6 +511,7 @@ export class LayerFacade {
    *
    * @category Layer Lookup
    * @param selector The selector against which to test the layer.
+   * @returns Whether the layer matches.
    *
    * @example
    * ```typescript
@@ -513,6 +530,7 @@ export class LayerFacade {
    * Returns whether the layer is masked/clipped by another layer.
    *
    * @category Layer Context
+   * @returns Whether the layer is masked.
    *
    * @example
    * ```typescript
@@ -533,6 +551,7 @@ export class LayerFacade {
    * Returns the layer which masks/clips the layer if there is one.
    *
    * @category Layer Lookup
+   * @returns A mask layer object.
    *
    * @example
    * ```typescript
@@ -551,6 +570,7 @@ export class LayerFacade {
    * Returns the ID of the layer which masks/clips the layer if there is one.
    *
    * @category Layer Lookup
+   * @returns The ID of the mask layer.
    *
    * @example
    * ```typescript
@@ -565,6 +585,7 @@ export class LayerFacade {
    * Returns whether the layer represents an "inline artboard" (which is a feature used in Photoshop design files only).
    *
    * @category Layer Context
+   * @returns Whether the layer is an inline artboard group layer.
    *
    * @example
    * ```typescript
@@ -579,6 +600,7 @@ export class LayerFacade {
    * Returns whether the layer is a component (instance of a main/master component).
    *
    * @category Layer Context
+   * @returns Whether the layer is an instance of a component.
    *
    * @example
    * ```typescript
@@ -599,6 +621,7 @@ export class LayerFacade {
    * Layers which do not represent a component (instance), see {@link LayerFacade.isComponentInstance}, return `false`.
    *
    * @category Layer Context
+   * @returns Whether the layer is an instance of a component with overrides.
    *
    * @example
    * ```typescript
@@ -617,6 +640,7 @@ export class LayerFacade {
    * Nothing is returned from layers which do not represent a component (instance), see {@link LayerFacade.isComponentInstance}.
    *
    * @category Reference
+   * @returns An artboard instance.
    *
    * @example
    * ```typescript
@@ -636,8 +660,10 @@ export class LayerFacade {
    * Note that this method aggregates results of the more granular bitmap asset-related methods of {@link LayerFacade.getBitmap}, {@link LayerFacade.getBitmapMask} and pattern fill bitmap assets discoverable via {@link LayerFacade.getEffects}.
    *
    * @category Asset
+   * @param options Options
    * @param options.depth The maximum nesting level within the layer to search for bitmap asset usage. By default, all levels are searched. Specifying the depth of `0` leads to nested layer bitmap assets being omitted altogether.
    * @param options.includePrerendered Whether to also include "pre-rendered" bitmap assets. These assets can be produced by the rendering engine (if configured; future functionality) but are available as assets for either performance reasons or due to the some required data (such as font files) potentially not being available. By default, pre-rendered assets are included.
+   * @returns A list of bitmap assets.
    *
    * @example
    * ```typescript
@@ -655,7 +681,9 @@ export class LayerFacade {
    * Returns a list of fonts used by the layer and layers nested within the layer (optionally down to a specific nesting level).
    *
    * @category Asset
+   * @param options Options
    * @param options.depth The maximum nesting level within page and artboard layers to search for font usage. By default, all levels are searched. Specifying the depth of `0` leads to fonts used by nested layers being omitted altogether.
+   * @returns A list of fonts.
    *
    * @example
    * ```typescript
@@ -673,6 +701,7 @@ export class LayerFacade {
    * Returns the bitmap asset of the layer if there is one.
    *
    * @category Asset
+   * @returns The bitmap of the layer.
    *
    * @example
    * ```typescript
@@ -690,6 +719,7 @@ export class LayerFacade {
    * Returns the bitmap mask of the layer if there is one.
    *
    * @category Asset
+   * @returns The bitmap mask of the layer.
    *
    * @example
    * ```typescript
@@ -707,6 +737,7 @@ export class LayerFacade {
    * Only non-bitmap layers (`type!=layer`) have prerendered assets. Bitmap assets of bitmap layers are not considered "pre-rendered".
    *
    * @category Asset
+   * @returns Whether the layer bitmap is "pre-rendered".
    *
    * @example
    * ```typescript
@@ -736,6 +767,7 @@ export class LayerFacade {
    * Only text layers (`type=textLayer`) return text objects here.
    *
    * @category Data
+   * @returns A text object of the layer.
    *
    * @example
    * ```typescript
@@ -753,6 +785,7 @@ export class LayerFacade {
    * Only text layers (`type=textLayer`) return text objects here. This is a shortcut for `.getText()?.getTextContent()`
    *
    * @category Data
+   * @returns The text content string of the layer.
    *
    * @example
    * ```typescript
@@ -772,6 +805,7 @@ export class LayerFacade {
    * Note that there can be bitmap assets in case of pattern fill effects being applied.
    *
    * @category Data
+   * @returns A layer effect object.
    *
    * @example
    * ```typescript
@@ -794,6 +828,7 @@ export class LayerFacade {
    *
    * @category Rendering
    * @param filePath The target location of the produced PNG image file.
+   * @param options Render options
    * @param options.blendingMode The blending mode to use for rendering the layer instead of its default blending mode.
    * @param options.clip Whether to apply clipping by a mask layer if any such mask is set for the layer (see {@link LayerFacade.isMasked}). Clipping is disabled by default. Setting this flag for layers which do not have a mask layer set has no effect on the results.
    * @param options.includeComponentBackground Whether to render the component background from the main/master component. By default, the configuration from the main/master component is used. Note that this configuration has no effect when the artboard background is not included via explicit `includeComponentBackground=true` nor the main/master component configuration as there is nothing with which to blend the layer.
@@ -841,7 +876,7 @@ export class LayerFacade {
       throw new Error('Detached layers cannot be rendered')
     }
 
-    return this._designFacade.renderArtboardLayerToFile(
+    await this._designFacade.renderArtboardLayerToFile(
       artboardId,
       this.id,
       filePath,
@@ -855,7 +890,9 @@ export class LayerFacade {
    * The rendering engine and the local cache have to be configured when using this method.
    *
    * @category Data
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns Various layer bounds.
    *
    * @example
    * ```typescript

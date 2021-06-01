@@ -64,6 +64,7 @@ export class ArtboardFacade {
    * Beware that this value may not be safely usable for naming files in the file system and the {@link fileKey} value should be instead.
    *
    * @category Identification
+   * @returns The ID of the artboard.
    */
   get id(): ArtboardId {
     return this._artboardEntity.id
@@ -99,7 +100,9 @@ export class ArtboardFacade {
    * This method internally triggers loading of the artboard content. In case the artboard is uncached, it is downloaded (and cached when the local cache is configured). The API has to be configured when working with an uncached artboard.
    *
    * @category Data
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns The artboard content.
    *
    * @example
    * ```typescript
@@ -179,6 +182,7 @@ export class ArtboardFacade {
   /**
    * Returns the design object associated with the artboard object.
    * @category Reference
+   * @returns A design object.
    *
    * @example
    * ```typescript
@@ -194,6 +198,7 @@ export class ArtboardFacade {
    *
    * @category Artboard Lookup
    * @param selector The selector against which to test the artboard.
+   * @returns Whether the artboard matches.
    *
    * @example
    * ```typescript
@@ -219,6 +224,7 @@ export class ArtboardFacade {
    * Returns whether the artboard content is loaded in memory from the API or a local cache.
    *
    * @category Status
+   * @returns Whether the artboard content is loaded.
    *
    * @example
    * ```typescript
@@ -255,6 +261,7 @@ export class ArtboardFacade {
    * Returns the page object associated with the artboard object.
    *
    * @category Reference
+   * @returns A page object.
    *
    * @example
    * ```typescript
@@ -280,7 +287,9 @@ export class ArtboardFacade {
    * Returns the dimensions of the artboard and its position within the coordinate system of the design/page.
    *
    * @category Data
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns The artboard bounds.
    *
    * @example
    * ```typescript
@@ -308,9 +317,11 @@ export class ArtboardFacade {
    * This method internally triggers loading of the artboard content. In case the artboard is uncached, it is downloaded (and cached when the local cache is configured). The API has to be configured when working with an uncached artboard.
    *
    * @category Asset
+   * @param options Options
    * @param options.depth The maximum nesting level within page and artboard layers to search for bitmap asset usage. By default, all levels are searched. `0` also means "no limit"; `1` means only root layers in the artboard should be searched.
    * @param options.includePrerendered Whether to also include "pre-rendered" bitmap assets. These assets can be produced by the rendering engine (if configured; future functionality) but are available as assets for either performance reasons or due to the some required data (such as font files) potentially not being available. By default, pre-rendered assets are included.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A list of bitmap assets.
    *
    * @example
    * ```typescript
@@ -349,8 +360,10 @@ export class ArtboardFacade {
    * This method internally triggers loading of the artboard content. In case the artboard is uncached, it is downloaded (and cached when the local cache is configured). The API has to be configured when working with an uncached artboard.
    *
    * @category Asset
+   * @param options Options
    * @param options.depth The maximum nesting level within page and artboard layers to search for font usage. By default, all levels are searched. `0` also means "no limit"; `1` means only root layers in the artboard should be searched.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A list of fonts.
    *
    * @example
    * ```typescript
@@ -381,7 +394,9 @@ export class ArtboardFacade {
    * This method internally triggers loading of the artboard content. In case the artboard is uncached, it is downloaded (and cached when the local cache is configured). The API has to be configured when working with an uncached artboard.
    *
    * @category Data
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns The background color.
    *
    * @example
    * ```typescript
@@ -407,7 +422,9 @@ export class ArtboardFacade {
    * This method internally triggers loading of the artboard content. In case the artboard is uncached, it is downloaded (and cached when the local cache is configured). The API has to be configured when working with an uncached artboard.
    *
    * @category Layer Lookup
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A collection of root layers.
    *
    * @example
    * ```typescript
@@ -435,8 +452,10 @@ export class ArtboardFacade {
    * This method internally triggers loading of the artboard content. In case the artboard is uncached, it is downloaded (and cached when the local cache is configured). The API has to be configured when working with an uncached artboard.
    *
    * @category Layer Lookup
+   * @param options Options
    * @param options.depth The maximum nesting level of layers within the artboard to include in the collection. By default, all levels are included. `0` also means "no limit"; `1` means only root layers in the artboard should be included.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A collection of flattened layers.
    *
    * @example All layers (from all nesting levels)
    * ```typescript
@@ -474,8 +493,10 @@ export class ArtboardFacade {
    * This method internally triggers loading of the artboard content. In case the artboard is uncached, it is downloaded (and cached when the local cache is configured). The API has to be configured when working with an uncached artboard.
    *
    * @category Layer Lookup
+   * @param options Options
    * @param layerId A layer ID.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A layer object.
    *
    * @example Single layer
    * ```typescript
@@ -524,8 +545,10 @@ export class ArtboardFacade {
    *
    * @category Layer Lookup
    * @param selector A layer selector. All specified fields must be matched by the result.
+   * @param options Options
    * @param options.depth The maximum nesting level within page and artboard layers to search. By default, all levels are searched. `0` also means "no limit"; `1` means only root layers in the artboard should be searched.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A layer object.
    *
    * @example Layer by name
    * ```typescript
@@ -587,8 +610,10 @@ export class ArtboardFacade {
    *
    * @category Layer Lookup
    * @param selector A layer selector. All specified fields must be matched by the result.
+   * @param options Options
    * @param options.depth The maximum nesting level within page and artboard layers to search. By default, all levels are searched. `0` also means "no limit"; `1` means only root layers in the artboard should be searched.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A layer collection with layer matches.
    *
    * @example Layer by name
    * ```typescript
@@ -652,6 +677,7 @@ export class ArtboardFacade {
    *
    * @category Layer Lookup
    * @param layerId A layer ID.
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
    * @returns The depth where the layer is located within the layer tree of the artboard. Root layers have the depth of 1.
    *
@@ -674,6 +700,7 @@ export class ArtboardFacade {
   /**
    * Returns whether the artboard represends a (main/master) component.
    * @category Data
+   * @returns Whether the artboard is a component.
    *
    * @example
    * ```typescript
@@ -696,6 +723,8 @@ export class ArtboardFacade {
    * @category Rendering
    * @param filePath The target location of the produced PNG image file.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the created image file is not deleted when cancelled during actual rendering). A cancellation token can be created via {@link createCancelToken}.
+   * @param options Options
+   * @param options.scale The scale (zoom) factor to use for rendering instead of the default 1x factor.
    *
    * @example With default options (1x, whole artboard area)
    * ```typescript
@@ -711,14 +740,14 @@ export class ArtboardFacade {
    * })
    * ```
    */
-  renderToFile(
+  async renderToFile(
     filePath: string,
     options: {
       scale?: number
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<void> {
-    return this._designFacade.renderArtboardToFile(this.id, filePath, options)
+    await this._designFacade.renderArtboardToFile(this.id, filePath, options)
   }
 
   /**
@@ -733,6 +762,7 @@ export class ArtboardFacade {
    * @category Rendering
    * @param layerId The ID of the artboard layer to render.
    * @param filePath The target location of the produced PNG image file.
+   * @param options Options
    * @param options.blendingMode The blending mode to use for rendering the layer instead of its default blending mode.
    * @param options.clip Whether to apply clipping by a mask layer if any such mask is set for the layer (see {@link LayerFacade.isMasked}). Clipping is disabled by default. Setting this flag for layers which do not have a mask layer set has no effect on the results.
    * @param options.includeComponentBackground Whether to render the component background from the main/master component. By default, the configuration from the main/master component is used. Note that this configuration has no effect when the artboard background is not included via explicit `includeComponentBackground=true` nor the main/master component configuration as there is nothing with which to blend the layer.
@@ -764,7 +794,7 @@ export class ArtboardFacade {
    * )
    * ```
    */
-  renderLayerToFile(
+  async renderLayerToFile(
     layerId: LayerId,
     filePath: string,
     options: {
@@ -778,7 +808,7 @@ export class ArtboardFacade {
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<void> {
-    return this._designFacade.renderArtboardLayerToFile(
+    await this._designFacade.renderArtboardLayerToFile(
       this.id,
       layerId,
       filePath,
@@ -798,6 +828,7 @@ export class ArtboardFacade {
    * @category Rendering
    * @param layerIds The IDs of the artboard layers to render.
    * @param filePath The target location of the produced PNG image file.
+   * @param options Options
    * @param options.bounds The area to include. This can be used to either crop or expand (add empty space to) the default layer area.
    * @param options.scale The scale (zoom) factor to use for rendering instead of the default 1x factor.
    * @param options.layerAttributes Layer-specific options to use for the rendering instead of the default values.
@@ -828,7 +859,7 @@ export class ArtboardFacade {
    * )
    * ```
    */
-  renderLayersToFile(
+  async renderLayersToFile(
     layerIds: Array<LayerId>,
     filePath: string,
     options: {
@@ -838,7 +869,7 @@ export class ArtboardFacade {
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<void> {
-    return this._designFacade.renderArtboardLayersToFile(
+    await this._designFacade.renderArtboardLayersToFile(
       this.id,
       layerIds,
       filePath,
@@ -853,7 +884,9 @@ export class ArtboardFacade {
    *
    * @category Data
    * @param layerId The ID of the artboard layer to inspect.
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns Various layer bounds.
    *
    * @example
    * ```typescript
@@ -878,7 +911,9 @@ export class ArtboardFacade {
    * @category Layer Lookup
    * @param x The X coordinate in the coordinate system of the artboard where to look for a layer.
    * @param y The Y coordinate in the coordinate system of the artboard where to look for a layer.
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A layer object.
    *
    * @example
    * ```typescript
@@ -904,6 +939,8 @@ export class ArtboardFacade {
    * @param bounds The area in the corrdinate system of the artboard where to look for layers.
    * @param options.partialOverlap Whether to also return layers which are only partially contained within the specified area.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the artboards is not uncached when newly cached). A cancellation token can be created via {@link createCancelToken}.
+   * @param options Options
+   * @returns Array of layer objects.
    *
    * @example
    * ```typescript Layers fully contained in the area

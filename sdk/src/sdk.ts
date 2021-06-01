@@ -71,6 +71,7 @@ export class Sdk {
    * Returns whether the SDK has been destroyed.
    *
    * @category Status
+   * @returns Whether the SDK instance has been destroyed.
    */
   isDestroyed(): boolean {
     return this._destroyed
@@ -356,6 +357,7 @@ export class Sdk {
    *
    * @category Local Design File Usage
    * @param filePath An absolute design file path or a path relative to the current working directory.
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
    * @returns A design object which can be used for retrieving data from the local design file using the API.
    */
@@ -407,7 +409,9 @@ export class Sdk {
    * ```
    *
    * @category Local Design File Usage
-   * @param filePath An absolute design file path or a path relative to the current working directory.
+   * @param url A design file URL.
+   * @param options Options
+   * @param options.format The format of the design file in case it cannot be inferred from the URL.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
    * @returns A design object which can be used for retrieving data from the local design file using the API.
    */
@@ -566,6 +570,7 @@ export class Sdk {
    * ```
    *
    * @category Server Side Design File Usage
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected. A cancellation token can be created via {@link createCancelToken}.
    * @returns An array of design list item objects which can be used for retrieving the designs using the API.
    */
@@ -608,6 +613,7 @@ export class Sdk {
    *
    * @category Server Side Design File Usage
    * @param designId An ID of a server-side design assigned during import (via `importDesignFile()`, `openFigmaDesign()` or `convertFigmaDesign()`).
+   * @param options Options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the local cache is not cleared once created). A cancellation token can be created via {@link createCancelToken}.
    * @returns A design object which can be used for retrieving data from the design using the API.
    */
@@ -777,6 +783,7 @@ export class Sdk {
    * This mechanism is analogous to the standard `AbortSignal`/`AbortController` API with the difference that a cancellation reason can be specified. The created tokens are also somehow compatible with the standard API by exposing the standard `AbortSignal` as `token.signal`, just as it is possible to create a `CancelToken` from an `AbortSignal` via `createCancelToken.fromSignal()`.
    *
    * @category Utility
+   * @returns A new cancellation token controller.
    *
    * @example
    * ```typescript

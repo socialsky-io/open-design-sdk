@@ -96,6 +96,7 @@ export class PageFacade {
   /**
    * Returns the design object associated with the page object.
    * @category Reference
+   * @returns A design object.
    *
    * @example
    * ```typescript
@@ -110,6 +111,7 @@ export class PageFacade {
    * Returns whether the page content and the content of all artboards the page contains are loaded in memory from the API, a local `.octopus` file or a local cache.
    *
    * @category Status
+   * @returns Whether the page content and contents of its artboards are loaded.
    *
    * @example
    * ```typescript
@@ -138,6 +140,7 @@ export class PageFacade {
    *
    * @category Page Lookup
    * @param selector The selector against which to test the page.
+   * @returns Whether the page matches.
    *
    * @example
    * ```typescript
@@ -153,6 +156,7 @@ export class PageFacade {
    * Returns a list of artboard object the page contains. These can be used to work with artboard contents.
    *
    * @category Artboard Lookup
+   * @returns A list of artboard objects.
    *
    * @example
    * ```typescript
@@ -168,6 +172,7 @@ export class PageFacade {
    *
    * @category Artboard Lookup
    * @param artboardId An artboard ID.
+   * @returns An artboard object.
    *
    * @example
    * ```typescript
@@ -187,6 +192,7 @@ export class PageFacade {
    * Returns (main/master) component artboard objects the page contains. These can be used to work with artboard contents.
    *
    * @category Artboard Lookup
+   * @returns A list of artboard objects.
    *
    * @example
    * ```typescript
@@ -204,6 +210,7 @@ export class PageFacade {
    *
    * @category Artboard Lookup
    * @param componentId A component ID.
+   * @returns An artboard object.
    *
    * @example
    * ```typescript
@@ -224,6 +231,7 @@ export class PageFacade {
    *
    * @category Artboard Lookup
    * @param selector An artboard selector. All specified fields must be matched by the result.
+   * @returns A matched artboard object.
    *
    * @example
    * ```typescript
@@ -260,6 +268,7 @@ export class PageFacade {
    *
    * @category Artboard Lookup
    * @param selector An artboard selector. All specified fields must be matched by the results.
+   * @returns A list of matched artboard objects.
    *
    * @example
    * ```typescript
@@ -294,9 +303,11 @@ export class PageFacade {
    * This method internally triggers loading of all artboards the page contains. Uncached items are downloaded when the API is configured (and cached when the local cache is configured).
    *
    * @category Asset
+   * @param options Options
    * @param options.depth The maximum nesting level within page and artboard layers to search for bitmap asset usage. By default, all levels are searched. `0` also means "no limit"; `1` means only root layers in artboards should be searched.
    * @param options.includePrerendered Whether to also include "pre-rendered" bitmap assets. These assets can be produced by the rendering engine (if configured; future functionality) but are available as assets for either performance reasons or due to the some required data (such as font files) potentially not being available. By default, pre-rendered assets are included.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A list of bitmap assets.
    *
    * @example All bitmap assets from all artboards on the page
    * ```typescript
@@ -336,8 +347,10 @@ export class PageFacade {
    * This method internally triggers loading of all artboards the page contains. Uncached items are downloaded when the API is configured (and cached when the local cache is configured).
    *
    * @category Asset
+   * @param options Options
    * @param options.depth The maximum nesting level within page and artboard layers to search for font usage. By default, all levels are searched. `0` also means "no limit"; `1` means only root layers in artboards should be searched.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A list of fonts.
    *
    * @example All fonts from all artboards on the page
    * ```typescript
@@ -369,8 +382,10 @@ export class PageFacade {
    * This method internally triggers loading of all artboards within the page. Uncached items are downloaded when the API is configured (and cached when the local cache is configured).
    *
    * @category Layer Lookup
+   * @param options Options
    * @param options.depth The maximum nesting level of layers within the artboards to include in the collection. By default, all levels are included. `0` also means "no limit"; `1` means only root layers in the artboard should be included.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A collection of flattened layers.
    *
    * @example All layers from all artboards on the page
    * ```typescript
@@ -414,8 +429,10 @@ export class PageFacade {
    *
    * @category Layer Lookup
    * @param layerId A layer ID.
+   * @param options Options
    * @param options.depth The maximum nesting level within artboard layers to search. By default, all levels are searched. `0` also means "no limit"; `1` means only root layers in artboards should be searched.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A matched layer object.
    *
    * @example
    * ```typescript
@@ -461,8 +478,10 @@ export class PageFacade {
    *
    * @category Layer Lookup
    * @param layerId A layer ID.
+   * @param options Options
    * @param options.depth The maximum nesting level within artboard layers to search. By default, all levels are searched. `0` also means "no limit"; `1` means only root layers in artboards should be searched.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A collection of matched layer.
    *
    * @example
    * ```typescript
@@ -503,8 +522,10 @@ export class PageFacade {
    *
    * @category Layer Lookup
    * @param selector A design-wide layer selector. All specified fields must be matched by the result.
+   * @param options Options
    * @param options.depth The maximum nesting level within the artboard layers to search. By default, all levels are searched. `0` also means "no limit"; `1` means only root layers in artboards should be searched.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A matched layer object.
    *
    * @example Layer by name from any artboard on the page
    * ```typescript
@@ -571,8 +592,10 @@ export class PageFacade {
    *
    * @category Layer Lookup
    * @param selector A design-wide layer selector. All specified fields must be matched by the result.
+   * @param options Options
    * @param options.depth The maximum nesting level within the artboard layers to search. By default, all levels are searched. `0` also means "no limit"; `1` means only root layers in artboards should be searched.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A collection of matched layer.
    *
    * @example Layers by name from all artboards on the page
    * ```typescript
@@ -640,6 +663,7 @@ export class PageFacade {
    *
    * @category Rendering
    * @param filePath The target location of the produced PNG image file.
+   * @param options Render options
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the created image file is not deleted when cancelled during actual rendering). A cancellation token can be created via {@link createCancelToken}.
    *
    * @example With default options (1x, whole page area)
