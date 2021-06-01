@@ -4,18 +4,25 @@ function shallowEqual(a: unknown, b: unknown, depth = 1): boolean {
   }
 
   if (a && b && typeof a === 'object' && typeof b === 'object') {
-    return shallowEqualObjects(a, b, depth)
+    return shallowEqualObjects(
+      a as Record<string, unknown>,
+      b as Record<string, unknown>,
+      depth
+    )
   }
 
   return a === b
 }
 
-function shallowEqualObjects(a: object, b: object, depth = 1): boolean {
+function shallowEqualObjects(
+  a: Record<string, unknown>,
+  b: Record<string, unknown>,
+  depth = 1
+): boolean {
   return [...Object.keys(a), ...Object.keys(b)].every((key) => {
     return (
       key in a &&
       key in b &&
-      // @ts-ignore Kill me now.
       (depth <= 1 ? a[key] === b[key] : shallowEqual(a[key], b[key], depth - 1))
     )
   })
