@@ -14,7 +14,11 @@ import {
 import type { Bounds } from '@opendesign/rendering'
 import type { LayerAttributesConfig } from './artboard-facade'
 import type { DesignFacade } from './design-facade'
-import type { FontDescriptor, LayerFacade } from './layer-facade'
+import type {
+  FontDescriptor,
+  LayerFacade,
+  LayerOctopusAttributesConfig,
+} from './layer-facade'
 import type { BitmapAssetDescriptor } from './local/local-design'
 
 export class LayerCollectionFacade {
@@ -575,6 +579,7 @@ export class LayerCollectionFacade {
    *
    * @category SVG Export
    * @param options Options
+   * @param options.layerAttributes Layer-specific options to use for instead of the default values.
    * @param options.scale The scale (zoom) factor to use for rendering instead of the default 1x factor.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the created image file is not deleted when cancelled during actual rendering). A cancellation token can be created via {@link createCancelToken}.
    * @returns An SVG document string.
@@ -591,6 +596,7 @@ export class LayerCollectionFacade {
    */
   async exportToSvgCode(
     options: {
+      layerAttributes?: Record<LayerId, LayerOctopusAttributesConfig>
       scale?: number
       cancelToken?: CancelToken | null
     } = {}

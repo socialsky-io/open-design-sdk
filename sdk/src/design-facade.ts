@@ -41,6 +41,7 @@ import type {
   FontDescriptor,
   LayerAttributes,
   LayerFacade,
+  LayerOctopusAttributesConfig,
 } from './layer-facade'
 import type { Sdk } from './sdk'
 import type { FontSource } from './local/font-source'
@@ -1303,31 +1304,53 @@ export class DesignFacade {
    * @param artboardId The ID of the artboard from which to export the layer.
    * @param layerId The IDs of the artboard layer to export.
    * @param options Export options
+   * @param options.blendingMode The blending mode to use for the layer instead of its default blending mode.
+   * @param options.clip Whether to apply clipping by a mask layer if any such mask is set for the layer (see {@link LayerFacade.isMasked}). Clipping is disabled by default. Setting this flag for layers which do not have a mask layer set has no effect on the results.
+   * @param options.includeEffects Whether to apply layer effects of the layer. Effects of nested layers are not affected. By defaults, effects of the layer are applied.
+   * @param options.opacity The opacity to use for the layer instead of its default opacity.
    * @param options.scale The scale (zoom) factor to use instead of the default 1x factor.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
    * @returns An SVG document string.
    *
    * @example With default options (1x)
    * ```typescript
-   * const svg = await design.exportArtboardLayerToSvgCode('<ARTBOARD_ID>', '<LAYER_ID>')
+   * const svg = await design.exportArtboardLayerToSvgCode(
+   *   '<ARTBOARD_ID>',
+   *   '<LAYER_ID>'
+   * )
    * ```
    *
-   * @example With a custom scale
+   * @example With custom scale and opacity
    * ```typescript
-   * const svg = await design.exportArtboardLayerToSvgCode('<ARTBOARD_ID>', '<LAYER_ID>', {
-   *   scale: 2,
-   * })
+   * const svg = await design.exportArtboardLayerToSvgCode(
+   *   '<ARTBOARD_ID>',
+   *   '<LAYER_ID>',
+   *   {
+   *     opacity: 0.6,
+   *     scale: 2,
+   *   }
+   * )
    * ```
    */
   async exportArtboardLayerToSvgCode(
     artboardId: ArtboardId,
     layerId: LayerId,
     options: {
+      includeEffects?: boolean
+      clip?: boolean
+      blendingMode?: BlendingMode
+      opacity?: number
       scale?: number
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<string> {
-    return this.exportArtboardLayersToSvgCode(artboardId, [layerId], options)
+    const { scale = 1, cancelToken = null, ...layerAttributes } = options
+
+    return this.exportArtboardLayersToSvgCode(artboardId, [layerId], {
+      scale,
+      cancelToken,
+      layerAttributes: { [layerId]: layerAttributes },
+    })
   }
 
   /**
@@ -1345,6 +1368,7 @@ export class DesignFacade {
    * @param artboardId The ID of the artboard from which to export the layers.
    * @param layerIds The IDs of the artboard layers to export.
    * @param options Export options.
+   * @param options.layerAttributes Layer-specific options to use for instead of the default values.
    * @param options.scale The scale (zoom) factor to use instead of the default 1x factor.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
    * @returns An SVG document string.
@@ -1362,7 +1386,13 @@ export class DesignFacade {
    * await design.exportArtboardLayersToSvgCode(
    *   '<ARTBOARD_ID>',
    *   ['<LAYER1>', '<LAYER2>'],
-   *   { scale: 2 }
+   *   {
+   *     scale: 2,
+   *     layerAttributes: {
+   *       '<LAYER1>': { blendingMode: 'SOFT_LIGHT' },
+   *       '<LAYER2>': { opacity: 0.6 },
+   *     }
+   *   }
    * )
    * ```
    */
@@ -1370,6 +1400,7 @@ export class DesignFacade {
     artboardId: ArtboardId,
     layerIds: Array<LayerId>,
     options: {
+      layerAttributes?: Record<LayerId, LayerOctopusAttributesConfig>
       scale?: number
       cancelToken?: CancelToken | null
     } = {}
@@ -1379,7 +1410,7 @@ export class DesignFacade {
       throw new Error('No such artboard')
     }
 
-    const { scale = 1, cancelToken = null } = options
+    const { layerAttributes = {}, scale = 1, cancelToken = null } = options
 
     await artboard.load({ cancelToken })
 
@@ -1408,7 +1439,9 @@ export class DesignFacade {
           parentLayers: parentLayers.reduce((layers, parentLayer) => {
             return {
               ...layers,
-              [parentLayer.id]: parentLayer.octopus,
+              [parentLayer.id]: parentLayer.getOctopusForAttributes(
+                layerAttributes[parentLayer.id] || {}
+              ),
             }
           }, prevResult.parentLayers),
           parentLayerIds: {
@@ -1416,7 +1449,7 @@ export class DesignFacade {
             [layerId]: layer.getParentLayerIds(),
           },
           layerOctopusDataList: prevResult.layerOctopusDataList.concat([
-            layer.octopus,
+            layer.getOctopusForAttributes(layerAttributes[layer.id] || {}),
           ]),
         }
       },
@@ -1442,7 +1475,7 @@ export class DesignFacade {
     const viewBoxBounds = await renderingDesign.getArtboardLayerCompositionBounds(
       artboardId,
       layerIds,
-      { scale }
+      { scale, layerAttributes }
     )
 
     return this._sdk.exportLayersToSvgCode(data.layerOctopusDataList, {

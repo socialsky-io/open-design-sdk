@@ -4,7 +4,11 @@ import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
 import { LayerCollectionFacade } from './layer-collection-facade'
-import { LayerAttributes, LayerFacade } from './layer-facade'
+import {
+  LayerAttributes,
+  LayerFacade,
+  LayerOctopusAttributesConfig,
+} from './layer-facade'
 
 import type { CancelToken } from '@avocode/cancel-token'
 import type {
@@ -891,6 +895,10 @@ export class ArtboardFacade {
    * @category SVG Export
    * @param layerId The ID of the artboard layer to export.
    * @param options Export options
+   * @param options.blendingMode The blending mode to use for the layer instead of its default blending mode.
+   * @param options.clip Whether to apply clipping by a mask layer if any such mask is set for the layer (see {@link LayerFacade.isMasked}). Clipping is disabled by default. Setting this flag for layers which do not have a mask layer set has no effect on the results.
+   * @param options.includeEffects Whether to apply layer effects of the layer. Effects of nested layers are not affected. By defaults, effects of the layer are applied.
+   * @param options.opacity The opacity to use for the layer instead of its default opacity.
    * @param options.scale The scale (zoom) factor to use instead of the default 1x factor.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the created image file is not deleted when cancelled during actual rendering). A cancellation token can be created via {@link createCancelToken}.
    * @returns An SVG document string.
@@ -900,7 +908,7 @@ export class ArtboardFacade {
    * const svg = await artboard.exportLayerToSvgCode('<LAYER_ID>')
    * ```
    *
-   * @example With a custom scale
+   * @example With custom scale and opacity
    * ```typescript
    * const svg = await artboard.exportLayerToSvgCode('<LAYER_ID>', { scale: 2 })
    * ```
@@ -908,6 +916,10 @@ export class ArtboardFacade {
   exportLayerToSvgCode(
     layerId: LayerId,
     options: {
+      includeEffects?: boolean
+      clip?: boolean
+      blendingMode?: BlendingMode
+      opacity?: number
       scale?: number
       cancelToken?: CancelToken | null
     } = {}
@@ -933,6 +945,7 @@ export class ArtboardFacade {
    * @category SVG Export
    * @param layerIds The IDs of the artboard layers to render.
    * @param options Export options
+   * @param options.layerAttributes Layer-specific options to use for instead of the default values.
    * @param options.scale The scale (zoom) factor to use instead of the default 1x factor.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the created image file is not deleted when cancelled during actual rendering). A cancellation token can be created via {@link createCancelToken}.
    * @returns An SVG document string.
@@ -940,21 +953,28 @@ export class ArtboardFacade {
    * @example With default options (1x)
    * ```typescript
    * const svg = await artboard.exportLayersToSvgCode(
-   *   ['<LAYER_1>', '<LAYER_2>']
+   *   ['<LAYER1>', '<LAYER2>']
    * )
    * ```
    *
    * @example With a custom scale
    * ```typescript
    * const svg = await artboard.exportLayersToSvgCode(
-   *   ['<LAYER_1>', '<LAYER_2>'],
-   *   { scale: 2 }
+   *   ['<LAYER1>', '<LAYER2>'],
+   *   {
+   *     scale: 2,
+   *     layerAttributes: {
+   *       '<LAYER1>': { blendingMode: 'SOFT_LIGHT' },
+   *       '<LAYER2>': { opacity: 0.6 },
+   *     }
+   *   }
    * )
    * ```
    */
   exportLayersToSvgCode(
     layerIds: Array<LayerId>,
     options: {
+      layerAttributes?: Record<LayerId, LayerOctopusAttributesConfig>
       scale?: number
       cancelToken?: CancelToken | null
     } = {}
