@@ -110,8 +110,11 @@ export class OpenDesignApi implements IOpenDesignApi {
       )
     )
 
-    // @ts-ignore
-    if (res.statusCode === 401 || res.statusCode === 403) {
+    if (
+      res.statusCode === 401 ||
+      // @ts-expect-error 403 is not included in the spec but checking it just in case.
+      res.statusCode === 403
+    ) {
       this._console.error('OpenDesignApi#getDesignById()', { designId }, res)
       throw new OpenDesignApiError(
         res,
@@ -172,8 +175,11 @@ export class OpenDesignApi implements IOpenDesignApi {
       )
     )
 
-    // @ts-ignore
-    if (res.statusCode === 401 || res.statusCode === 403) {
+    if (
+      res.statusCode === 401 ||
+      // @ts-expect-error 403 is not included in the spec but checking it just in case.
+      res.statusCode === 403
+    ) {
       this._console.error('OpenDesignApi#getDesignById()', { designId }, res)
       throw new OpenDesignApiError(
         res,

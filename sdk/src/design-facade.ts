@@ -122,7 +122,7 @@ export class DesignFacade {
       return basename(localDesign.filename)
     }
 
-    // @ts-expect-error
+    // @ts-expect-error When empty in-memory designs are supported, this is going to be a valid value.
     return null
   }
 

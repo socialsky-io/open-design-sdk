@@ -8,7 +8,7 @@ export async function postToken(params: {
 }): Promise<string> {
   const { body } = (await post(
     params.apiRoot,
-    // @ts-ignore
+    // @ts-expect-error Private API endpoint.
     '/token',
     {},
     {
