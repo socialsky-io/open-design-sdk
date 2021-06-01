@@ -223,15 +223,15 @@ export class RenderingArtboard implements IRenderingArtboard {
         'scale': options.scale || 1,
         'background': { 'enable': false },
         'draw-shown-only': true,
-        'layer-attributes': layerIds.map(
-          (layerId): LayerAttributes => {
-            return {
-              'layer': layerId,
-              'visibility': 'force-show',
-              ...serializeLayerAttributes(layerAttributes[layerId] || {}),
-            }
+        'layer-attributes': layerIds.map((layerId): {
+          'layer': string
+        } & LayerAttributes => {
+          return {
+            'layer': layerId,
+            'visibility': 'force-show',
+            ...serializeLayerAttributes(layerAttributes[layerId] || {}),
           }
-        ),
+        }),
         'file': filePath,
       }
     )
