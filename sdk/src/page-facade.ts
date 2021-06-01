@@ -1,4 +1,5 @@
 import { inspect } from 'util'
+import { toFileKey } from './utils/id-utils'
 import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
@@ -19,7 +20,6 @@ import type { ArtboardFacade } from './artboard-facade'
 import type { DesignFacade } from './design-facade'
 import type { FontDescriptor, LayerFacade } from './layer-facade'
 import type { BitmapAssetDescriptor } from './local/local-design'
-import { toFileKey } from './utils/id-utils'
 
 export class PageFacade {
   private _pageEntity: IPage
