@@ -7,7 +7,7 @@ import { OctopusDocument, LayerOctopusData } from '../../src/types/octopus.type'
 describe('Artboard', () => {
   function createOctopus<T extends Partial<OctopusDocument>>(
     data: T
-  ): OctopusDocument & T {
+  ): OctopusDocument {
     return {
       'frame': {
         'x': Math.round(Math.random() * 400),
@@ -19,18 +19,27 @@ describe('Artboard', () => {
         'width': Math.round(Math.random() * 400),
         'height': Math.round(Math.random() * 400),
       },
+      'layers': [],
       ...data,
     }
   }
 
   function createLayerOctopus<T extends Partial<LayerOctopusData>>(
     data: T
-  ): LayerOctopusData & T {
+  ): LayerOctopusData {
     const id = String(Math.round(Math.random() * 400))
-    return {
+    const base = {
       'id': `layer-${id}`,
       'name': `Layer ID=${id}`,
       'type': 'layer',
+    }
+    const type = data['type'] || base['type']
+
+    // @ts-expect-error Hard to generalize.
+    return {
+      ...base,
+      ...(type === 'textLayer' ? { 'text:': {} } : {}),
+      ...(type === 'groupLayer' ? { 'layers:': [] } : {}),
       ...data,
     }
   }

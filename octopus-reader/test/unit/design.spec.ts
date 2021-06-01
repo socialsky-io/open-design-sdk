@@ -4,6 +4,9 @@ import { ok, strictEqual } from 'assert'
 
 describe('Design', () => {
   function createOctopus() {
+    const width = Math.round(Math.random() * 400)
+    const height = Math.round(Math.random() * 400)
+
     return {
       'frame': {
         'x': Math.round(Math.random() * 400),
@@ -12,9 +15,12 @@ describe('Design', () => {
       'bounds': {
         'left': 0,
         'top': 0,
-        'width': Math.round(Math.random() * 400),
-        'height': Math.round(Math.random() * 400),
+        'right': width,
+        'bottom': height,
+        'width': width,
+        'height': height,
       },
+      'layers': [],
     }
   }
 

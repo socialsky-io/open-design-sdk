@@ -8,6 +8,9 @@ describe('Layer', () => {
   function createOctopus<T extends Partial<OctopusDocument>>(
     data: T
   ): OctopusDocument & T {
+    const width = Math.round(Math.random() * 400)
+    const height = Math.round(Math.random() * 400)
+
     return {
       'frame': {
         'x': Math.round(Math.random() * 400),
@@ -16,21 +19,32 @@ describe('Layer', () => {
       'bounds': {
         'left': 0,
         'top': 0,
-        'width': Math.round(Math.random() * 400),
-        'height': Math.round(Math.random() * 400),
+        'right': width,
+        'bottom': height,
+        'width': width,
+        'height': height,
       },
+      'layers': [],
       ...data,
     }
   }
 
   function createLayerOctopus<T extends Partial<LayerOctopusData>>(
     data: T
-  ): LayerOctopusData & T {
+  ): LayerOctopusData {
     const id = String(Math.round(Math.random() * 400))
-    return {
+    const base = {
       'id': `layer-${id}`,
       'name': `Layer ID=${id}`,
       'type': 'layer',
+    }
+    const type = data['type'] || base['type']
+
+    // @ts-expect-error Hard to generalize.
+    return {
+      ...base,
+      ...(type === 'textLayer' ? { 'text:': {} } : {}),
+      ...(type === 'groupLayer' ? { 'layers:': [] } : {}),
       ...data,
     }
   }
@@ -1054,7 +1068,14 @@ describe('Layer', () => {
           'type': 'layer',
           'bitmap': {
             'filename': 'a.png',
-            'bounds': { 'left': 10, 'top': 20, 'width': 100, 'height': 200 },
+            'bounds': {
+              'left': 10,
+              'top': 20,
+              'right': 110,
+              'bottom': 220,
+              'width': 100,
+              'height': 200,
+            },
           },
         })
       )
@@ -1075,7 +1096,14 @@ describe('Layer', () => {
           'type': 'shapeLayer',
           'bitmap': {
             'filename': 'a.png',
-            'bounds': { 'left': 10, 'top': 20, 'width': 100, 'height': 200 },
+            'bounds': {
+              'left': 10,
+              'top': 20,
+              'right': 110,
+              'bottom': 220,
+              'width': 100,
+              'height': 200,
+            },
           },
         })
       )
@@ -1096,8 +1124,22 @@ describe('Layer', () => {
           'type': 'shapeLayer',
           'effects': {
             'fills': [
-              { 'pattern': { 'filename': 'a.png' } },
-              { 'pattern': { 'filename': 'b.png' } },
+              {
+                'pattern': {
+                  'filename': 'a.png',
+                  'offset': { 'horizontal': 0, 'vertical': 0 },
+                  'relativeTo': 'layer',
+                  'type': 'fit',
+                },
+              },
+              {
+                'pattern': {
+                  'filename': 'b.png',
+                  'offset': { 'horizontal': 0, 'vertical': 0 },
+                  'relativeTo': 'layer',
+                  'type': 'fit',
+                },
+              },
             ],
           },
         })
@@ -1124,8 +1166,24 @@ describe('Layer', () => {
           'type': 'shapeLayer',
           'effects': {
             'borders': [
-              { 'pattern': { 'filename': 'a.png' } },
-              { 'pattern': { 'filename': 'b.png' } },
+              {
+                'width': 2,
+                'pattern': {
+                  'filename': 'a.png',
+                  'offset': { 'horizontal': 0, 'vertical': 0 },
+                  'relativeTo': 'layer',
+                  'type': 'fit',
+                },
+              },
+              {
+                'width': 2,
+                'pattern': {
+                  'filename': 'b.png',
+                  'offset': { 'horizontal': 0, 'vertical': 0 },
+                  'relativeTo': 'layer',
+                  'type': 'fit',
+                },
+              },
             ],
           },
         })
@@ -1160,6 +1218,8 @@ describe('Layer', () => {
                   'bounds': {
                     'left': 10,
                     'top': 20,
+                    'right': 110,
+                    'bottom': 220,
                     'width': 100,
                     'height': 200,
                   },
@@ -1173,6 +1233,8 @@ describe('Layer', () => {
                   'bounds': {
                     'left': 10,
                     'top': 20,
+                    'right': 110,
+                    'bottom': 220,
                     'width': 100,
                     'height': 200,
                   },
@@ -1210,6 +1272,8 @@ describe('Layer', () => {
                   'bounds': {
                     'left': 10,
                     'top': 20,
+                    'right': 110,
+                    'bottom': 220,
                     'width': 100,
                     'height': 200,
                   },
@@ -1223,6 +1287,8 @@ describe('Layer', () => {
                   'bounds': {
                     'left': 10,
                     'top': 20,
+                    'right': 110,
+                    'bottom': 220,
                     'width': 100,
                     'height': 200,
                   },
@@ -1257,8 +1323,22 @@ describe('Layer', () => {
                 'type': 'shapeLayer',
                 'effects': {
                   'fills': [
-                    { 'pattern': { 'filename': 'a.png' } },
-                    { 'pattern': { 'filename': 'b.png' } },
+                    {
+                      'pattern': {
+                        'filename': 'a.png',
+                        'offset': { 'horizontal': 0, 'vertical': 0 },
+                        'relativeTo': 'layer',
+                        'type': 'fit',
+                      },
+                    },
+                    {
+                      'pattern': {
+                        'filename': 'b.png',
+                        'offset': { 'horizontal': 0, 'vertical': 0 },
+                        'relativeTo': 'layer',
+                        'type': 'fit',
+                      },
+                    },
                   ],
                 },
               }),
@@ -1267,7 +1347,16 @@ describe('Layer', () => {
                 'name': 'C',
                 'type': 'shapeLayer',
                 'effects': {
-                  'fills': [{ 'pattern': { 'filename': 'c.png' } }],
+                  'fills': [
+                    {
+                      'pattern': {
+                        'filename': 'c.png',
+                        'offset': { 'horizontal': 0, 'vertical': 0 },
+                        'relativeTo': 'layer',
+                        'type': 'fit',
+                      },
+                    },
+                  ],
                 },
               }),
             ],
@@ -1304,8 +1393,24 @@ describe('Layer', () => {
                 'type': 'shapeLayer',
                 'effects': {
                   'borders': [
-                    { 'pattern': { 'filename': 'a.png' } },
-                    { 'pattern': { 'filename': 'b.png' } },
+                    {
+                      'width': 2,
+                      'pattern': {
+                        'filename': 'a.png',
+                        'offset': { 'horizontal': 0, 'vertical': 0 },
+                        'relativeTo': 'layer',
+                        'type': 'fit',
+                      },
+                    },
+                    {
+                      'width': 2,
+                      'pattern': {
+                        'filename': 'b.png',
+                        'offset': { 'horizontal': 0, 'vertical': 0 },
+                        'relativeTo': 'layer',
+                        'type': 'fit',
+                      },
+                    },
                   ],
                 },
               }),
@@ -1313,7 +1418,17 @@ describe('Layer', () => {
                 'id': 'c',
                 'type': 'shapeLayer',
                 'effects': {
-                  'borders': [{ 'pattern': { 'filename': 'c.png' } }],
+                  'borders': [
+                    {
+                      'width': 2,
+                      'pattern': {
+                        'filename': 'c.png',
+                        'offset': { 'horizontal': 0, 'vertical': 0 },
+                        'relativeTo': 'layer',
+                        'type': 'fit',
+                      },
+                    },
+                  ],
                 },
               }),
             ],
@@ -1353,6 +1468,8 @@ describe('Layer', () => {
                   'bounds': {
                     'left': 10,
                     'top': 20,
+                    'right': 110,
+                    'bottom': 220,
                     'width': 100,
                     'height': 200,
                   },
@@ -1371,6 +1488,8 @@ describe('Layer', () => {
                       'bounds': {
                         'left': 10,
                         'top': 20,
+                        'right': 110,
+                        'bottom': 220,
                         'width': 100,
                         'height': 200,
                       },
@@ -1461,6 +1580,7 @@ describe('Layer', () => {
                   'name': 'Abc',
                   'type': 'Black',
                   'postScriptName': 'PostAbc',
+                  'size': 10,
                 },
               },
             ],
@@ -1493,6 +1613,7 @@ describe('Layer', () => {
                   'type': 'Black',
                   'postScriptName': 'PostAbc',
                   'syntheticPostScriptName': true,
+                  'size': 10,
                 },
               },
             ],
@@ -1519,6 +1640,7 @@ describe('Layer', () => {
                   'name': 'Abc',
                   'type': 'Black',
                   'postScriptName': 'PostAbc',
+                  'size': 10,
                 },
               },
               {
@@ -1527,6 +1649,7 @@ describe('Layer', () => {
                   'name': 'Abc',
                   'type': 'Normal',
                   'postScriptName': 'PostAbc',
+                  'size': 10,
                 },
               },
             ],
@@ -1562,6 +1685,7 @@ describe('Layer', () => {
                       'type': 'Black',
                       'postScriptName': 'PostAbc',
                       'syntheticPostScriptName': false,
+                      'size': 10,
                     },
                   },
                 },
@@ -1599,6 +1723,7 @@ describe('Layer', () => {
                         'name': 'Abc',
                         'type': 'Black',
                         'postScriptName': 'PostAbc',
+                        'size': 10,
                       },
                     },
                   ],
