@@ -23,7 +23,7 @@ export class LayerCollectionFacade {
 
   [index: number]: LayerFacade
 
-  /** @internal */
+  /** @internal */
   constructor(
     layerCollection: ILayerCollection,
     params: {

@@ -406,11 +406,11 @@ export class LayerFacade {
    * // Layer { id: 'c1' },
    *
    * // Immediate nesting level
-   * console.log(layerA.findNestedLayer({ id: 'c1', depth: 0 }))
+   * console.log(layerA.findNestedLayer({ id: 'c1', depth: 0 }))
    * // null
    *
    * // Function selectors
-   * console.log(layerA.findNestedLayer((layer) => {
+   * console.log(layerA.findNestedLayer((layer) => {
    *   return layer.id === 'c1'
    * }))
    * // Layer { id: 'c1' },
@@ -462,11 +462,11 @@ export class LayerFacade {
    * // ]
    *
    * // Immediate nesting level
-   * console.log(layerA.findNestedLayers({ id: ['b1', 'c1', 'c3'], depth: 0 }))
+   * console.log(layerA.findNestedLayers({ id: ['b1', 'c1', 'c3'], depth: 0 }))
    * // DesignLayerCollection [ Layer { id: 'b1' } ]
    *
    * // Function selectors
-   * console.log(layerA.findNestedLayers((layer) => {
+   * console.log(layerA.findNestedLayers((layer) => {
    *   return layer.id === 'b1' || layer.id === 'c1'
    * }))
    * // DesignLayerCollection [ Layer { id: 'b1' }, Layer { id: 'c1' } ]
@@ -519,7 +519,7 @@ export class LayerFacade {
    * if (layer.isMasked()) {
    *   layer.getMaskLayerId() // <MASK_ID>
    *   layer.getMaskLayer() // Layer { id: '<MASK_ID>' }
-   * } else {
+   * } else {
    *   layer.getMaskLayerId() // null
    *   layer.getMaskLayer() // null
    * }

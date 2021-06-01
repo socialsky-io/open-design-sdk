@@ -445,7 +445,7 @@ export class ArtboardFacade {
    *
    * @example Layers from the first three nesting levels (root layers + 2 levels)
    * ```typescript
-   * const layers = await artboard.getFlattenedLayers({ depth: 3 })
+   * const layers = await artboard.getFlattenedLayers({ depth: 3 })
    * ```
    */
   async getFlattenedLayers(
@@ -534,7 +534,7 @@ export class ArtboardFacade {
    *
    * @example Layer by function selector
    * ```typescript
-   * const shareIconLayer = await design.findLayer((layer) => {
+   * const shareIconLayer = await design.findLayer((layer) => {
    *   return layer.name === 'Share icon'
    * })
    * ```
@@ -597,7 +597,7 @@ export class ArtboardFacade {
    *
    * @example Layers by function selector
    * ```typescript
-   * const shareIconLayers = await design.findLayers((layer) => {
+   * const shareIconLayers = await design.findLayers((layer) => {
    *   return layer.name === 'Share icon'
    * })
    * ```

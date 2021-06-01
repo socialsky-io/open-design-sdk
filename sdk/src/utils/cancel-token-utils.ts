@@ -39,8 +39,8 @@ export const createCancelToken: {
      *
      * @example
      * ```typescript
-     * cancel() // Error { code: 'OperationCancelled', message: 'Operation Cancelled' }
-     * cancel('<MESSAGE>') // Error { code: 'OperationCancelled', message: '<MESSAGE>' }
+     * cancel() // Error { code: 'OperationCancelled', message: 'Operation Cancelled' }
+     * cancel('<MESSAGE>') // Error { code: 'OperationCancelled', message: '<MESSAGE>' }
      * cancel(new Error('<MESSAGE>')) // Error { message: '<MESSAGE>' }
      * ```
      */
@@ -49,7 +49,7 @@ export const createCancelToken: {
     /**
      * A function which clears listeners of all operations listening to the token. The function should be called when the token is no longer useful to ensure garbage collection.
      *
-     * The SDK is clearing all registered cancellation listeners automatically so the `dispose()` function may be used for clear of mind and in situations when the token is also used for cancelling other (custom) logic.
+     * The SDK is clearing all registered cancellation listeners automatically so the `dispose()` function may be used for clear of mind and in situations when the token is also used for cancelling other (custom) logic.
      */
     dispose: () => void
   }
@@ -69,7 +69,7 @@ export const createCancelToken: {
    * const abortController = new AbortController()
    * const cancelController = createCancelToken.fromSignal(abortController.signal)
    *
-   * sdk.fetchDesignById('<ID>', { cancelToken: cancelController.token })
+   * sdk.fetchDesignById('<ID>', { cancelToken: cancelController.token })
    *   .then((design) => {
    *     doStuffWithDesign(design)
    *     cancelController.dispose()
@@ -92,7 +92,7 @@ export const createCancelToken: {
     /**
      * A function which clears listeners of all operations listening to the token. The function should be called when the token is no longer useful to ensure garbage collection.
      *
-     * The SDK is clearing all registered cancellation listeners automatically so the `dispose()` function may be used for clear of mind and in situations when the token is also used for cancelling other (custom) logic.
+     * The SDK is clearing all registered cancellation listeners automatically so the `dispose()` function may be used for clear of mind and in situations when the token is also used for cancelling other (custom) logic.
      */
     dispose: () => void
   }

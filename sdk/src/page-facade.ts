@@ -513,7 +513,7 @@ export class PageFacade {
    *
    * @example Layer by function selector from any artboard on the page
    * ```typescript
-   * const shareIconLayer = await page.findLayer((layer) => {
+   * const shareIconLayer = await page.findLayer((layer) => {
    *   return layer.name === 'Share icon'
    * })
    * ```
@@ -581,7 +581,7 @@ export class PageFacade {
    *
    * @example Layers by function selector from all artboards on the page
    * ```typescript
-   * const shareIconLayers = await page.findLayers((layer) => {
+   * const shareIconLayers = await page.findLayers((layer) => {
    *   return layer.name === 'Share icon'
    * })
    * ```

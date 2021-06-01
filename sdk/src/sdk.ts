@@ -239,7 +239,7 @@ export class Sdk {
    *
    * @internal
    * @category Local Design File Usage
-   * @param filePath An absolute `.octopus` file path or a path relative to the current working directory.
+   * @param filePath An absolute `.octopus` file path or a path relative to the current working directory.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted. A cancellation token can be created via {@link createCancelToken}.
    * @returns A design object which can be used for retrieving data from the local `.octopus` file or a referenced server-side design (see above).
    */
@@ -297,7 +297,7 @@ export class Sdk {
    *
    * @internal
    * @category Local Design File Usage
-   * @param filePath An absolute `.octopus` file path or a path relative to the current working directory.
+   * @param filePath An absolute `.octopus` file path or a path relative to the current working directory.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted. A cancellation token can be created via {@link createCancelToken}.
    * @returns A design object which can be used for creating `.octopus` file content.
    */

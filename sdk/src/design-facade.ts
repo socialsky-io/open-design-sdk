@@ -726,7 +726,7 @@ export class DesignFacade {
    *
    * @example Layer by function selector from any artboard
    * ```typescript
-   * const shareIconLayer = await design.findLayer((layer) => {
+   * const shareIconLayer = await design.findLayer((layer) => {
    *   return layer.name === 'Share icon'
    * })
    * ```
@@ -786,7 +786,7 @@ export class DesignFacade {
    *
    * @example Layers by function selector from all artboards
    * ```typescript
-   * const shareIconLayers = await design.findLayers((layer) => {
+   * const shareIconLayers = await design.findLayers((layer) => {
    *   return layer.name === 'Share icon'
    * })
    * ```
