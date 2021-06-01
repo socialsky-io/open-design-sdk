@@ -39,7 +39,7 @@ export async function readJsonFile(
 
 export async function writeJsonFile(
   filename: string,
-  data: object,
+  data: unknown,
   options: {
     cancelToken?: CancelToken | null
   } = {}
@@ -83,7 +83,7 @@ export async function writeJsonFileStream(
   const writeStream = fs.createWriteStream(filename)
 
   return new Promise((resolve, reject) => {
-    options.cancelToken?.onCancelled((reason: any) => {
+    options.cancelToken?.onCancelled((reason: unknown) => {
       reject(reason)
       writeStream.close()
     })

@@ -22,7 +22,7 @@ export interface ILayerCollection {
   ): ILayerCollection
 
   forEach(
-    fn: (layer: ILayer, index: number, layers: Array<ILayer>) => any
+    fn: (layer: ILayer, index: number, layers: Array<ILayer>) => unknown
   ): void
 
   filter(

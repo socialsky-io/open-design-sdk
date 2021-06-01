@@ -1,5 +1,5 @@
 export function enumerablizeWithPrototypeGetters(
-  instance: Object,
+  instance: unknown,
   options: {
     enumerableOwnKeys?: Array<string>
     omittedPrototypeKeys?: Array<string>
