@@ -700,7 +700,7 @@ export class LocalDesign {
     }
 
     // const ext = extname(bitmapKey)
-    const name = basename(bitmapKey).replace(/[#:\?\/\*](.*?)$/, '$1')
+    const name = basename(bitmapKey).replace(/[#:?/*](.*?)$/, '$1')
 
     return { basename: name, mapped: true }
   }

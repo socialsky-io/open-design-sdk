@@ -200,5 +200,5 @@ export class LocalDesignManager {
 }
 
 function sanitizeName(name: string): string {
-  return name.replace(/\.[^\.]+$/, '').replace(/[\^:~\/\\]/g, '-')
+  return name.replace(/\.[^.]+$/, '').replace(/[\^:~/\\]/g, '-')
 }
