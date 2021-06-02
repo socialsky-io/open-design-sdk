@@ -113,7 +113,10 @@ export class ApiDesign implements IApiDesign {
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<DesignSummary> {
-    return this._openDesignApi.getDesignSummary(this.id, options)
+    return this._openDesignApi.getDesignSummary(this.id, {
+      ...options,
+      designVersionId: this.versionId,
+    })
   }
 
   getArtboardContent(
@@ -122,11 +125,10 @@ export class ApiDesign implements IApiDesign {
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<OctopusDocument> {
-    return this._openDesignApi.getDesignArtboardContent(
-      this.id,
-      artboardId,
-      options
-    )
+    return this._openDesignApi.getDesignArtboardContent(this.id, artboardId, {
+      ...options,
+      designVersionId: this.versionId,
+    })
   }
 
   getArtboardContentJsonStream(
@@ -138,7 +140,10 @@ export class ApiDesign implements IApiDesign {
     return this._openDesignApi.getDesignArtboardContentJsonStream(
       this.id,
       artboardId,
-      options
+      {
+        ...options,
+        designVersionId: this.versionId,
+      }
     )
   }
 
@@ -146,7 +151,9 @@ export class ApiDesign implements IApiDesign {
     format: DesignExportTargetFormatEnum
     cancelToken?: CancelToken | null
   }): Promise<ApiDesignExport> {
-    return this._openDesignApi.exportDesign(this.id, params)
+    return this._openDesignApi.exportDesign(this.id, {
+      ...params,
+    })
   }
 
   getDesignExportById(
@@ -155,11 +162,9 @@ export class ApiDesign implements IApiDesign {
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<ApiDesignExport> {
-    return this._openDesignApi.getDesignExportById(
-      this.id,
-      designExportId,
-      options
-    )
+    return this._openDesignApi.getDesignExportById(this.id, designExportId, {
+      ...options,
+    })
   }
 
   getDesignExportResultStream(
@@ -171,7 +176,10 @@ export class ApiDesign implements IApiDesign {
     return this._openDesignApi.getDesignExportResultStream(
       this.id,
       designExportId,
-      options
+      {
+        ...options,
+        designVersionId: this.versionId,
+      }
     )
   }
 
@@ -181,10 +189,9 @@ export class ApiDesign implements IApiDesign {
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<NodeJS.ReadableStream> {
-    return this._openDesignApi.getDesignBitmapAssetStream(
-      this.id,
-      bitmapKey,
-      options
-    )
+    return this._openDesignApi.getDesignBitmapAssetStream(this.id, bitmapKey, {
+      ...options,
+      designVersionId: this.versionId,
+    })
   }
 }

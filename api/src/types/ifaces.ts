@@ -11,6 +11,7 @@ type DesignExportTargetFormatEnum = components['schemas']['DesignExportTargetFor
 type DesignSummary = components['schemas']['DesignSummary']
 type DesignId = components['schemas']['DesignId']
 type DesignImportFormatEnum = components['schemas']['DesignImportFormatEnum']
+type DesignVersionId = components['schemas']['DesignVersionId']
 type OctopusDocument = components['schemas']['OctopusDocument']
 
 // Top-level API
@@ -29,6 +30,7 @@ export interface IOpenDesignApi {
   importDesignFile(
     stream: ReadStream,
     options?: {
+      designId?: DesignId | null
       format?: DesignImportFormatEnum
       cancelToken?: CancelToken | null
     }
@@ -37,12 +39,14 @@ export interface IOpenDesignApi {
   importDesignLink(
     url: string,
     options?: {
+      designId?: DesignId | null
       format?: DesignImportFormatEnum
       cancelToken?: CancelToken | null
     }
   ): Promise<IApiDesign>
 
   importFigmaDesignLink(params: {
+    designId?: DesignId | null
     figmaToken: string
     figmaFileKey: string
     figmaIds?: Array<string> | null
@@ -51,6 +55,7 @@ export interface IOpenDesignApi {
   }): Promise<IApiDesign>
 
   importFigmaDesignLinkWithExports(params: {
+    designId?: DesignId | null
     figmaToken: string
     figmaFileKey: string
     figmaIds?: Array<string> | null
@@ -73,6 +78,7 @@ export interface IOpenDesignApi {
   getDesignById(
     designId: DesignId,
     options?: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     }
   ): Promise<IApiDesign>
@@ -83,6 +89,7 @@ export interface IOpenDesignApi {
     designId: DesignId,
     artboardId: ArtboardId,
     options?: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     }
   ): Promise<OctopusDocument>
@@ -91,6 +98,7 @@ export interface IOpenDesignApi {
     designId: DesignId,
     artboardId: ArtboardId,
     options?: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     }
   ): Promise<NodeJS.ReadableStream>
@@ -100,6 +108,7 @@ export interface IOpenDesignApi {
   exportDesign(
     designId: DesignId,
     params: {
+      designVersionId?: DesignVersionId | null
       format: DesignExportTargetFormatEnum
       cancelToken?: CancelToken | null
     }
@@ -109,6 +118,7 @@ export interface IOpenDesignApi {
     designId: DesignId,
     designExportId: DesignExportId,
     options?: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     }
   ): Promise<IApiDesignExport>
@@ -117,6 +127,7 @@ export interface IOpenDesignApi {
     designId: DesignId,
     designExportId: DesignExportId,
     options?: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     }
   ): Promise<NodeJS.ReadableStream>
