@@ -126,6 +126,7 @@ export interface IOpenDesignApi {
 
 export interface IApiDesign {
   readonly id: DesignData['id']
+  readonly versionId: DesignVersionId
   readonly name: DesignData['name']
   readonly format: DesignData['format']
   readonly createdAt: DesignData['created_at']

@@ -13,9 +13,10 @@ import type {
 import type { IApiDesign } from './types/ifaces'
 import { ApiDesignExport } from './api-design-export'
 
-type DesignExportId = components['schemas']['DesignExportId']
 type Design = components['schemas']['Design']
+type DesignExportId = components['schemas']['DesignExportId']
 type DesignExportTargetFormatEnum = components['schemas']['DesignExportTargetFormatEnum']
+type DesignVersionId = components['schemas']['DesignVersionId']
 
 export class ApiDesign implements IApiDesign {
   _info: Design
@@ -28,6 +29,10 @@ export class ApiDesign implements IApiDesign {
 
   get id(): Design['id'] {
     return this._info['id']
+  }
+
+  get versionId(): DesignVersionId {
+    return this._info['version_id']
   }
 
   get name(): Design['name'] {
