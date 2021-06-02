@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://opendesign.dev">
-    <img src="https://opendesign.avocode.com/favicons/apple-touch-icon.png?v2" height="128">
+    <img src="https://opendesign.dev/favicons/apple-touch-icon.png?v2" height="128">
     <h1 align="center">Open Design SDK</h1>
   </a>
 </p>
@@ -17,12 +17,12 @@ Open Design SDK is still undergoing heavy development, but is used in production
 
 ## Getting Started
 
-Visit <a aria-label="Open Design Getting started" href="https://opendesign.avocode.com/docs/getting-started">Getting started</a> guide.
+Visit <a aria-label="Open Design Getting started" href="https://opendesign.dev/docs/getting-started">Getting started</a> guide.
 
 ## Documentation
 
-- [How-to guides, Tutorials, Explanations](https://opendesign.avocode.com/docs/)
-- [SDK Reference](https://opendesign.avocode.com/docs/sdk-reference/introduction)
+- [How-to guides, Tutorials, Explanations](https://opendesign.dev/docs/)
+- [SDK Reference](https://opendesign.dev/docs/sdk-reference/introduction)
 
 ## Community
 
