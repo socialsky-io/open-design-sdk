@@ -168,5 +168,5 @@ function createOpenDesignApi(params: {
   return openDesignApi
 }
 
-export { Sdk }
+export { Sdk, ConsoleConfig }
 export { createCancelToken, CancelToken }
