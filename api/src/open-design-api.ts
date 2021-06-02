@@ -138,7 +138,7 @@ export class OpenDesignApi implements IOpenDesignApi {
       await sleep(1000)
       cancelToken.throwIfCancelled()
 
-      return this.getDesignById(designId)
+      return this.getDesignById(designId, options)
     }
 
     const apiDesign = new ApiDesign(design, {
@@ -208,7 +208,7 @@ export class OpenDesignApi implements IOpenDesignApi {
       await sleep(1000)
       cancelToken.throwIfCancelled()
 
-      return this.getDesignSummary(designId)
+      return this.getDesignSummary(designId, options)
     }
 
     return designSummary
@@ -416,7 +416,7 @@ export class OpenDesignApi implements IOpenDesignApi {
       await sleep(1000)
       cancelToken.throwIfCancelled()
 
-      return this.getDesignArtboardContent(designId, artboardId)
+      return this.getDesignArtboardContent(designId, artboardId, options)
     }
 
     return res.body
@@ -461,7 +461,11 @@ export class OpenDesignApi implements IOpenDesignApi {
       await sleep(1000)
       cancelToken?.throwIfCancelled()
 
-      return this.getDesignArtboardContentJsonStream(designId, artboardId)
+      return this.getDesignArtboardContentJsonStream(
+        designId,
+        artboardId,
+        options
+      )
     }
 
     return res.stream
