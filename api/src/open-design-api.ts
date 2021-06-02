@@ -123,17 +123,17 @@ export class OpenDesignApi implements IOpenDesignApi {
     }
 
     const body = res.body
-    const designOrProcessing = 'status' in body ? body : null
+    const design = 'status' in body ? body : null
 
-    if (!designOrProcessing || designOrProcessing['status'] === 'failed') {
+    if (!design || design['status'] === 'failed') {
       this._console.error('OpenDesignApi#getDesignSummary()', { designId }, res)
       throw new OpenDesignApiError(res, 'Cannot fetch design')
     }
 
     if (
       res.statusCode === 202 ||
-      designOrProcessing['status'] !== 'done' ||
-      !('completed_at' in designOrProcessing)
+      design['status'] !== 'done' ||
+      !('completed_at' in design)
     ) {
       await sleep(1000)
       cancelToken.throwIfCancelled()
@@ -141,7 +141,7 @@ export class OpenDesignApi implements IOpenDesignApi {
       return this.getDesignById(designId)
     }
 
-    const apiDesign = new ApiDesign(designOrProcessing, {
+    const apiDesign = new ApiDesign(design, {
       openDesignApi: this,
     })
 
@@ -188,20 +188,22 @@ export class OpenDesignApi implements IOpenDesignApi {
     }
 
     const body = res.body
-    const designSummaryOrProcessing = 'status' in body ? body : null
+    const designSummary = 'status' in body ? body : null
 
-    if (
-      !designSummaryOrProcessing ||
-      designSummaryOrProcessing['status'] === 'failed'
-    ) {
-      this._console.error('OpenDesignApi#getDesignSummary()', { designId }, res)
+    if (!designSummary || designSummary['status'] === 'failed') {
+      this._console.error(
+        'OpenDesignApi#getDesignSummary()',
+        { designId },
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot fetch design')
     }
 
     if (
       res.statusCode === 202 ||
-      designSummaryOrProcessing['status'] !== 'done' ||
-      !('artboards' in designSummaryOrProcessing)
+      designSummary['status'] !== 'done' ||
+      !('artboards' in designSummary)
     ) {
       await sleep(1000)
       cancelToken.throwIfCancelled()
@@ -209,7 +211,7 @@ export class OpenDesignApi implements IOpenDesignApi {
       return this.getDesignSummary(designId)
     }
 
-    return designSummaryOrProcessing
+    return designSummary
   }
 
   async importDesignFile(
