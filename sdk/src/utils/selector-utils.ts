@@ -1,4 +1,4 @@
-import { ILayer, LayerSelector } from '@opendesign/octopus-reader/dist'
+import { ILayer, LayerSelector } from '@opendesign/octopus-reader'
 import { DesignFacade } from '../design-facade'
 import { LayerFacade } from '../layer-facade'
 
