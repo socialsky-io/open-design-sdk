@@ -29,7 +29,7 @@ import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
 import type { CancelToken } from '@avocode/cancel-token'
-import type { DesignId, IApiDesign } from '@opendesign/api'
+import type { DesignId, DesignVersionId, IApiDesign } from '@opendesign/api'
 import type {
   Bounds,
   IRenderingDesign,
@@ -101,6 +101,15 @@ export class DesignFacade {
   get id(): DesignId | null {
     const apiDesign = this._apiDesign
     return apiDesign?.id || null
+  }
+
+  /**
+   * The ID of the referenced server-side design version. This is not available when the API is not configured for the SDK.
+   * @category Identification
+   */
+  get versionId(): DesignVersionId | null {
+    const apiDesign = this._apiDesign
+    return apiDesign?.versionId || null
   }
 
   /**
