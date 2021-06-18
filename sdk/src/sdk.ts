@@ -31,6 +31,8 @@ import type { LocalDesignManager } from './local/local-design-manager'
 import type { SystemFontManager } from './local/system-font-manager'
 
 type DesignExportTargetFormatEnum = components['schemas']['DesignExportTargetFormatEnum']
+type DesignId = components['schemas']['DesignId']
+type DesignVersionId = components['schemas']['DesignVersionId']
 type LayerOctopusData = octopusComponents['schemas']['Layer']
 type LayerId = LayerOctopusData['id']
 
@@ -398,6 +400,7 @@ export class Sdk {
     )
 
     return this._fetchDesignById(apiDesign.id, {
+      designVersionId: apiDesign.versionId,
       sourceFilename: String(designFileStream.path),
     })
   }
@@ -444,6 +447,7 @@ export class Sdk {
     const apiDesign = await openDesignApi.importDesignLink(url, options)
 
     return this.fetchDesignById(apiDesign.id, {
+      designVersionId: apiDesign.versionId,
       cancelToken: options.cancelToken || null,
     })
   }
@@ -495,7 +499,10 @@ export class Sdk {
 
     const apiDesign = await openDesignApi.importFigmaDesignLink(params)
 
-    return this.fetchDesignById(apiDesign.id)
+    return this.fetchDesignById(apiDesign.id, {
+      designVersionId: apiDesign.versionId,
+      cancelToken: params.cancelToken || null,
+    })
   }
 
   /**
@@ -548,6 +555,7 @@ export class Sdk {
 
     const {
       designId,
+      designVersionId,
       exports,
     } = await openDesignApi.importFigmaDesignLinkWithExports({
       ...params,
@@ -556,6 +564,7 @@ export class Sdk {
 
     return this._fetchDesignById(designId, {
       exports,
+      designVersionId,
       cancelToken: params.cancelToken || null,
     })
   }
@@ -624,12 +633,14 @@ export class Sdk {
    * @category Server Side Design File Usage
    * @param designId An ID of a server-side design assigned during import (via `importDesignFile()`, `openFigmaDesign()` or `convertFigmaDesign()`).
    * @param options Options
+   * @param options.designVersionId The ID of the design version to fetch. Defaults to the latest version.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the local cache is not cleared once created). A cancellation token can be created via {@link createCancelToken}.
    * @returns A design object which can be used for retrieving data from the design using the API.
    */
   async fetchDesignById(
     designId: string,
     options: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<DesignFacade> {
@@ -639,6 +650,7 @@ export class Sdk {
   private async _fetchDesignById(
     designId: string,
     params: {
+      designVersionId?: DesignVersionId | null
       sourceFilename?: string | null
       exports?: Array<IApiDesignExport> | null
       cancelToken?: CancelToken | null
@@ -656,6 +668,7 @@ export class Sdk {
     const cancelToken = params.cancelToken || null
 
     const apiDesign = await openDesignApi.getDesignById(designId, {
+      designVersionId: params.designVersionId,
       cancelToken,
     })
     const designFacade = await createDesignFromOpenDesignApiDesign(apiDesign, {

@@ -5,11 +5,11 @@ import { Env } from '../env'
 
 import type { CancelToken } from '@avocode/cancel-token'
 
-const VERSION = 1
+const VERSION = 2
 
 type DesignCacheInfo = {
   'version': typeof VERSION
-  'design_cache': Record<string, Record<string, string>>
+  'design_cache': Record<string, Record<string, Record<number, string>>>
 }
 
 export class LocalDesignCache {
@@ -23,12 +23,14 @@ export class LocalDesignCache {
   async getDesignOctopusFilename(
     apiRoot: string,
     designId: string,
+    designVersionId: number,
     options: {
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<string | null> {
     const octopusFilenames = await this._loadOctopusFilenames(apiRoot, options)
-    const optimizedFilename = octopusFilenames[designId] || null
+    const optimizedFilename =
+      octopusFilenames[designId]?.[designVersionId] || null
 
     return optimizedFilename ? this._resolvePath(optimizedFilename) : null
   }
@@ -36,6 +38,7 @@ export class LocalDesignCache {
   async setDesignOctopusFilename(
     apiRoot: string,
     designId: string,
+    designVersionId: number,
     octopusFilename: string,
     options: {
       cancelToken?: CancelToken | null
@@ -44,7 +47,10 @@ export class LocalDesignCache {
     const octopusFilenames = await this._loadOctopusFilenames(apiRoot, options)
 
     const optimizedFilename = this._getRelativePath(octopusFilename)
-    octopusFilenames[designId] = optimizedFilename
+    octopusFilenames[designId] = {
+      ...(octopusFilenames[designId] || {}),
+      [designVersionId]: optimizedFilename,
+    }
 
     await this._saveOctopusFilenames(apiRoot, octopusFilenames)
   }
@@ -54,7 +60,7 @@ export class LocalDesignCache {
     options: {
       cancelToken?: CancelToken | null
     }
-  ): Promise<Record<string, string>> {
+  ): Promise<Record<string, Record<number, string>>> {
     const cacheInfo = await this._loadCacheInfo(options)
     return cacheInfo['design_cache'][apiRoot] || {}
   }
@@ -90,7 +96,7 @@ export class LocalDesignCache {
 
   async _saveOctopusFilenames(
     apiRoot: string,
-    octopusFilenames: Record<string, string>
+    octopusFilenames: Record<string, Record<number, string>>
   ): Promise<void> {
     const prevCacheInfo = this._getCacheInfo()
     const nextCacheInfo = {
