@@ -7,9 +7,10 @@ import type { DesignFacade } from './design-facade'
 import type { Sdk } from './sdk'
 
 export class DesignListItemFacade {
-  _apiDesign: IApiDesign
-  _sdk: Sdk
+  private _apiDesign: IApiDesign
+  private _sdk: Sdk
 
+  /** @internal */
   constructor(
     apiDesign: IApiDesign,
     params: {
