@@ -261,6 +261,124 @@ export class DesignFacade {
   }
 
   /**
+   * Imports a local design file (Photoshop, Sketch, Xd, Illustrator) as a version of the design.
+   *
+   * All versions of a design must originate from the same design file format.
+   *
+   * The API has to be configured when using this method. This is also requires a file system (i.e. it is not available in the browser).
+   *
+   * The design file is automatically uploaded to the API and local caching is established.
+   *
+   * @example
+   * ```typescript
+   * const version = await design.importVersionDesignFile('data.sketch')
+   * console.log(version.sourceFilename) // == path.join(process.cwd(), 'data.sketch')
+   * console.log(version.id) // == server-generated UUID
+   *
+   * // Continue working with the processed design version
+   * const versionArtboards = version.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param filePath An absolute design file path or a path relative to the current working directory.
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  importVersionDesignFile(
+    filePath: string,
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<DesignFacade> {
+    return this._sdk.importDesignFile(filePath, {
+      ...options,
+      designId: this.id,
+    })
+  }
+
+  /**
+   * Imports a design file located at the specified URL as a version of the design.
+   *
+   * All versions of a design must originate from the same design file format.
+   *
+   * The API has to be configured when using this method.
+   *
+   * The design file is not downloaded to the local environment but rather imported via the API directly. Once imported via the API, the design version behaves exactly like a design version fetched via {@link DesignFacade.getVersionById}.
+   *
+   * @example
+   * ```typescript
+   * const version = await sdk.importVersionDesignLink('https://example.com/designs/data.sketch')
+   * console.log(version.id) // == server-generated UUID
+   *
+   * // Continue working with the processed design version
+   * const versionArtboards = version.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param url A design file URL.
+   * @param options Options
+   * @param options.format The format of the design file in case it cannot be inferred from the URL.
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  importVersionDesignLink(
+    url: string,
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<DesignFacade> {
+    return this._sdk.importDesignLink(url, {
+      ...options,
+      designId: this.id,
+    })
+  }
+
+  /**
+   * Imports a Figma design as a version of the design.
+   *
+   * All versions of a design must originate from the same design file format which makes this method usable only for designs originally also imported from Figma.
+   *
+   * The API has to be configured when using this method.
+   *
+   * The design is automatically imported by the API and local caching is established.
+   *
+   * @example
+   * ```typescript
+   * const version = await design.importVersionFigmaDesign({
+   *   figmaToken: '<FIGMA_TOKEN>',
+   *   figmaFileKey: 'abc',
+   * })
+   *
+   * console.log(version.id) // == server-generated UUID
+   *
+   * // Continue working with the processed design version
+   * const artboards = version.getArtboards()
+   * ```
+   *
+   * @category Figma Design Usage
+   * @param params Info about the Figma design
+   * @param params.figmaToken A Figma access token generated in the "Personal access tokens" section of [Figma account settings](https://www.figma.com/settings).
+   * @param params.figmaFileKey A Figma design "file key" from the design URL (i.e. `abc` from `https://www.figma.com/file/abc/Sample-File`).
+   * @param params.figmaIds A listing of Figma design frames to use.
+   * @param params.designName A name override for the design version. The original Figma design name is used by default.
+   * @param params.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  importVersionFigmaDesign(params: {
+    figmaToken: string
+    figmaFileKey: string
+    figmaIds?: Array<string>
+    designName?: string | null
+    cancelToken?: CancelToken | null
+  }): Promise<DesignFacade> {
+    return this._sdk.importFigmaDesign({
+      ...params,
+      designId: this.id,
+    })
+  }
+
+  /**
    * Returns a complete list of artboard object in the design. These can be used to work with artboard contents.
    *
    * @category Artboard Lookup

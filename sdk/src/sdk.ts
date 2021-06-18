@@ -370,12 +370,14 @@ export class Sdk {
    * @category Local Design File Usage
    * @param filePath An absolute design file path or a path relative to the current working directory.
    * @param options Options
+   * @param options.designId The ID of the design of which a new version should be imported. By default, a new design is created.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
    * @returns A design object which can be used for retrieving data from the local design file using the API.
    */
   async importDesignFile(
     filePath: string,
     options: {
+      designId?: DesignId | null
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<DesignFacade> {
@@ -424,6 +426,7 @@ export class Sdk {
    * @category Local Design File Usage
    * @param url A design file URL.
    * @param options Options
+   * @param options.designId The ID of the design to which to import the design file as a new version. The design file format must be the same as the format of previous versions.
    * @param options.format The format of the design file in case it cannot be inferred from the URL.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
    * @returns A design object which can be used for retrieving data from the local design file using the API.
@@ -431,6 +434,7 @@ export class Sdk {
   async importDesignLink(
     url: string,
     options: {
+      designId?: DesignId | null
       format?: DesignImportFormatEnum
       cancelToken?: CancelToken | null
     } = {}
@@ -473,6 +477,7 @@ export class Sdk {
    *
    * @category Figma Design Usage
    * @param params Info about the Figma design
+   * @param params.designId The ID of the design to which to import the Figma design as a new version. The previous versions of the design must also be imported from Figma.
    * @param params.figmaToken A Figma access token generated in the "Personal access tokens" section of [Figma account settings](https://www.figma.com/settings).
    * @param params.figmaFileKey A Figma design "file key" from the design URL (i.e. `abc` from `https://www.figma.com/file/abc/Sample-File`).
    * @param params.figmaIds A listing of Figma design frames to use.
@@ -481,6 +486,7 @@ export class Sdk {
    * @returns A design object which can be used for retrieving data from the Figma design using the API.
    */
   async importFigmaDesign(params: {
+    designId?: DesignId | null
     figmaToken: string
     figmaFileKey: string
     figmaIds?: Array<string>
@@ -526,6 +532,7 @@ export class Sdk {
    *
    * @category Figma Design Usage
    * @param params Info about the Figma design
+   * @param params.designId The ID of the design to which to import the Figma design as a new version. The previous versions of the design must also be imported from Figma.
    * @param params.figmaToken A Figma access token generated in the "Personal access tokens" section of [Figma account settings](https://www.figma.com/settings).
    * @param params.figmaFileKey A Figma design "file key" from the design URL (i.e. `abc` from `https://www.figma.com/file/abc/Sample-File`).
    * @param params.figmaIds A listing of Figma design frames to use.
@@ -535,6 +542,7 @@ export class Sdk {
    * @returns A design object which can be used for retrieving data from the Figma design or downloading the exported design file using the API.
    */
   async convertFigmaDesign(params: {
+    designId?: DesignId | null
     figmaToken: string
     figmaFileKey: string
     figmaIds?: Array<string>
