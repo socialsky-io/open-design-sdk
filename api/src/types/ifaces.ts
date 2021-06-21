@@ -63,7 +63,7 @@ export interface IOpenDesignApi {
     exports: Array<{ format: DesignExportTargetFormatEnum }>
     cancelToken?: CancelToken | null
   }): Promise<{
-    designId: DesignId
+    design: IApiDesign
     exports: Array<IApiDesignExport>
   }>
 

@@ -453,7 +453,7 @@ export class OpenDesignApi implements IOpenDesignApi {
     name?: string | null
     exports: Array<{ format: DesignExportTargetFormatEnum }>
     cancelToken?: CancelToken | null
-  }): Promise<{ designId: DesignId; exports: Array<ApiDesignExport> }> {
+  }): Promise<{ design: ApiDesign; exports: Array<ApiDesignExport> }> {
     const cancelToken = createCancelToken.race([
       params.cancelToken,
       this._destroyTokenController.token,
@@ -488,13 +488,16 @@ export class OpenDesignApi implements IOpenDesignApi {
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
-    const designId = res.body['design']['id']
+    const design = res.body['design']
 
     return {
-      designId,
+      // NOTE: Waits for the design to become fully processed.
+      design: await this.getDesignById(design['id'], {
+        designVersionId: design['version_id'],
+      }),
       exports: res.body['exports'].map((designExportData) => {
         return new ApiDesignExport(designExportData, {
-          designId,
+          designId: design['id'],
           openDesignApi: this,
         })
       }),

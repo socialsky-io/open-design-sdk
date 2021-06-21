@@ -552,18 +552,16 @@ export class Sdk {
     }
 
     const {
-      designId,
-      designVersionId,
+      design: apiDesign,
       exports,
     } = await openDesignApi.importFigmaDesignLinkWithExports({
       ...params,
       cancelToken: params.cancelToken || null,
     })
 
-    return this._fetchDesignById(designId, {
+    return this._createApiDesignFacade(apiDesign, {
       exports,
-      designVersionId,
-      cancelToken: params.cancelToken || null,
+      cancelToken: params.cancelToken,
     })
   }
 
