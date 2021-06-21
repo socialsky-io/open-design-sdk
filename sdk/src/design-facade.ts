@@ -297,9 +297,13 @@ export class DesignFacade {
 
     const apiDesignVersions = await apiDesign.getVersionList(options)
     const versionItems = apiDesignVersions.map((apiDesignVersion) => {
-      return new DesignListItemFacade(apiDesignVersion, {
+      const versionItem = new DesignListItemFacade(apiDesignVersion, {
         sdk: this._sdk,
       })
+      if (this._fontSource) {
+        versionItem.setFontSource(this._fontSource.clone())
+      }
+      return versionItem
     })
 
     return versionItems
@@ -1224,6 +1228,8 @@ export class DesignFacade {
    *
    * This configuration overrides the global font directory configuration (set up via {@link Sdk.setGlobalFontDirectory}) – i.e. fonts from the globally configured directory are not used for the design.
    *
+   * This configuration is copied to any other versions of the design later obtained through this design object as the default font configuration.
+   *
    * @category Configuration
    * @param fontDirectoryPath An absolute path to a directory or a path relative to the process working directory (`process.cwd()` in node.js). When `null` is provided, the configuration is cleared for the design.
    *
@@ -1255,6 +1261,8 @@ export class DesignFacade {
    * The first font from this list which is available in the system is used for all text layers with missing actual fonts. If none of the fonts are available, the text layers are not rendered.
    *
    * This configuration overrides/extends the global configuration set via {@link Sdk.setGlobalFallbackFonts}. Fonts specified here are preferred over the global config.
+   *
+   * This configuration is copied to any other versions of the design later obtained through this design object as the default font configuration.
    *
    * @category Configuration
    * @param fallbackFonts An ordered list of font postscript names or font file paths.
