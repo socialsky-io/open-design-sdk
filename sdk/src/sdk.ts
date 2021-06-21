@@ -399,9 +399,9 @@ export class Sdk {
       options
     )
 
-    return this._fetchDesignById(apiDesign.id, {
-      designVersionId: apiDesign.versionId,
+    return this._createApiDesignFacade(apiDesign, {
       sourceFilename: String(designFileStream.path),
+      cancelToken: options.cancelToken || null,
     })
   }
 
@@ -446,8 +446,7 @@ export class Sdk {
 
     const apiDesign = await openDesignApi.importDesignLink(url, options)
 
-    return this.fetchDesignById(apiDesign.id, {
-      designVersionId: apiDesign.versionId,
+    return this._createApiDesignFacade(apiDesign, {
       cancelToken: options.cancelToken || null,
     })
   }
@@ -499,8 +498,7 @@ export class Sdk {
 
     const apiDesign = await openDesignApi.importFigmaDesignLink(params)
 
-    return this.fetchDesignById(apiDesign.id, {
-      designVersionId: apiDesign.versionId,
+    return this._createApiDesignFacade(apiDesign, {
       cancelToken: params.cancelToken || null,
     })
   }
@@ -665,12 +663,33 @@ export class Sdk {
       throw new Error('Open Design API is not configured.')
     }
 
-    const cancelToken = params.cancelToken || null
+    const {
+      designVersionId = null,
+      cancelToken = null,
+      ...facadeParams
+    } = params
 
     const apiDesign = await openDesignApi.getDesignById(designId, {
-      designVersionId: params.designVersionId,
+      designVersionId,
       cancelToken,
     })
+
+    return this._createApiDesignFacade(apiDesign, {
+      ...facadeParams,
+      cancelToken,
+    })
+  }
+
+  private async _createApiDesignFacade(
+    apiDesign: IApiDesign,
+    params: {
+      sourceFilename?: string | null
+      exports?: Array<IApiDesignExport> | null
+      cancelToken?: CancelToken | null
+    }
+  ) {
+    const cancelToken = params.cancelToken
+
     const designFacade = await createDesignFromOpenDesignApiDesign(apiDesign, {
       sdk: this,
       console: this._console,
@@ -689,9 +708,14 @@ export class Sdk {
 
       const localDesignCache = this._localDesignCache
       const cachedOctopusFilename = localDesignCache
-        ? await localDesignCache.getDesignOctopusFilename(apiRoot, designId, {
-            cancelToken,
-          })
+        ? await localDesignCache.getDesignOctopusFilename(
+            apiRoot,
+            apiDesign.id,
+            apiDesign.versionId,
+            {
+              cancelToken,
+            }
+          )
         : null
 
       const localDesign = cachedOctopusFilename
@@ -711,7 +735,8 @@ export class Sdk {
       if (localDesignCache && !cachedOctopusFilename) {
         localDesignCache.setDesignOctopusFilename(
           apiRoot,
-          designId,
+          apiDesign.id,
+          apiDesign.versionId,
           localDesign.filename
         )
       }
