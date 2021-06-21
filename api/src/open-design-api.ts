@@ -132,7 +132,12 @@ export class OpenDesignApi implements IOpenDesignApi {
       // @ts-expect-error 403 is not included in the spec but checking it just in case.
       res.statusCode === 403
     ) {
-      this._console.error('OpenDesignApi#getDesignById()', { designId }, res)
+      this._console.error(
+        'OpenDesignApi#getDesignById()',
+        { designId },
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(
         res,
         'Cannot fetch design due to missing permissions'
@@ -143,7 +148,12 @@ export class OpenDesignApi implements IOpenDesignApi {
     const design = 'status' in body ? body : null
 
     if (!design || design['status'] === 'failed') {
-      this._console.error('OpenDesignApi#getDesignSummary()', { designId }, res)
+      this._console.error(
+        'OpenDesignApi#getDesignSummary()',
+        { designId },
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot fetch design')
     }
 
@@ -213,7 +223,12 @@ export class OpenDesignApi implements IOpenDesignApi {
       // @ts-expect-error 403 is not included in the spec but checking it just in case.
       res.statusCode === 403
     ) {
-      this._console.error('OpenDesignApi#getDesignById()', { designId }, res)
+      this._console.error(
+        'OpenDesignApi#getDesignById()',
+        { designId },
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(
         res,
         'Cannot fetch design due to missing permissions'
@@ -293,7 +308,11 @@ export class OpenDesignApi implements IOpenDesignApi {
     )
 
     if (res.statusCode !== 201) {
-      this._console.error('OpenDesignApi#importDesignFile()', res)
+      this._console.error(
+        'OpenDesignApi#importDesignFile()',
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
@@ -349,7 +368,11 @@ export class OpenDesignApi implements IOpenDesignApi {
     )
 
     if (res.statusCode !== 201) {
-      this._console.error('OpenDesignApi#importDesignLink()', res)
+      this._console.error(
+        'OpenDesignApi#importDesignLink()',
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
@@ -409,7 +432,11 @@ export class OpenDesignApi implements IOpenDesignApi {
     )
 
     if (res.statusCode !== 201) {
-      this._console.error('OpenDesignApi#importDesignLink()', res)
+      this._console.error(
+        'OpenDesignApi#importDesignLink()',
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
@@ -453,7 +480,11 @@ export class OpenDesignApi implements IOpenDesignApi {
     )
 
     if (res.statusCode !== 201) {
-      this._console.error('OpenDesignApi#importDesignLink()', res)
+      this._console.error(
+        'OpenDesignApi#importDesignLink()',
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
@@ -514,7 +545,12 @@ export class OpenDesignApi implements IOpenDesignApi {
     )
 
     if (res.statusCode !== 200 && res.statusCode !== 202) {
-      this._console.error('OpenDesignApi#getDesignById()', { designId }, res)
+      this._console.error(
+        'OpenDesignApi#getDesignById()',
+        { designId },
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot fetch artboard content')
     }
 
