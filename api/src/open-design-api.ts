@@ -662,7 +662,7 @@ export class OpenDesignApi implements IOpenDesignApi {
         { designId, ...params },
         res
       )
-      throw new OpenDesignApiError(res, 'Cannot convert the design')
+      throw new OpenDesignApiError(res, 'Cannot export the design')
     }
     if (res.body['status'] === 'failed') {
       throw new OpenDesignApiError(res, 'Design export failed')
