@@ -188,7 +188,7 @@ export class OpenDesignApi implements IOpenDesignApi {
     const body = res.body
     const design = 'status' in body ? body : null
 
-    if (!design || design['status'] === 'failed') {
+    if (!design) {
       this._console.error(
         'OpenDesignApi#getDesignSummary()',
         { designId },
@@ -196,6 +196,9 @@ export class OpenDesignApi implements IOpenDesignApi {
         res.body
       )
       throw new OpenDesignApiError(res, 'Cannot fetch design')
+    }
+    if (design['status'] === 'failed') {
+      throw new OpenDesignApiError(res, 'The design processing failed')
     }
 
     if (
@@ -279,7 +282,7 @@ export class OpenDesignApi implements IOpenDesignApi {
     const body = res.body
     const designSummary = 'status' in body ? body : null
 
-    if (!designSummary || designSummary['status'] === 'failed') {
+    if (!designSummary) {
       this._console.error(
         'OpenDesignApi#getDesignSummary()',
         { designId },
@@ -287,6 +290,9 @@ export class OpenDesignApi implements IOpenDesignApi {
         res.body
       )
       throw new OpenDesignApiError(res, 'Cannot fetch design')
+    }
+    if (designSummary['status'] === 'failed') {
+      throw new OpenDesignApiError(res, 'The design processing failed')
     }
 
     if (
