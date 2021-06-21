@@ -316,9 +316,11 @@ export class OpenDesignApi implements IOpenDesignApi {
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
-    const designId = res.body['design']['id']
-    return this.getDesignById(designId, {
-      designVersionId: res.body['design']['version_id'],
+    const design = res.body['design']
+
+    // NOTE: Waits for the design to become fully processed.
+    return this.getDesignById(design['id'], {
+      designVersionId: design['version_id'],
     })
   }
 
@@ -376,9 +378,11 @@ export class OpenDesignApi implements IOpenDesignApi {
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
-    const designId = res.body['design']['id']
-    return this.getDesignById(designId, {
-      designVersionId: res.body['design']['version_id'],
+    const design = res.body['design']
+
+    // NOTE: Waits for the design to become fully processed.
+    return this.getDesignById(design['id'], {
+      designVersionId: design['version_id'],
     })
   }
 
@@ -440,9 +444,10 @@ export class OpenDesignApi implements IOpenDesignApi {
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
-    const designId = res.body['design']['id']
-    return this.getDesignById(designId, {
-      designVersionId: res.body['design']['version_id'],
+    const design = res.body['design']
+    // NOTE: Waits for the design to become fully processed.
+    return this.getDesignById(design['id'], {
+      designVersionId: design['version_id'],
     })
   }
 
