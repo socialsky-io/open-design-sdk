@@ -986,6 +986,64 @@ export class LayerFacade {
   }
 
   /**
+   * Export the layer as an SVG file.
+   *
+   * In case the layer is a group layer, all visible nested layers are also included.
+   *
+   * Bitmap assets are serialized as base64 data URIs.
+   *
+   * Uncached items (bitmap assets of rendered layers) are downloaded and cached.
+   *
+   * The SVG exporter has to be configured when using this methods. The local cache has to also be configured when working with layers with bitmap assets.
+   *
+   * @category SVG export
+   * @param filePath The target location of the produced SVG file.
+   * @param options Export options
+   * @param options.blendingMode The blending mode to use for rendering the layer instead of its default blending mode.
+   * @param options.clip Whether to apply clipping by a mask layer if any such mask is set for the layer (see {@link LayerFacade.isMasked}). Clipping is disabled by default. Setting this flag for layers which do not have a mask layer set has no effect on the results.
+   * @param options.includeEffects Whether to apply layer effects of the layer. Rendering of effects of nested layers is not affected. By defaults, effects of the layer are applied.
+   * @param options.opacity The opacity to use for the layer instead of its default opacity.
+   * @param options.scale The scale (zoom) factor to use for rendering instead of the default 1x factor.
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the created image file is not deleted when cancelled during actual rendering). A cancellation token can be created via {@link createCancelToken}.
+   *
+   * @example With default options (1x)
+   * ```typescript
+   * const svg = await layer.exportToSvgFile('./layer.svg')
+   * ```
+   *
+   * @example With custom scale and opacity
+   * ```typescript
+   * const svg = await layer.exportToSvgFile('./layer.svg', {
+   *   opacity: 0.6,
+   *   scale: 2,
+   * })
+   * ```
+   */
+  async exportToSvgFile(
+    filePath: string,
+    options: {
+      includeEffects?: boolean
+      clip?: boolean
+      blendingMode?: BlendingMode
+      opacity?: number
+      scale?: number
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<void> {
+    const artboardId = this.artboardId
+    if (!artboardId) {
+      throw new Error('Detached layers cannot be exported')
+    }
+
+    await this._designFacade.exportArtboardLayerToSvgFile(
+      artboardId,
+      this.id,
+      filePath,
+      options
+    )
+  }
+
+  /**
    * Returns various bounds of the layer.
    *
    * The rendering engine and the local cache have to be configured when using this method.

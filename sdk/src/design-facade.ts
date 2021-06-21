@@ -1354,6 +1354,71 @@ export class DesignFacade {
   }
 
   /**
+   * Exports the specified layer from the specified artboard as an SVG file.
+   *
+   * In case of group layers, all visible nested layers are also included.
+   *
+   * Bitmap assets are serialized as base64 data URIs.
+   *
+   * Uncached items (artboard content and bitmap assets of exported layers) are downloaded and cached.
+   *
+   * The SVG exporter has to be configured when using this methods. The local cache has to also be configured when working with layers with bitmap assets.
+   *
+   * @category SVG Export
+   * @param artboardId The ID of the artboard from which to export the export.
+   * @param layerId The IDs of the artboard layer to export.
+   * @param filePath The target location of the produced SVG file.
+   * @param options Export options.
+   * @param options.blendingMode The blending mode to use for the layer instead of its default blending mode.
+   * @param options.clip Whether to apply clipping by a mask layer if any such mask is set for the layer (see {@link LayerFacade.isMasked}). Clipping is disabled by default. Setting this flag for layers which do not have a mask layer set has no effect on the results.
+   * @param options.includeEffects Whether to apply layer effects of the layer. Effects of nested layers are not affected. By defaults, effects of the layer are applied.
+   * @param options.opacity The opacity to use for the layer instead of its default opacity.
+   * @param options.scale The scale (zoom) factor to use instead of the default 1x factor.
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   *
+   * @example With default options (1x)
+   * ```typescript
+   * const svg = await design.exportArtboardLayerToSvgFile(
+   *   '<ARTBOARD_ID>',
+   *   '<LAYER_ID>',
+   *   './layer.svg'
+   * )
+   * ```
+   *
+   * @example With custom scale and opacity
+   * ```typescript
+   * const svg = await design.exportArtboardLayerToSvgFile(
+   *   '<ARTBOARD_ID>',
+   *   '<LAYER_ID>',
+   *   './layer.svg',
+   *   {
+   *     opacity: 0.6,
+   *     scale: 2,
+   *   }
+   * )
+   * ```
+   */
+  async exportArtboardLayerToSvgFile(
+    artboardId: ArtboardId,
+    layerId: LayerId,
+    filePath: string,
+    options: {
+      scale?: number
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<void> {
+    const svg = await this.exportArtboardLayerToSvgCode(
+      artboardId,
+      layerId,
+      options
+    )
+
+    await this._sdk.saveTextFile(filePath, svg, {
+      cancelToken: options.cancelToken,
+    })
+  }
+
+  /**
    * Returns an SVG document string of the specified layers from the specified artboard.
    *
    * In case of group layers, all visible nested layers are also included.
@@ -1485,6 +1550,71 @@ export class DesignFacade {
       viewBoxBounds,
       bitmapAssetFilenames,
       cancelToken,
+    })
+  }
+
+  /**
+   * Export the specified layers from the specified artboard as an SVG file.
+   *
+   * In case of group layers, all visible nested layers are also included.
+   *
+   * Bitmap assets are serialized as base64 data URIs.
+   *
+   * Uncached items (artboard content and bitmap assets of exported layers) are downloaded and cached.
+   *
+   * The SVG exporter has to be configured when using this methods. The local cache has to also be configured when working with layers with bitmap assets.
+   *
+   * @category SVG Export
+   * @param artboardId The ID of the artboard from which to export the layers.
+   * @param layerIds The IDs of the artboard layers to export.
+   * @param filePath The target location of the produced SVG file.
+   * @param options Export options
+   * @param options.layerAttributes Layer-specific options to use for instead of the default values.
+   * @param options.scale The scale (zoom) factor to use instead of the default 1x factor.
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. newly cached artboards are not uncached). A cancellation token can be created via {@link createCancelToken}.
+   *
+   * @example With default options (1x)
+   * ```typescript
+   * await design.exportArtboardLayersToSvgFile(
+   *   '<ARTBOARD_ID>',
+   *   ['<LAYER1>', '<LAYER2>'],
+   *   './layers.svg'
+   * )
+   * ```
+   *
+   * @example With custom scale
+   * ```typescript
+   * await design.exportArtboardLayersToSvgFile(
+   *   '<ARTBOARD_ID>',
+   *   ['<LAYER1>', '<LAYER2>'],
+   *   './layers.svg',
+   *   {
+   *     scale: 2,
+   *     layerAttributes: {
+   *       '<LAYER1>': { blendingMode: 'SOFT_LIGHT' },
+   *       '<LAYER2>': { opacity: 0.6 },
+   *     }
+   *   }
+   * )
+   * ```
+   */
+  async exportArtboardLayersToSvgFile(
+    artboardId: ArtboardId,
+    layerIds: Array<LayerId>,
+    filePath: string,
+    options: {
+      scale?: number
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<void> {
+    const svg = await this.exportArtboardLayersToSvgCode(
+      artboardId,
+      layerIds,
+      options
+    )
+
+    await this._sdk.saveTextFile(filePath, svg, {
+      cancelToken: options.cancelToken,
     })
   }
 
