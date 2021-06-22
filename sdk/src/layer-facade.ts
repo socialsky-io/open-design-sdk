@@ -1008,12 +1008,12 @@ export class LayerFacade {
    *
    * @example With default options (1x)
    * ```typescript
-   * const svg = await layer.exportToSvgFile('./layer.svg')
+   * await layer.exportToSvgFile('./layer.svg')
    * ```
    *
    * @example With custom scale and opacity
    * ```typescript
-   * const svg = await layer.exportToSvgFile('./layer.svg', {
+   * await layer.exportToSvgFile('./layer.svg', {
    *   opacity: 0.6,
    *   scale: 2,
    * })

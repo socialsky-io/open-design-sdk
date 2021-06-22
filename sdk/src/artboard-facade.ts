@@ -955,12 +955,12 @@ export class ArtboardFacade {
    *
    * @example With default options (1x)
    * ```typescript
-   * const svg = await artboard.exportLayerToSvgFile('<LAYER_ID>', './layer.svg')
+   * await artboard.exportLayerToSvgFile('<LAYER_ID>', './layer.svg')
    * ```
    *
    * @example With custom scale and opacity
    * ```typescript
-   * const svg = await artboard.exportLayerToSvgFile(
+   * await artboard.exportLayerToSvgFile(
    *   '<LAYER_ID>',
    *   './layer.svg',
    *   { scale: 2 }
@@ -1063,7 +1063,7 @@ export class ArtboardFacade {
    *
    * @example With default options (1x)
    * ```typescript
-   * const svg = await artboard.exportLayersToSvgFile(
+   * await artboard.exportLayersToSvgFile(
    *   ['<LAYER1>', '<LAYER2>'],
    *   './layers.svg'
    * )
@@ -1071,7 +1071,7 @@ export class ArtboardFacade {
    *
    * @example With a custom scale
    * ```typescript
-   * const svg = await artboard.exportLayersToSvgFile(
+   * await artboard.exportLayersToSvgFile(
    *   ['<LAYER1>', '<LAYER2>'],
    *   './layers.svg',
    *   {
