@@ -1,6 +1,6 @@
 {
   "name": "@opendesign/svg-exporter",
-  "version": "0.0.0-dev",
+  "version": "0.3.0",
   "main": "dist",
   "scripts": {
     "build": "yarn run clean-build && yarn run build:ts",

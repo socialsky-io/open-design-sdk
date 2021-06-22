@@ -1,6 +1,6 @@
 {
   "name": "@opendesign/rendering",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "main": "dist",
   "scripts": {
     "build": "yarn run clean-build && yarn run build:ts",
