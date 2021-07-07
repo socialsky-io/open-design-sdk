@@ -1,5 +1,6 @@
 import { RenderingDesign } from './rendering-design'
 import { RenderingProcess } from './rendering-process'
+import { RenderingSession } from './rendering-session'
 
 import type { IRenderingEngine } from './types/rendering-engine.iface'
 
@@ -37,16 +38,15 @@ export class RenderingEngine implements IRenderingEngine {
       fontDirectoryPath?: string | null
     } = {}
   ): Promise<RenderingDesign> {
-    const result = await this._renderingProcess.execCommand('create-design', {
-      'design': designId,
+    const renderingSession = new RenderingSession({
+      id: designId,
+      renderingProcess: this._renderingProcess,
+      console: this._console,
     })
-    if (!result['ok']) {
-      throw new Error('Failed to create a design rendering session')
-    }
 
     const design = new RenderingDesign({
       id: designId,
-      renderingProcess: this._renderingProcess,
+      renderingSession,
       console: this._console,
       bitmapAssetDirectoryPath: params.bitmapAssetDirectoryPath || null,
       fontDirectoryPath: params.fontDirectoryPath || null,
