@@ -56,7 +56,8 @@ export async function fetch(
 
     return res
   } catch (err) {
-    if (err.type === 'AbortError' && cancelToken) {
+    const typedErr = err as Error & { type?: string }
+    if (typedErr.type === 'AbortError' && cancelToken) {
       cancelToken.throwIfCancelled()
     }
     throw err

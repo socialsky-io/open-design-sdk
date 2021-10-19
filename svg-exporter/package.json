@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "open-design-api-types": "0.3.5",
-    "typescript": "4.1.2"
+    "typescript": "4.4.4"
   },
   "dependencies": {
     "@avocode/cancel-token": "1.4.0",

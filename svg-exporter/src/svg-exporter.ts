@@ -93,10 +93,12 @@ export class SvgExporter implements ISvgExporter {
 
     const bitmapEntries = await Promise.all(
       bitmapAssetNames.map(async (name) => {
-        return [
-          name,
-          await this._loadBitmapAsset(bitmapAssetFilenames[name], params),
-        ]
+        const bitmapAssetFilename = bitmapAssetFilenames[name]
+        if (!bitmapAssetFilename) {
+          throw new Error('Missing bitmap file name')
+        }
+
+        return [name, await this._loadBitmapAsset(bitmapAssetFilename, params)]
       })
     )
 
