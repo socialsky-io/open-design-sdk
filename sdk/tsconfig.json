@@ -2,7 +2,8 @@
   "extends": "../tsconfig.json",
 
   "compilerOptions": {
-    "rootDir": "./src",
+    "rootDir": ".",
+    "outDir": ".",
     "lib": ["es2020", "dom"],
     "module": "CommonJS",
     "target": "ES2015",
