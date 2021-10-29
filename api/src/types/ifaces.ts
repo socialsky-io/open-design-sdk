@@ -47,8 +47,8 @@ export interface IOpenDesignApi {
 
   importFigmaDesignLink(params: {
     designId?: DesignId | null
-    figmaToken: string
     figmaFileKey: string
+    figmaToken?: string | null
     figmaIds?: Array<string> | null
     name?: string | null
     cancelToken?: CancelToken | null
@@ -56,8 +56,8 @@ export interface IOpenDesignApi {
 
   importFigmaDesignLinkWithExports(params: {
     designId?: DesignId | null
-    figmaToken: string
     figmaFileKey: string
+    figmaToken?: string | null
     figmaIds?: Array<string> | null
     name?: string | null
     exports: Array<{ format: DesignExportTargetFormatEnum }>

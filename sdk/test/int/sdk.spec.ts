@@ -399,7 +399,7 @@ describe('DesignFacade', () => {
       tokenFromBefore = token
 
       const designFacade = await sdk.importFigmaDesign({
-        figmaToken: process.env['E2E_FIGMA_TOKEN'] || '',
+        figmaToken: process.env['E2E_FIGMA_TOKEN'] || null,
         figmaFileKey: process.env['E2E_FIGMA_FILE_KEY'] || '',
       })
       ok(designFacade.id)
@@ -431,7 +431,7 @@ describe('DesignFacade', () => {
       const { sdk } = await createSdk({ designFiles: true, api: true })
 
       const designFacade = await sdk.convertFigmaDesign({
-        figmaToken: process.env['E2E_FIGMA_TOKEN'] || '',
+        figmaToken: process.env['E2E_FIGMA_TOKEN'] || null,
         figmaFileKey: process.env['E2E_FIGMA_FILE_KEY'] || '',
         exports: [{ format: 'sketch' }],
       })

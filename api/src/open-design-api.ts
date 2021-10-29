@@ -435,8 +435,8 @@ export class OpenDesignApi implements IOpenDesignApi {
 
   async importFigmaDesignLink(params: {
     designId?: DesignId | null
-    figmaToken: string
     figmaFileKey: string
+    figmaToken?: string | null
     figmaIds?: Array<string> | null
     name?: string | null
     cancelToken?: CancelToken | null
@@ -453,8 +453,10 @@ export class OpenDesignApi implements IOpenDesignApi {
             '/designs/{design_id}/versions/figma-link',
             { 'design_id': params.designId },
             {
-              'figma_token': params.figmaToken,
               'figma_filekey': params.figmaFileKey,
+              ...(params.figmaToken
+                ? { 'figma_token': params.figmaToken }
+                : {}),
               ...(params.figmaIds ? { 'figma_ids': params.figmaIds } : {}),
               ...(params.name ? { 'design_name': params.name } : {}),
             },
@@ -469,8 +471,10 @@ export class OpenDesignApi implements IOpenDesignApi {
             '/designs/figma-link',
             {},
             {
-              'figma_token': params.figmaToken,
               'figma_filekey': params.figmaFileKey,
+              ...(params.figmaToken
+                ? { 'figma_token': params.figmaToken }
+                : {}),
               ...(params.figmaIds ? { 'figma_ids': params.figmaIds } : {}),
               ...(params.name ? { 'design_name': params.name } : {}),
             },
@@ -499,8 +503,8 @@ export class OpenDesignApi implements IOpenDesignApi {
   }
 
   async importFigmaDesignLinkWithExports(params: {
-    figmaToken: string
     figmaFileKey: string
+    figmaToken?: string | null
     figmaIds?: Array<string> | null
     name?: string | null
     exports: Array<{ format: DesignExportTargetFormatEnum }>
@@ -517,9 +521,9 @@ export class OpenDesignApi implements IOpenDesignApi {
         '/designs/figma-link',
         {},
         {
-          'figma_token': params.figmaToken,
           'figma_filekey': params.figmaFileKey,
           'exports': params.exports,
+          ...(params.figmaToken ? { 'figma_token': params.figmaToken } : {}),
           ...(params.figmaIds ? { 'figma_ids': params.figmaIds } : {}),
           ...(params.name ? { 'design_name': params.name } : {}),
         },
