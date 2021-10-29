@@ -190,7 +190,7 @@ export class OpenDesignApi implements IOpenDesignApi {
 
     if (!design) {
       this._console.error(
-        'OpenDesignApi#getDesignSummary()',
+        'OpenDesignApi#getDesignById()',
         { designId },
         res.statusCode,
         res.body
@@ -268,7 +268,7 @@ export class OpenDesignApi implements IOpenDesignApi {
       res.statusCode === 403
     ) {
       this._console.error(
-        'OpenDesignApi#getDesignById()',
+        'OpenDesignApi#getDesignSummary()',
         { designId },
         res.statusCode,
         res.body
@@ -488,7 +488,7 @@ export class OpenDesignApi implements IOpenDesignApi {
 
     if (res.statusCode !== 201) {
       this._console.error(
-        'OpenDesignApi#importDesignLink()',
+        'OpenDesignApi#importFigmaDesignLink()',
         res.statusCode,
         res.body
       )
@@ -537,7 +537,7 @@ export class OpenDesignApi implements IOpenDesignApi {
 
     if (res.statusCode !== 201) {
       this._console.error(
-        'OpenDesignApi#importDesignLink()',
+        'OpenDesignApi#importFigmaDesignLinkWithExports()',
         res.statusCode,
         res.body
       )
@@ -605,7 +605,7 @@ export class OpenDesignApi implements IOpenDesignApi {
 
     if (res.statusCode !== 200 && res.statusCode !== 202) {
       this._console.error(
-        'OpenDesignApi#getDesignById()',
+        'OpenDesignApi#getDesignArtboardContent()',
         { designId },
         res.statusCode,
         res.body
@@ -817,7 +817,7 @@ export class OpenDesignApi implements IOpenDesignApi {
       })
     )
     if (res.status !== 200 || !res.body) {
-      this._console.debug('ApiDesign#getBitmapAssetStream()', {
+      this._console.debug('OpenDesignApi#getDesignBitmapAssetStream()', {
         bitmapKey,
         statusCode: res.status,
       })
