@@ -486,6 +486,17 @@ export class OpenDesignApi implements IOpenDesignApi {
           )
     )
 
+    const figmaTokenErrorData =
+      res.statusCode === 409 ? res.body['error'] : null
+    if (
+      figmaTokenErrorData &&
+      figmaTokenErrorData['code'] === 'FigmaTokenNotProvided'
+    ) {
+      this._console.warn(
+        `Figma is not connected; you can connect your Figma account at ${figmaTokenErrorData['settings_url']}`
+      )
+    }
+
     if (res.statusCode !== 201) {
       this._console.error(
         'OpenDesignApi#importFigmaDesignLink()',
@@ -534,6 +545,17 @@ export class OpenDesignApi implements IOpenDesignApi {
         }
       )
     )
+
+    const figmaTokenErrorData =
+      res.statusCode === 409 ? res.body['error'] : null
+    if (
+      figmaTokenErrorData &&
+      figmaTokenErrorData['code'] === 'FigmaTokenNotProvided'
+    ) {
+      this._console.warn(
+        `Figma is not connected; you can connect your Figma account at ${figmaTokenErrorData['settings_url']}`
+      )
+    }
 
     if (res.statusCode !== 201) {
       this._console.error(
