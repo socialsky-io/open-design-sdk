@@ -8,7 +8,7 @@
     "clean-build": "rm -rf dist"
   },
   "devDependencies": {
-    "open-design-api-types": "0.3.7-rc.2",
+    "open-design-api-types": "0.4.0-rc.1",
     "typescript": "4.4.4"
   },
   "dependencies": {
