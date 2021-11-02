@@ -83,6 +83,13 @@ export interface IOpenDesignApi {
     }
   ): Promise<IApiDesign>
 
+  getDesignVersionList(
+    designId: DesignId,
+    options: {
+      cancelToken?: CancelToken | null
+    }
+  ): Promise<Array<IApiDesign>>
+
   // - Design Contents
 
   getDesignArtboardContent(
@@ -152,6 +159,16 @@ export interface IApiDesign {
   getManifest(options?: {
     cancelToken?: CancelToken | null
   }): Promise<ManifestData>
+
+  getVersionList(options?: {
+    cancelToken?: CancelToken | null
+  }): Promise<Array<IApiDesign>>
+  getVersionById(
+    versionId: DesignVersionId,
+    options?: {
+      cancelToken?: CancelToken | null
+    }
+  ): Promise<IApiDesign>
 
   // Design Contents
 

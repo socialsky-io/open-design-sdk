@@ -84,6 +84,47 @@ export class OpenDesignApi implements IOpenDesignApi {
     })
   }
 
+  async getDesignVersionList(
+    designId: DesignId,
+    options: {
+      cancelToken?: CancelToken | null
+    }
+  ): Promise<Array<ApiDesign>> {
+    const cancelToken = createCancelToken.race([
+      options.cancelToken,
+      this._destroyTokenController.token,
+    ])
+
+    const res = await this._requestQueue.add(() =>
+      get(
+        this._apiRoot,
+        '/designs/{design_id}/versions',
+        { 'design_id': designId },
+        this._getAuthInfo(),
+        {
+          console: this._console,
+          ...options,
+          cancelToken,
+        }
+      )
+    )
+
+    if (res.statusCode !== 200) {
+      throw new OpenDesignApiError(res, 'Cannot fetch design version list')
+    }
+
+    const designInfoList =
+      'design_versions' in res.body
+        ? (res.body['design_versions'] as Array<Design>)
+        : []
+
+    return designInfoList.map((designInfo) => {
+      return new ApiDesign(designInfo, {
+        openDesignApi: this,
+      })
+    })
+  }
+
   async getDesignById(
     designId: DesignId,
     options: {

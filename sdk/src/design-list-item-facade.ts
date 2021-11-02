@@ -2,7 +2,12 @@ import { inspect } from 'util'
 import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 
 import type { CancelToken } from '@avocode/cancel-token'
-import type { DesignId, Design, IApiDesign } from '@opendesign/api'
+import type {
+  DesignId,
+  DesignVersionId,
+  Design,
+  IApiDesign,
+} from '@opendesign/api'
 import type { DesignFacade } from './design-facade'
 import type { Sdk } from './sdk'
 
@@ -29,6 +34,14 @@ export class DesignListItemFacade {
    */
   get id(): DesignId {
     return this._apiDesign.id
+  }
+
+  /**
+   * The ID of the referenced server-side design version.
+   * @category Identification
+   */
+  get versionId(): DesignVersionId {
+    return this._apiDesign.versionId
   }
 
   /**
@@ -64,7 +77,7 @@ export class DesignListItemFacade {
   }
 
   /**
-   * Fetches a previously imported design from the API.
+   * Fetches a previously imported design at the version (the Id of which is accessible via {@link DesignListItemFacade.versionId}) from the API.
    *
    * The API has to be configured when using this method. Local caching is established in case the local cache is configured.
    *
@@ -84,6 +97,9 @@ export class DesignListItemFacade {
   fetchDesign(options: {
     cancelToken?: CancelToken | null
   }): Promise<DesignFacade> {
-    return this._sdk.fetchDesignById(this.id, options)
+    return this._sdk.fetchDesignById(this.id, {
+      ...options,
+      designVersionId: this.versionId,
+    })
   }
 }

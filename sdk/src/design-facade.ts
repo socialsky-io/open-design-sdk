@@ -1,5 +1,6 @@
 import { ArtboardFacade, LayerAttributesConfig } from './artboard-facade'
 import { DesignExportFacade } from './design-export-facade'
+import { DesignListItemFacade } from './design-list-item-facade'
 import { LayerCollectionFacade } from './layer-collection-facade'
 import { PageFacade } from './page-facade'
 
@@ -258,6 +259,160 @@ export class DesignFacade {
   /** @internal */
   setRenderingDesign(renderingDesign: IRenderingDesign): void {
     this._renderingDesign = renderingDesign
+  }
+
+  /**
+   * Returns a complete list of versions of the design.
+   *
+   * Data of the design versions themselves are not downloaded at this point. Each item in the design version list can be expanded to a full-featured design entity.
+   *
+   * The design version list contains both processed and unprocessed design versions.
+   *
+   * The API has to be configured when using this method.
+   *
+   * @example
+   * ```typescript
+   * const versionList = await design.getVersions()
+   * const versionItem = versionList.find((version) => version.status === 'done')
+   * // Expand the design version list item to a full design entity
+   * const version = await versionItem.fetchDesign()
+   * // Continue working with the processed design version
+   * const versionArtboards = version.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected. A cancellation token can be created via {@link createCancelToken}.
+   * @returns An array of design list item objects which can be used for retrieving the design versions using the API.
+   */
+  async getVersions(
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<Array<DesignListItemFacade>> {
+    const apiDesign = this._apiDesign
+    if (!apiDesign) {
+      throw new Error('The API is not configured.')
+    }
+
+    const apiDesignVersions = await apiDesign.getVersionList(options)
+    const versionItems = apiDesignVersions.map((apiDesignVersion) => {
+      return new DesignListItemFacade(apiDesignVersion, {
+        sdk: this._sdk,
+      })
+    })
+
+    return versionItems
+  }
+
+  /**
+   * Fetches a previously imported version of the design from the API.
+   *
+   * The API has to be configured when using this method. Local caching is established in case the local cache is configured.
+   *
+   * @example
+   * ```typescript
+   * const version = await design.getVersionById('<VERSION_ID>')
+   *
+   * // Continue working with the processed design version
+   * const versionArtboards = version.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param designVersionId An ID of a server-side design version assigned during import (via `importVersionDesignFile()`).
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the local cache is not cleared once created). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  getVersionById(
+    designVersionId: DesignVersionId,
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<DesignFacade> {
+    const apiDesign = this._apiDesign
+    if (!apiDesign) {
+      throw new Error('The API is not configured.')
+    }
+
+    return this._sdk.fetchDesignById(apiDesign.id, {
+      ...options,
+      designVersionId,
+    })
+  }
+
+  /**
+   * Fetches a previously imported version of the design newer than the current version of the {@link DesignFacade} entity from the API.
+   *
+   * The API has to be configured when using this method. Local caching is established in case the local cache is configured.
+   *
+   * @example
+   * ```typescript
+   * const nextVersion = await design.getNextVersion()
+   *
+   * // Continue working with the processed design version
+   * const versionArtboards = nextVersion.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the local cache is not cleared once created). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  async getNextVersion(
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<DesignFacade | null> {
+    const versionItems = await this.getVersions(options)
+
+    const currentVersionIndex = versionItems.findIndex((versionItem) => {
+      return versionItem.versionId === this.versionId
+    })
+
+    const nextVersionIndex =
+      currentVersionIndex > 0 ? currentVersionIndex - 1 : -1
+    const nextVersionItem =
+      nextVersionIndex > -1 ? versionItems[nextVersionIndex] : null
+
+    return nextVersionItem ? nextVersionItem.fetchDesign(options) : null
+  }
+
+  /**
+   * Fetches a previously imported version of the design older than the current version of the {@link DesignFacade} entity from the API.
+   *
+   * The API has to be configured when using this method. Local caching is established in case the local cache is configured.
+   *
+   * @example
+   * ```typescript
+   * const prevVersion = await design.getPrevVersion()
+   *
+   * // Continue working with the processed design version
+   * const versionArtboards = prevVersion.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the local cache is not cleared once created). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  async getPreviousVersion(
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<DesignFacade | null> {
+    const versionItems = await this.getVersions()
+
+    const currentVersionIndex = versionItems.findIndex((versionItem) => {
+      return versionItem.versionId === this.versionId
+    })
+
+    const prevVersionIndex =
+      currentVersionIndex > -1 ? currentVersionIndex + 1 : -1
+    const prevVersionItem =
+      currentVersionIndex > -1 ? versionItems[prevVersionIndex] : null
+
+    return prevVersionItem ? prevVersionItem.fetchDesign(options) : null
   }
 
   /**

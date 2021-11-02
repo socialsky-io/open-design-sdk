@@ -119,6 +119,28 @@ export class ApiDesign implements IApiDesign {
     })
   }
 
+  getVersionList(
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<Array<ApiDesign>> {
+    return this._openDesignApi.getDesignVersionList(this.id, {
+      ...options,
+    })
+  }
+
+  getVersionById(
+    designVersionId: DesignVersionId,
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<ApiDesign> {
+    return this._openDesignApi.getDesignById(this.id, {
+      ...options,
+      designVersionId,
+    })
+  }
+
   getArtboardContent(
     artboardId: ArtboardId,
     options: {
