@@ -355,7 +355,7 @@ export class Sdk {
    *
    * The API has to be configured when using this method. This is also requires a file system (i.e. it is not available in the browser).
    *
-   * The design is automatically uploaded to the API and local caching is established.
+   * The design file is automatically uploaded to the API and local caching is established.
    *
    * @example
    * ```typescript
@@ -372,7 +372,7 @@ export class Sdk {
    * @param options Options
    * @param options.designId The ID of the design of which a new version should be imported. By default, a new design is created.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
-   * @returns A design object which can be used for retrieving data from the local design file using the API.
+   * @returns A design object which can be used for retrieving data from the design using the API.
    */
   async importDesignFile(
     filePath: string,
@@ -429,7 +429,7 @@ export class Sdk {
    * @param options.designId The ID of the design to which to import the design file as a new version. The design file format must be the same as the format of previous versions.
    * @param options.format The format of the design file in case it cannot be inferred from the URL.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
-   * @returns A design object which can be used for retrieving data from the local design file using the API.
+   * @returns A design object which can be used for retrieving data from the design using the API.
    */
   async importDesignLink(
     url: string,
@@ -483,7 +483,7 @@ export class Sdk {
    * @param params.figmaIds A listing of Figma design frames to use.
    * @param params.designName A name override for the design. The original Figma design name is used by default.
    * @param params.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
-   * @returns A design object which can be used for retrieving data from the Figma design using the API.
+   * @returns A design object which can be used for retrieving data from the design using the API.
    */
   async importFigmaDesign(params: {
     designId?: DesignId | null
