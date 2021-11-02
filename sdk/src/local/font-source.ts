@@ -54,4 +54,12 @@ export class FontSource {
       ...options,
     })
   }
+
+  /** @internal */
+  clone(): FontSource {
+    return new FontSource(this._systemFontManager, {
+      fontDirname: this._fontDirname,
+      fallbackFonts: this._fallbackFonts,
+    })
+  }
 }

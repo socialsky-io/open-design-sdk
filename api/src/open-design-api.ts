@@ -19,6 +19,7 @@ export type Design = components['schemas']['Design']
 export type DesignId = components['schemas']['DesignId']
 export type DesignImportFormatEnum = components['schemas']['DesignImportFormatEnum']
 export type DesignSummary = components['schemas']['DesignSummary']
+export type DesignVersionId = components['schemas']['DesignVersionId']
 export type OctopusDocument = components['schemas']['OctopusDocument']
 
 export class OpenDesignApi implements IOpenDesignApi {
@@ -83,12 +84,12 @@ export class OpenDesignApi implements IOpenDesignApi {
     })
   }
 
-  async getDesignById(
+  async getDesignVersionList(
     designId: DesignId,
     options: {
       cancelToken?: CancelToken | null
-    } = {}
-  ): Promise<ApiDesign> {
+    }
+  ): Promise<Array<ApiDesign>> {
     const cancelToken = createCancelToken.race([
       options.cancelToken,
       this._destroyTokenController.token,
@@ -97,10 +98,8 @@ export class OpenDesignApi implements IOpenDesignApi {
     const res = await this._requestQueue.add(() =>
       get(
         this._apiRoot,
-        '/designs/{design_id}',
-        {
-          'design_id': designId,
-        },
+        '/designs/{design_id}/versions',
+        { 'design_id': designId },
         this._getAuthInfo(),
         {
           console: this._console,
@@ -110,12 +109,76 @@ export class OpenDesignApi implements IOpenDesignApi {
       )
     )
 
+    if (res.statusCode !== 200) {
+      throw new OpenDesignApiError(res, 'Cannot fetch design version list')
+    }
+
+    const designInfoList =
+      'design_versions' in res.body
+        ? (res.body['design_versions'] as Array<Design>)
+        : []
+
+    return designInfoList.map((designInfo) => {
+      return new ApiDesign(designInfo, {
+        openDesignApi: this,
+      })
+    })
+  }
+
+  async getDesignById(
+    designId: DesignId,
+    options: {
+      designVersionId?: DesignVersionId | null
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<ApiDesign> {
+    const cancelToken = createCancelToken.race([
+      options.cancelToken,
+      this._destroyTokenController.token,
+    ])
+
+    const res = await this._requestQueue.add(() =>
+      options.designVersionId
+        ? get(
+            this._apiRoot,
+            '/designs/{design_id}/versions/{version_id}',
+            {
+              'design_id': designId,
+              'version_id': options.designVersionId,
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              ...options,
+              cancelToken,
+            }
+          )
+        : get(
+            this._apiRoot,
+            '/designs/{design_id}',
+            {
+              'design_id': designId,
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              ...options,
+              cancelToken,
+            }
+          )
+    )
+
     if (
       res.statusCode === 401 ||
       // @ts-expect-error 403 is not included in the spec but checking it just in case.
       res.statusCode === 403
     ) {
-      this._console.error('OpenDesignApi#getDesignById()', { designId }, res)
+      this._console.error(
+        'OpenDesignApi#getDesignById()',
+        { designId },
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(
         res,
         'Cannot fetch design due to missing permissions'
@@ -123,25 +186,33 @@ export class OpenDesignApi implements IOpenDesignApi {
     }
 
     const body = res.body
-    const designOrProcessing = 'status' in body ? body : null
+    const design = 'status' in body ? body : null
 
-    if (!designOrProcessing || designOrProcessing['status'] === 'failed') {
-      this._console.error('OpenDesignApi#getDesignSummary()', { designId }, res)
+    if (!design) {
+      this._console.error(
+        'OpenDesignApi#getDesignSummary()',
+        { designId },
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot fetch design')
+    }
+    if (design['status'] === 'failed') {
+      throw new OpenDesignApiError(res, 'The design processing failed')
     }
 
     if (
       res.statusCode === 202 ||
-      designOrProcessing['status'] !== 'done' ||
-      !('completed_at' in designOrProcessing)
+      design['status'] !== 'done' ||
+      !('completed_at' in design)
     ) {
       await sleep(1000)
       cancelToken.throwIfCancelled()
 
-      return this.getDesignById(designId)
+      return this.getDesignById(designId, options)
     }
 
-    const apiDesign = new ApiDesign(designOrProcessing, {
+    const apiDesign = new ApiDesign(design, {
       openDesignApi: this,
     })
 
@@ -151,6 +222,7 @@ export class OpenDesignApi implements IOpenDesignApi {
   async getDesignSummary(
     designId: DesignId,
     options: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<DesignSummary> {
@@ -160,19 +232,34 @@ export class OpenDesignApi implements IOpenDesignApi {
     ])
 
     const res = await this._requestQueue.add(() =>
-      get(
-        this._apiRoot,
-        '/designs/{design_id}/summary',
-        {
-          'design_id': designId,
-        },
-        this._getAuthInfo(),
-        {
-          console: this._console,
-          ...options,
-          cancelToken,
-        }
-      )
+      options.designVersionId
+        ? get(
+            this._apiRoot,
+            '/designs/{design_id}/versions/{version_id}/summary',
+            {
+              'design_id': designId,
+              'version_id': options.designVersionId,
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              ...options,
+              cancelToken,
+            }
+          )
+        : get(
+            this._apiRoot,
+            '/designs/{design_id}/summary',
+            {
+              'design_id': designId,
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              ...options,
+              cancelToken,
+            }
+          )
     )
 
     if (
@@ -180,7 +267,12 @@ export class OpenDesignApi implements IOpenDesignApi {
       // @ts-expect-error 403 is not included in the spec but checking it just in case.
       res.statusCode === 403
     ) {
-      this._console.error('OpenDesignApi#getDesignById()', { designId }, res)
+      this._console.error(
+        'OpenDesignApi#getDesignById()',
+        { designId },
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(
         res,
         'Cannot fetch design due to missing permissions'
@@ -188,33 +280,39 @@ export class OpenDesignApi implements IOpenDesignApi {
     }
 
     const body = res.body
-    const designSummaryOrProcessing = 'status' in body ? body : null
+    const designSummary = 'status' in body ? body : null
 
-    if (
-      !designSummaryOrProcessing ||
-      designSummaryOrProcessing['status'] === 'failed'
-    ) {
-      this._console.error('OpenDesignApi#getDesignSummary()', { designId }, res)
+    if (!designSummary) {
+      this._console.error(
+        'OpenDesignApi#getDesignSummary()',
+        { designId },
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot fetch design')
+    }
+    if (designSummary['status'] === 'failed') {
+      throw new OpenDesignApiError(res, 'The design processing failed')
     }
 
     if (
       res.statusCode === 202 ||
-      designSummaryOrProcessing['status'] !== 'done' ||
-      !('artboards' in designSummaryOrProcessing)
+      designSummary['status'] !== 'done' ||
+      !('artboards' in designSummary)
     ) {
       await sleep(1000)
       cancelToken.throwIfCancelled()
 
-      return this.getDesignSummary(designId)
+      return this.getDesignSummary(designId, options)
     }
 
-    return designSummaryOrProcessing
+    return designSummary
   }
 
   async importDesignFile(
     designFileStream: ReadStream,
     options: {
+      designId?: DesignId | null
       format?: DesignImportFormatEnum
       cancelToken?: CancelToken | null
     } = {}
@@ -225,34 +323,58 @@ export class OpenDesignApi implements IOpenDesignApi {
     ])
 
     const res = await this._requestQueue.add(() =>
-      postMultipart(
-        this._apiRoot,
-        '/designs/upload',
-        {},
-        {
-          'file': designFileStream,
-          ...(options.format ? { 'format': options.format } : {}),
-        },
-        this._getAuthInfo(),
-        {
-          console: this._console,
-          cancelToken,
-        }
-      )
+      options.designId
+        ? postMultipart(
+            this._apiRoot,
+            '/designs/{design_id}/versions/upload',
+            { 'design_id': options.designId },
+            {
+              'file': designFileStream,
+              ...(options.format ? { 'format': options.format } : {}),
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              cancelToken,
+            }
+          )
+        : postMultipart(
+            this._apiRoot,
+            '/designs/upload',
+            {},
+            {
+              'file': designFileStream,
+              ...(options.format ? { 'format': options.format } : {}),
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              cancelToken,
+            }
+          )
     )
 
     if (res.statusCode !== 201) {
-      this._console.error('OpenDesignApi#importDesignFile()', res)
+      this._console.error(
+        'OpenDesignApi#importDesignFile()',
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
-    const designId = res.body['design']['id']
-    return this.getDesignById(designId)
+    const design = res.body['design']
+
+    // NOTE: Waits for the design to become fully processed.
+    return this.getDesignById(design['id'], {
+      designVersionId: design['version_id'],
+    })
   }
 
   async importDesignLink(
     url: string,
     options: {
+      designId?: DesignId | null
       format?: DesignImportFormatEnum
       cancelToken?: CancelToken | null
     } = {}
@@ -263,32 +385,56 @@ export class OpenDesignApi implements IOpenDesignApi {
     ])
 
     const res = await this._requestQueue.add(() =>
-      post(
-        this._apiRoot,
-        '/designs/link',
-        {},
-        {
-          'url': url,
-          ...(options.format ? { 'format': options.format } : {}),
-        },
-        this._getAuthInfo(),
-        {
-          console: this._console,
-          cancelToken,
-        }
-      )
+      options.designId
+        ? post(
+            this._apiRoot,
+            '/designs/{design_id}/versions/link',
+            { 'design_id': options.designId },
+            {
+              'url': url,
+              ...(options.format ? { 'format': options.format } : {}),
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              cancelToken,
+            }
+          )
+        : post(
+            this._apiRoot,
+            '/designs/link',
+            {},
+            {
+              'url': url,
+              ...(options.format ? { 'format': options.format } : {}),
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              cancelToken,
+            }
+          )
     )
 
     if (res.statusCode !== 201) {
-      this._console.error('OpenDesignApi#importDesignLink()', res)
+      this._console.error(
+        'OpenDesignApi#importDesignLink()',
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
-    const designId = res.body['design']['id']
-    return this.getDesignById(designId)
+    const design = res.body['design']
+
+    // NOTE: Waits for the design to become fully processed.
+    return this.getDesignById(design['id'], {
+      designVersionId: design['version_id'],
+    })
   }
 
   async importFigmaDesignLink(params: {
+    designId?: DesignId | null
     figmaToken: string
     figmaFileKey: string
     figmaIds?: Array<string> | null
@@ -301,31 +447,55 @@ export class OpenDesignApi implements IOpenDesignApi {
     ])
 
     const res = await this._requestQueue.add(() =>
-      post(
-        this._apiRoot,
-        '/designs/figma-link',
-        {},
-        {
-          'figma_token': params.figmaToken,
-          'figma_filekey': params.figmaFileKey,
-          ...(params.figmaIds ? { 'figma_ids': params.figmaIds } : {}),
-          ...(params.name ? { 'design_name': params.name } : {}),
-        },
-        this._getAuthInfo(),
-        {
-          console: this._console,
-          cancelToken,
-        }
-      )
+      params.designId
+        ? post(
+            this._apiRoot,
+            '/designs/{design_id}/versions/figma-link',
+            { 'design_id': params.designId },
+            {
+              'figma_token': params.figmaToken,
+              'figma_filekey': params.figmaFileKey,
+              ...(params.figmaIds ? { 'figma_ids': params.figmaIds } : {}),
+              ...(params.name ? { 'design_name': params.name } : {}),
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              cancelToken,
+            }
+          )
+        : post(
+            this._apiRoot,
+            '/designs/figma-link',
+            {},
+            {
+              'figma_token': params.figmaToken,
+              'figma_filekey': params.figmaFileKey,
+              ...(params.figmaIds ? { 'figma_ids': params.figmaIds } : {}),
+              ...(params.name ? { 'design_name': params.name } : {}),
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              cancelToken,
+            }
+          )
     )
 
     if (res.statusCode !== 201) {
-      this._console.error('OpenDesignApi#importDesignLink()', res)
+      this._console.error(
+        'OpenDesignApi#importDesignLink()',
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
-    const designId = res.body['design']['id']
-    return this.getDesignById(designId)
+    const design = res.body['design']
+    // NOTE: Waits for the design to become fully processed.
+    return this.getDesignById(design['id'], {
+      designVersionId: design['version_id'],
+    })
   }
 
   async importFigmaDesignLinkWithExports(params: {
@@ -335,7 +505,7 @@ export class OpenDesignApi implements IOpenDesignApi {
     name?: string | null
     exports: Array<{ format: DesignExportTargetFormatEnum }>
     cancelToken?: CancelToken | null
-  }): Promise<{ designId: DesignId; exports: Array<ApiDesignExport> }> {
+  }): Promise<{ design: ApiDesign; exports: Array<ApiDesignExport> }> {
     const cancelToken = createCancelToken.race([
       params.cancelToken,
       this._destroyTokenController.token,
@@ -362,17 +532,24 @@ export class OpenDesignApi implements IOpenDesignApi {
     )
 
     if (res.statusCode !== 201) {
-      this._console.error('OpenDesignApi#importDesignLink()', res)
+      this._console.error(
+        'OpenDesignApi#importDesignLink()',
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot import design')
     }
 
-    const designId = res.body['design']['id']
+    const design = res.body['design']
 
     return {
-      designId,
+      // NOTE: Waits for the design to become fully processed.
+      design: await this.getDesignById(design['id'], {
+        designVersionId: design['version_id'],
+      }),
       exports: res.body['exports'].map((designExportData) => {
         return new ApiDesignExport(designExportData, {
-          designId,
+          designId: design['id'],
           openDesignApi: this,
         })
       }),
@@ -383,6 +560,7 @@ export class OpenDesignApi implements IOpenDesignApi {
     designId: DesignId,
     artboardId: ArtboardId,
     options: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<OctopusDocument> {
@@ -392,21 +570,42 @@ export class OpenDesignApi implements IOpenDesignApi {
     ])
 
     const res = await this._requestQueue.add(() =>
-      get(
-        this._apiRoot,
-        '/designs/{design_id}/artboards/{artboard_id}/content',
-        { 'design_id': designId, 'artboard_id': artboardId },
-        this._getAuthInfo(),
-        {
-          console: this._console,
-          ...options,
-          cancelToken,
-        }
-      )
+      options.designVersionId
+        ? get(
+            this._apiRoot,
+            '/designs/{design_id}/versions/{version_id}/artboards/{artboard_id}/content',
+            {
+              'design_id': designId,
+              'version_id': options.designVersionId,
+              'artboard_id': artboardId,
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              ...options,
+              cancelToken,
+            }
+          )
+        : get(
+            this._apiRoot,
+            '/designs/{design_id}/artboards/{artboard_id}/content',
+            { 'design_id': designId, 'artboard_id': artboardId },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              ...options,
+              cancelToken,
+            }
+          )
     )
 
     if (res.statusCode !== 200 && res.statusCode !== 202) {
-      this._console.error('OpenDesignApi#getDesignById()', { designId }, res)
+      this._console.error(
+        'OpenDesignApi#getDesignById()',
+        { designId },
+        res.statusCode,
+        res.body
+      )
       throw new OpenDesignApiError(res, 'Cannot fetch artboard content')
     }
 
@@ -414,7 +613,7 @@ export class OpenDesignApi implements IOpenDesignApi {
       await sleep(1000)
       cancelToken.throwIfCancelled()
 
-      return this.getDesignArtboardContent(designId, artboardId)
+      return this.getDesignArtboardContent(designId, artboardId, options)
     }
 
     return res.body
@@ -424,6 +623,7 @@ export class OpenDesignApi implements IOpenDesignApi {
     designId: DesignId,
     artboardId: ArtboardId,
     options: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<NodeJS.ReadableStream> {
@@ -433,17 +633,33 @@ export class OpenDesignApi implements IOpenDesignApi {
     ])
 
     const res = await this._requestQueue.add(() =>
-      getStream(
-        this._apiRoot,
-        '/designs/{design_id}/artboards/{artboard_id}/content',
-        { 'design_id': designId, 'artboard_id': artboardId },
-        this._getAuthInfo(),
-        {
-          console: this._console,
-          ...options,
-          cancelToken,
-        }
-      )
+      options.designVersionId
+        ? getStream(
+            this._apiRoot,
+            '/designs/{design_id}/versions/{version_id}/artboards/{artboard_id}/content',
+            {
+              'design_id': designId,
+              'version_id': options.designVersionId,
+              'artboard_id': artboardId,
+            },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              ...options,
+              cancelToken,
+            }
+          )
+        : getStream(
+            this._apiRoot,
+            '/designs/{design_id}/artboards/{artboard_id}/content',
+            { 'design_id': designId, 'artboard_id': artboardId },
+            this._getAuthInfo(),
+            {
+              console: this._console,
+              ...options,
+              cancelToken,
+            }
+          )
     )
 
     if (res.statusCode !== 200 && res.statusCode !== 202) {
@@ -459,7 +675,11 @@ export class OpenDesignApi implements IOpenDesignApi {
       await sleep(1000)
       cancelToken?.throwIfCancelled()
 
-      return this.getDesignArtboardContentJsonStream(designId, artboardId)
+      return this.getDesignArtboardContentJsonStream(
+        designId,
+        artboardId,
+        options
+      )
     }
 
     return res.stream
@@ -497,7 +717,7 @@ export class OpenDesignApi implements IOpenDesignApi {
         { designId, ...params },
         res
       )
-      throw new OpenDesignApiError(res, 'Cannot convert the design')
+      throw new OpenDesignApiError(res, 'Cannot export the design')
     }
     if (res.body['status'] === 'failed') {
       throw new OpenDesignApiError(res, 'Design export failed')
@@ -557,6 +777,7 @@ export class OpenDesignApi implements IOpenDesignApi {
     designId: DesignId,
     designExportId: DesignExportId,
     options: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<NodeJS.ReadableStream> {
@@ -572,6 +793,7 @@ export class OpenDesignApi implements IOpenDesignApi {
     designId: DesignId,
     bitmapKey: string,
     options: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<NodeJS.ReadableStream> {

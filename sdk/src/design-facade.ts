@@ -1,5 +1,6 @@
 import { ArtboardFacade, LayerAttributesConfig } from './artboard-facade'
 import { DesignExportFacade } from './design-export-facade'
+import { DesignListItemFacade } from './design-list-item-facade'
 import { LayerCollectionFacade } from './layer-collection-facade'
 import { PageFacade } from './page-facade'
 
@@ -29,7 +30,7 @@ import { enumerablizeWithPrototypeGetters } from './utils/object-utils'
 import { createLayerEntitySelector } from './utils/selector-utils'
 
 import type { CancelToken } from '@avocode/cancel-token'
-import type { DesignId, IApiDesign } from '@opendesign/api'
+import type { DesignId, DesignVersionId, IApiDesign } from '@opendesign/api'
 import type {
   Bounds,
   IRenderingDesign,
@@ -101,6 +102,15 @@ export class DesignFacade {
   get id(): DesignId | null {
     const apiDesign = this._apiDesign
     return apiDesign?.id || null
+  }
+
+  /**
+   * The ID of the referenced server-side design version. This is not available when the API is not configured for the SDK.
+   * @category Identification
+   */
+  get versionId(): DesignVersionId | null {
+    const apiDesign = this._apiDesign
+    return apiDesign?.versionId || null
   }
 
   /**
@@ -249,6 +259,282 @@ export class DesignFacade {
   /** @internal */
   setRenderingDesign(renderingDesign: IRenderingDesign): void {
     this._renderingDesign = renderingDesign
+  }
+
+  /**
+   * Returns a complete list of versions of the design.
+   *
+   * Data of the design versions themselves are not downloaded at this point. Each item in the design version list can be expanded to a full-featured design entity.
+   *
+   * The design version list contains both processed and unprocessed design versions.
+   *
+   * The API has to be configured when using this method.
+   *
+   * @example
+   * ```typescript
+   * const versionList = await design.getVersions()
+   * const versionItem = versionList.find((version) => version.status === 'done')
+   * // Expand the design version list item to a full design entity
+   * const version = await versionItem.fetchDesign()
+   * // Continue working with the processed design version
+   * const versionArtboards = version.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected. A cancellation token can be created via {@link createCancelToken}.
+   * @returns An array of design list item objects which can be used for retrieving the design versions using the API.
+   */
+  async getVersions(
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<Array<DesignListItemFacade>> {
+    const apiDesign = this._apiDesign
+    if (!apiDesign) {
+      throw new Error('The API is not configured.')
+    }
+
+    const apiDesignVersions = await apiDesign.getVersionList(options)
+    const versionItems = apiDesignVersions.map((apiDesignVersion) => {
+      const versionItem = new DesignListItemFacade(apiDesignVersion, {
+        sdk: this._sdk,
+      })
+      if (this._fontSource) {
+        versionItem.setFontSource(this._fontSource.clone())
+      }
+      return versionItem
+    })
+
+    return versionItems
+  }
+
+  /**
+   * Fetches a previously imported version of the design from the API.
+   *
+   * The API has to be configured when using this method. Local caching is established in case the local cache is configured.
+   *
+   * @example
+   * ```typescript
+   * const version = await design.getVersionById('<VERSION_ID>')
+   *
+   * // Continue working with the processed design version
+   * const versionArtboards = version.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param designVersionId An ID of a server-side design version assigned during import (via `importVersionDesignFile()`).
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the local cache is not cleared once created). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  getVersionById(
+    designVersionId: DesignVersionId,
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<DesignFacade> {
+    const apiDesign = this._apiDesign
+    if (!apiDesign) {
+      throw new Error('The API is not configured.')
+    }
+
+    return this._sdk.fetchDesignById(apiDesign.id, {
+      ...options,
+      designVersionId,
+    })
+  }
+
+  /**
+   * Fetches a previously imported version of the design newer than the current version of the {@link DesignFacade} entity from the API.
+   *
+   * The API has to be configured when using this method. Local caching is established in case the local cache is configured.
+   *
+   * @example
+   * ```typescript
+   * const nextVersion = await design.getNextVersion()
+   *
+   * // Continue working with the processed design version
+   * const versionArtboards = nextVersion.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the local cache is not cleared once created). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  async getNextVersion(
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<DesignFacade | null> {
+    const versionItems = await this.getVersions(options)
+
+    const currentVersionIndex = versionItems.findIndex((versionItem) => {
+      return versionItem.versionId === this.versionId
+    })
+
+    const nextVersionIndex =
+      currentVersionIndex > 0 ? currentVersionIndex - 1 : -1
+    const nextVersionItem =
+      nextVersionIndex > -1 ? versionItems[nextVersionIndex] : null
+
+    return nextVersionItem ? nextVersionItem.fetchDesign(options) : null
+  }
+
+  /**
+   * Fetches a previously imported version of the design older than the current version of the {@link DesignFacade} entity from the API.
+   *
+   * The API has to be configured when using this method. Local caching is established in case the local cache is configured.
+   *
+   * @example
+   * ```typescript
+   * const prevVersion = await design.getPrevVersion()
+   *
+   * // Continue working with the processed design version
+   * const versionArtboards = prevVersion.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the local cache is not cleared once created). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  async getPreviousVersion(
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<DesignFacade | null> {
+    const versionItems = await this.getVersions()
+
+    const currentVersionIndex = versionItems.findIndex((versionItem) => {
+      return versionItem.versionId === this.versionId
+    })
+
+    const prevVersionIndex =
+      currentVersionIndex > -1 ? currentVersionIndex + 1 : -1
+    const prevVersionItem =
+      currentVersionIndex > -1 ? versionItems[prevVersionIndex] : null
+
+    return prevVersionItem ? prevVersionItem.fetchDesign(options) : null
+  }
+
+  /**
+   * Imports a local design file (Photoshop, Sketch, Xd, Illustrator) as a version of the design.
+   *
+   * All versions of a design must originate from the same design file format.
+   *
+   * The API has to be configured when using this method. This is also requires a file system (i.e. it is not available in the browser).
+   *
+   * The design file is automatically uploaded to the API and local caching is established.
+   *
+   * @example
+   * ```typescript
+   * const version = await design.importVersionDesignFile('data.sketch')
+   * console.log(version.sourceFilename) // == path.join(process.cwd(), 'data.sketch')
+   * console.log(version.id) // == server-generated UUID
+   *
+   * // Continue working with the processed design version
+   * const versionArtboards = version.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param filePath An absolute design file path or a path relative to the current working directory.
+   * @param options Options
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  importVersionDesignFile(
+    filePath: string,
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<DesignFacade> {
+    return this._sdk.importDesignFile(filePath, {
+      ...options,
+      designId: this.id,
+    })
+  }
+
+  /**
+   * Imports a design file located at the specified URL as a version of the design.
+   *
+   * All versions of a design must originate from the same design file format.
+   *
+   * The API has to be configured when using this method.
+   *
+   * The design file is not downloaded to the local environment but rather imported via the API directly. Once imported via the API, the design version behaves exactly like a design version fetched via {@link DesignFacade.getVersionById}.
+   *
+   * @example
+   * ```typescript
+   * const version = await sdk.importVersionDesignLink('https://example.com/designs/data.sketch')
+   * console.log(version.id) // == server-generated UUID
+   *
+   * // Continue working with the processed design version
+   * const versionArtboards = version.getArtboards()
+   * ```
+   *
+   * @category Design Versions
+   * @param url A design file URL.
+   * @param options Options
+   * @param options.format The format of the design file in case it cannot be inferred from the URL.
+   * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  importVersionDesignLink(
+    url: string,
+    options: {
+      cancelToken?: CancelToken | null
+    } = {}
+  ): Promise<DesignFacade> {
+    return this._sdk.importDesignLink(url, {
+      ...options,
+      designId: this.id,
+    })
+  }
+
+  /**
+   * Imports a Figma design as a version of the design.
+   *
+   * All versions of a design must originate from the same design file format which makes this method usable only for designs originally also imported from Figma.
+   *
+   * The API has to be configured when using this method.
+   *
+   * The design is automatically imported by the API and local caching is established.
+   *
+   * @example
+   * ```typescript
+   * const version = await design.importVersionFigmaDesign({
+   *   figmaToken: '<FIGMA_TOKEN>',
+   *   figmaFileKey: 'abc',
+   * })
+   *
+   * console.log(version.id) // == server-generated UUID
+   *
+   * // Continue working with the processed design version
+   * const artboards = version.getArtboards()
+   * ```
+   *
+   * @category Figma Design Usage
+   * @param params Info about the Figma design
+   * @param params.figmaToken A Figma access token generated in the "Personal access tokens" section of [Figma account settings](https://www.figma.com/settings).
+   * @param params.figmaFileKey A Figma design "file key" from the design URL (i.e. `abc` from `https://www.figma.com/file/abc/Sample-File`).
+   * @param params.figmaIds A listing of Figma design frames to use.
+   * @param params.designName A name override for the design version. The original Figma design name is used by default.
+   * @param params.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
+   * @returns A design object which can be used for retrieving data from the design version using the API.
+   */
+  importVersionFigmaDesign(params: {
+    figmaToken: string
+    figmaFileKey: string
+    figmaIds?: Array<string>
+    designName?: string | null
+    cancelToken?: CancelToken | null
+  }): Promise<DesignFacade> {
+    return this._sdk.importFigmaDesign({
+      ...params,
+      designId: this.id,
+    })
   }
 
   /**
@@ -942,6 +1228,8 @@ export class DesignFacade {
    *
    * This configuration overrides the global font directory configuration (set up via {@link Sdk.setGlobalFontDirectory}) – i.e. fonts from the globally configured directory are not used for the design.
    *
+   * This configuration is copied to any other versions of the design later obtained through this design object as the default font configuration.
+   *
    * @category Configuration
    * @param fontDirectoryPath An absolute path to a directory or a path relative to the process working directory (`process.cwd()` in node.js). When `null` is provided, the configuration is cleared for the design.
    *
@@ -973,6 +1261,8 @@ export class DesignFacade {
    * The first font from this list which is available in the system is used for all text layers with missing actual fonts. If none of the fonts are available, the text layers are not rendered.
    *
    * This configuration overrides/extends the global configuration set via {@link Sdk.setGlobalFallbackFonts}. Fonts specified here are preferred over the global config.
+   *
+   * This configuration is copied to any other versions of the design later obtained through this design object as the default font configuration.
    *
    * @category Configuration
    * @param fallbackFonts An ordered list of font postscript names or font file paths.

@@ -31,6 +31,8 @@ import type { LocalDesignManager } from './local/local-design-manager'
 import type { SystemFontManager } from './local/system-font-manager'
 
 type DesignExportTargetFormatEnum = components['schemas']['DesignExportTargetFormatEnum']
+type DesignId = components['schemas']['DesignId']
+type DesignVersionId = components['schemas']['DesignVersionId']
 type LayerOctopusData = octopusComponents['schemas']['Layer']
 type LayerId = LayerOctopusData['id']
 
@@ -353,7 +355,7 @@ export class Sdk {
    *
    * The API has to be configured when using this method. This is also requires a file system (i.e. it is not available in the browser).
    *
-   * The design is automatically uploaded to the API and local caching is established.
+   * The design file is automatically uploaded to the API and local caching is established.
    *
    * @example
    * ```typescript
@@ -368,12 +370,14 @@ export class Sdk {
    * @category Local Design File Usage
    * @param filePath An absolute design file path or a path relative to the current working directory.
    * @param options Options
+   * @param options.designId The ID of the design of which a new version should be imported. By default, a new design is created.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
-   * @returns A design object which can be used for retrieving data from the local design file using the API.
+   * @returns A design object which can be used for retrieving data from the design using the API.
    */
   async importDesignFile(
     filePath: string,
     options: {
+      designId?: DesignId | null
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<DesignFacade> {
@@ -397,8 +401,9 @@ export class Sdk {
       options
     )
 
-    return this._fetchDesignById(apiDesign.id, {
+    return this._createApiDesignFacade(apiDesign, {
       sourceFilename: String(designFileStream.path),
+      cancelToken: options.cancelToken || null,
     })
   }
 
@@ -421,13 +426,15 @@ export class Sdk {
    * @category Local Design File Usage
    * @param url A design file URL.
    * @param options Options
+   * @param options.designId The ID of the design to which to import the design file as a new version. The design file format must be the same as the format of previous versions.
    * @param options.format The format of the design file in case it cannot be inferred from the URL.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
-   * @returns A design object which can be used for retrieving data from the local design file using the API.
+   * @returns A design object which can be used for retrieving data from the design using the API.
    */
   async importDesignLink(
     url: string,
     options: {
+      designId?: DesignId | null
       format?: DesignImportFormatEnum
       cancelToken?: CancelToken | null
     } = {}
@@ -443,7 +450,7 @@ export class Sdk {
 
     const apiDesign = await openDesignApi.importDesignLink(url, options)
 
-    return this.fetchDesignById(apiDesign.id, {
+    return this._createApiDesignFacade(apiDesign, {
       cancelToken: options.cancelToken || null,
     })
   }
@@ -470,14 +477,16 @@ export class Sdk {
    *
    * @category Figma Design Usage
    * @param params Info about the Figma design
+   * @param params.designId The ID of the design to which to import the Figma design as a new version. The previous versions of the design must also be imported from Figma.
    * @param params.figmaToken A Figma access token generated in the "Personal access tokens" section of [Figma account settings](https://www.figma.com/settings).
    * @param params.figmaFileKey A Figma design "file key" from the design URL (i.e. `abc` from `https://www.figma.com/file/abc/Sample-File`).
    * @param params.figmaIds A listing of Figma design frames to use.
    * @param params.designName A name override for the design. The original Figma design name is used by default.
    * @param params.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
-   * @returns A design object which can be used for retrieving data from the Figma design using the API.
+   * @returns A design object which can be used for retrieving data from the design using the API.
    */
   async importFigmaDesign(params: {
+    designId?: DesignId | null
     figmaToken: string
     figmaFileKey: string
     figmaIds?: Array<string>
@@ -495,7 +504,9 @@ export class Sdk {
 
     const apiDesign = await openDesignApi.importFigmaDesignLink(params)
 
-    return this.fetchDesignById(apiDesign.id)
+    return this._createApiDesignFacade(apiDesign, {
+      cancelToken: params.cancelToken || null,
+    })
   }
 
   /**
@@ -521,6 +532,7 @@ export class Sdk {
    *
    * @category Figma Design Usage
    * @param params Info about the Figma design
+   * @param params.designId The ID of the design to which to import the Figma design as a new version. The previous versions of the design must also be imported from Figma.
    * @param params.figmaToken A Figma access token generated in the "Personal access tokens" section of [Figma account settings](https://www.figma.com/settings).
    * @param params.figmaFileKey A Figma design "file key" from the design URL (i.e. `abc` from `https://www.figma.com/file/abc/Sample-File`).
    * @param params.figmaIds A listing of Figma design frames to use.
@@ -530,6 +542,7 @@ export class Sdk {
    * @returns A design object which can be used for retrieving data from the Figma design or downloading the exported design file using the API.
    */
   async convertFigmaDesign(params: {
+    designId?: DesignId | null
     figmaToken: string
     figmaFileKey: string
     figmaIds?: Array<string>
@@ -547,16 +560,16 @@ export class Sdk {
     }
 
     const {
-      designId,
+      design: apiDesign,
       exports,
     } = await openDesignApi.importFigmaDesignLinkWithExports({
       ...params,
       cancelToken: params.cancelToken || null,
     })
 
-    return this._fetchDesignById(designId, {
+    return this._createApiDesignFacade(apiDesign, {
       exports,
-      cancelToken: params.cancelToken || null,
+      cancelToken: params.cancelToken,
     })
   }
 
@@ -624,12 +637,14 @@ export class Sdk {
    * @category Server Side Design File Usage
    * @param designId An ID of a server-side design assigned during import (via `importDesignFile()`, `openFigmaDesign()` or `convertFigmaDesign()`).
    * @param options Options
+   * @param options.designVersionId The ID of the design version to fetch. Defaults to the latest version.
    * @param options.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the local cache is not cleared once created). A cancellation token can be created via {@link createCancelToken}.
    * @returns A design object which can be used for retrieving data from the design using the API.
    */
   async fetchDesignById(
     designId: string,
     options: {
+      designVersionId?: DesignVersionId | null
       cancelToken?: CancelToken | null
     } = {}
   ): Promise<DesignFacade> {
@@ -639,6 +654,7 @@ export class Sdk {
   private async _fetchDesignById(
     designId: string,
     params: {
+      designVersionId?: DesignVersionId | null
       sourceFilename?: string | null
       exports?: Array<IApiDesignExport> | null
       cancelToken?: CancelToken | null
@@ -653,11 +669,33 @@ export class Sdk {
       throw new Error('Open Design API is not configured.')
     }
 
-    const cancelToken = params.cancelToken || null
+    const {
+      designVersionId = null,
+      cancelToken = null,
+      ...facadeParams
+    } = params
 
     const apiDesign = await openDesignApi.getDesignById(designId, {
+      designVersionId,
       cancelToken,
     })
+
+    return this._createApiDesignFacade(apiDesign, {
+      ...facadeParams,
+      cancelToken,
+    })
+  }
+
+  private async _createApiDesignFacade(
+    apiDesign: IApiDesign,
+    params: {
+      sourceFilename?: string | null
+      exports?: Array<IApiDesignExport> | null
+      cancelToken?: CancelToken | null
+    }
+  ) {
+    const cancelToken = params.cancelToken
+
     const designFacade = await createDesignFromOpenDesignApiDesign(apiDesign, {
       sdk: this,
       console: this._console,
@@ -676,9 +714,14 @@ export class Sdk {
 
       const localDesignCache = this._localDesignCache
       const cachedOctopusFilename = localDesignCache
-        ? await localDesignCache.getDesignOctopusFilename(apiRoot, designId, {
-            cancelToken,
-          })
+        ? await localDesignCache.getDesignOctopusFilename(
+            apiRoot,
+            apiDesign.id,
+            apiDesign.versionId,
+            {
+              cancelToken,
+            }
+          )
         : null
 
       const localDesign = cachedOctopusFilename
@@ -698,7 +741,8 @@ export class Sdk {
       if (localDesignCache && !cachedOctopusFilename) {
         localDesignCache.setDesignOctopusFilename(
           apiRoot,
-          designId,
+          apiDesign.id,
+          apiDesign.versionId,
           localDesign.filename
         )
       }

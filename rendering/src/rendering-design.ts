@@ -5,10 +5,10 @@ import { sequence } from './utils/async-utils'
 import { serializeBounds } from './utils/bounds-utils'
 import mkdirp from 'mkdirp'
 
-import type { RenderingProcess } from './rendering-process'
 import type { Bounds } from './types/bounds.type'
 import type { LayerAttributesConfig } from './types/layer-attributes.type'
 import type { IRenderingDesign } from './types/rendering-design.iface'
+import type { RenderingSession } from './rendering-session'
 import type { LayerBounds } from './index'
 
 export class RenderingDesign implements IRenderingDesign {
@@ -16,7 +16,7 @@ export class RenderingDesign implements IRenderingDesign {
   readonly bitmapAssetDirectoryPath: string | null
 
   private _fontDirectoryPath: string | null
-  private _renderingProcess: RenderingProcess
+  private _renderingSession: RenderingSession
   private _console: Console
 
   private _artboards: Map<string, RenderingArtboard> = new Map()
@@ -27,14 +27,14 @@ export class RenderingDesign implements IRenderingDesign {
     id: string
     bitmapAssetDirectoryPath: string | null
     fontDirectoryPath: string | null
-    renderingProcess: RenderingProcess
+    renderingSession: RenderingSession
     console?: Console | null
   }) {
     this.id = params.id
     this.bitmapAssetDirectoryPath = params.bitmapAssetDirectoryPath || null
 
     this._fontDirectoryPath = params.fontDirectoryPath || null
-    this._renderingProcess = params.renderingProcess
+    this._renderingSession = params.renderingSession
     this._console = params.console || console
   }
 
@@ -72,7 +72,7 @@ export class RenderingDesign implements IRenderingDesign {
 
     const artboard = new RenderingArtboard(artboardId, {
       designId: this.id,
-      renderingProcess: this._renderingProcess,
+      renderingSession: this._renderingSession,
       console: this._console,
       pageId: params.pageId || null,
       symbolId: params.symbolId || null,
@@ -103,7 +103,7 @@ export class RenderingDesign implements IRenderingDesign {
 
     this._loadedFonts.add(postscriptName)
 
-    await this._renderingProcess.execCommand('load-font', {
+    await this._renderingSession.execCommand('load-font', {
       'design': this.id,
       'key': postscriptName,
       'file': filename,
@@ -118,7 +118,7 @@ export class RenderingDesign implements IRenderingDesign {
       return
     }
 
-    await this._renderingProcess.execCommand('load-image', {
+    await this._renderingSession.execCommand('load-image', {
       'design': this.id,
       'key': bitmapKey,
       'file': filename,
@@ -156,7 +156,7 @@ export class RenderingDesign implements IRenderingDesign {
   ): Promise<void> {
     await mkdirp(dirname(filePath))
 
-    const result = await this._renderingProcess.execCommand('render-page', {
+    const result = await this._renderingSession.execCommand('render-page', {
       'design': this.id,
       'page': pageId,
       'file': filePath,
@@ -276,13 +276,6 @@ export class RenderingDesign implements IRenderingDesign {
   }
 
   async destroy(): Promise<void> {
-    const result = await this._renderingProcess.execCommand('unload-design', {
-      'design': this.id,
-    })
-
-    if (!result['ok']) {
-      this._console.error('Rendering:', 'unload-design', '->', result)
-      throw new Error('Failed to destroy design')
-    }
+    await this._renderingSession.destroy()
   }
 }

@@ -5,20 +5,20 @@ import { serializeLayerAttributes } from './utils/layer-attributes-utils'
 import mkdirp from 'mkdirp'
 import { v4 as uuid } from 'uuid'
 
-import type { RenderingProcess } from './rendering-process'
 import type { Bounds } from './types/bounds.type'
 import type { LayerAttributes } from './types/commands.type'
 import type {
   IRenderingArtboard,
   LayerBounds,
 } from './types/rendering-artboard.iface'
+import type { RenderingSession } from './rendering-session'
 import type { LayerAttributesConfig } from './types/layer-attributes.type'
 
 export class RenderingArtboard implements IRenderingArtboard {
   readonly id: string
   readonly symbolId: string | null
 
-  private _renderingProcess: RenderingProcess
+  private _renderingSession: RenderingSession
   private _console: Console
 
   private _designId: string
@@ -30,7 +30,7 @@ export class RenderingArtboard implements IRenderingArtboard {
   constructor(
     id: string,
     params: {
-      renderingProcess: RenderingProcess
+      renderingSession: RenderingSession
       console?: Console | null
       designId: string
       symbolId?: string | null
@@ -42,7 +42,7 @@ export class RenderingArtboard implements IRenderingArtboard {
     this.id = id
     this.symbolId = params.symbolId || null
 
-    this._renderingProcess = params.renderingProcess
+    this._renderingSession = params.renderingSession
     this._console = params.console || console
 
     this._designId = params.designId
@@ -66,7 +66,7 @@ export class RenderingArtboard implements IRenderingArtboard {
     fontDirectoryPath?: string | null
     offset?: { x: number; y: number } | null
   }): Promise<void> {
-    const loadResult = await this._renderingProcess.execCommand(
+    const loadResult = await this._renderingSession.execCommand(
       'load-artboard',
       {
         'design': this._designId,
@@ -88,7 +88,7 @@ export class RenderingArtboard implements IRenderingArtboard {
   }
 
   async setPage(nextPageId: string | null): Promise<void> {
-    const setPageResult = await this._renderingProcess.execCommand(
+    const setPageResult = await this._renderingSession.execCommand(
       'set-artboard-page',
       {
         'design': this._designId,
@@ -104,7 +104,7 @@ export class RenderingArtboard implements IRenderingArtboard {
   }
 
   async setOffset(nextOffset: { x: number; y: number }): Promise<void> {
-    const setOffsetResult = await this._renderingProcess.execCommand(
+    const setOffsetResult = await this._renderingSession.execCommand(
       'set-artboard-offset',
       {
         'design': this._designId,
@@ -118,7 +118,7 @@ export class RenderingArtboard implements IRenderingArtboard {
   }
 
   async _getPendingArtboardDependencies(): Promise<Array<string>> {
-    const dependencyResult = await this._renderingProcess.execCommand(
+    const dependencyResult = await this._renderingSession.execCommand(
       'get-artboard-dependencies',
       {
         'design': this._designId,
@@ -133,7 +133,7 @@ export class RenderingArtboard implements IRenderingArtboard {
   }
 
   async markAsReady(): Promise<void> {
-    const finalizeResult = await this._renderingProcess.execCommand(
+    const finalizeResult = await this._renderingSession.execCommand(
       'finalize-artboard',
       {
         'design': this._designId,
@@ -157,7 +157,7 @@ export class RenderingArtboard implements IRenderingArtboard {
 
     await mkdirp(dirname(filePath))
 
-    const result = await this._renderingProcess.execCommand('render-artboard', {
+    const result = await this._renderingSession.execCommand('render-artboard', {
       'design': this._designId,
       'artboard': this.id,
       'file': filePath,
@@ -209,7 +209,7 @@ export class RenderingArtboard implements IRenderingArtboard {
       mkdirp(dirname(filePath)),
     ])
 
-    const result = await this._renderingProcess.execCommand('save-image', {
+    const result = await this._renderingSession.execCommand('save-image', {
       'image': imageName,
       'file': filePath,
     })
@@ -227,7 +227,7 @@ export class RenderingArtboard implements IRenderingArtboard {
       throw new Error('The artboard is not ready')
     }
 
-    const result = await this._renderingProcess.execCommand('get-layer', {
+    const result = await this._renderingSession.execCommand('get-layer', {
       'design': this._designId,
       'artboard': this.id,
       'layer': layerId,
@@ -258,7 +258,7 @@ export class RenderingArtboard implements IRenderingArtboard {
       options
     )
 
-    const result = await this._renderingProcess.execCommand('get-image', {
+    const result = await this._renderingSession.execCommand('get-image', {
       'image': imageName,
     })
 
@@ -277,7 +277,7 @@ export class RenderingArtboard implements IRenderingArtboard {
       throw new Error('The artboard is not ready')
     }
 
-    const result = await this._renderingProcess.execCommand('identify-layer', {
+    const result = await this._renderingSession.execCommand('identify-layer', {
       'design': this._designId,
       'artboard': this.id,
       'position': [x, y],
@@ -298,7 +298,7 @@ export class RenderingArtboard implements IRenderingArtboard {
       throw new Error('The artboard is not ready')
     }
 
-    const result = await this._renderingProcess.execCommand('identify-layers', {
+    const result = await this._renderingSession.execCommand('identify-layers', {
       'design': this._designId,
       'artboard': this.id,
       'bounds': serializeBounds(bounds),
@@ -319,7 +319,7 @@ export class RenderingArtboard implements IRenderingArtboard {
 
     this._ready = false
 
-    const result = await this._renderingProcess.execCommand('unload-artboard', {
+    const result = await this._renderingSession.execCommand('unload-artboard', {
       'design': this._designId,
       'artboard': this.id,
     })
@@ -379,7 +379,7 @@ export class RenderingArtboard implements IRenderingArtboard {
 
     const imageName = uuid()
 
-    const result = await this._renderingProcess.execCommand(
+    const result = await this._renderingSession.execCommand(
       'render-artboard-composition',
       {
         'design': this._designId,
@@ -412,7 +412,7 @@ export class RenderingArtboard implements IRenderingArtboard {
     return {
       imageName,
       releaseImage: () => {
-        return this._renderingProcess.execCommand('release-image', {
+        return this._renderingSession.execCommand('release-image', {
           'image': imageName,
         })
       },

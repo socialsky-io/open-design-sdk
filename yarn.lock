@@ -2349,6 +2349,11 @@ marked@^2.0.3:
   resolved "https://registry.yarnpkg.com/marked/-/marked-2.0.3.tgz#3551c4958c4da36897bda2a16812ef1399c8d6b0"
   integrity sha512-5otztIIcJfPc2qGTN8cVtOJEjNJZ0jwa46INMagrYfk0EvqtRuEHLsEe0LrFS0/q+ZRKT0+kXK7P2T1AN5lWRA==
 
+marked@^2.0.7:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-2.1.3.tgz#bd017cef6431724fd4b27e0657f5ceb14bff3753"
+  integrity sha512-/Q+7MGzaETqifOMWYEA7HVMaZb4XbcRfaOzcSsHZEith83KGlvaSG33u0SKu89Mj5h+T8V2hM+8O45Qc5XTgwA==
+
 merge-source-map@1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/merge-source-map/-/merge-source-map-1.0.4.tgz#a5de46538dae84d4114cc5ea02b4772a6346701f"
@@ -2621,10 +2626,10 @@ onigasm@^2.2.5:
   dependencies:
     lru-cache "^5.1.1"
 
-open-design-api-types@0.3.5:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/open-design-api-types/-/open-design-api-types-0.3.5.tgz#6d543c69c860fca58f79fe7efee57ec16e97221d"
-  integrity sha512-oYgWvbumOccSnJTV17HcgjLlYUtIuoKgQLmNbWzeIOXGQbx1PjmYbypYUa1sLC9xcETLCIEJJHew5IFfLmUGqw==
+open-design-api-types@0.3.7-rc.2:
+  version "0.3.7-rc.2"
+  resolved "https://registry.yarnpkg.com/open-design-api-types/-/open-design-api-types-0.3.7-rc.2.tgz#452d18c4785ac3859c416191ebe8644a91b4a09f"
+  integrity sha512-EuRa1edrjcHIJLRgz26CyWn+Rf7UcOBgidaVLOhzCxvVHtQVz3AMtdiq9s1VHApJDE3/ekPwj/v33s4MWd4+Lg==
 
 optionator@^0.8.1:
   version "0.8.3"
@@ -3530,6 +3535,21 @@ typedoc@0.20.36:
     minimatch "^3.0.0"
     progress "^2.0.3"
     shelljs "^0.8.4"
+    shiki "^0.9.3"
+    typedoc-default-themes "^0.12.10"
+
+typedoc@0.21.0-beta.2:
+  version "0.21.0-beta.2"
+  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.21.0-beta.2.tgz#e26927bf9c55c691f5401cd1608d99e4e7852ada"
+  integrity sha512-oCjdueR4glcSHT6ynR2q5HTpBkBM1ihf3/Wfpl0qriDJutrSg4idZovN+1jx66s+p9QmJE7yzDCXPrZ2GW/Xbw==
+  dependencies:
+    glob "^7.1.6"
+    handlebars "^4.7.7"
+    lodash "^4.17.21"
+    lunr "^2.3.9"
+    marked "^2.0.7"
+    minimatch "^3.0.0"
+    progress "^2.0.3"
     shiki "^0.9.3"
     typedoc-default-themes "^0.12.10"
 
