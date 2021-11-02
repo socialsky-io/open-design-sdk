@@ -462,7 +462,7 @@ export class Sdk {
    *
    * The design is automatically imported by the API and local caching is established.
    *
-   * @example
+   * @example Explicitly provided Figma token
    * ```typescript
    * const design = await sdk.importFigmaDesign({
    *   figmaToken: '<FIGMA_TOKEN>',
@@ -475,11 +475,23 @@ export class Sdk {
    * const artboards = design.getArtboards()
    * ```
    *
+   * @example Figma token not provided, using Figma OAuth connection
+   * ```typescript
+   * const design = await sdk.importFigmaDesign({
+   *   figmaFileKey: 'abc',
+   * })
+   *
+   * console.log(design.id) // == server-generated UUID
+   *
+   * // Continue working with the processed design
+   * const artboards = design.getArtboards()
+   * ```
+   *
    * @category Figma Design Usage
    * @param params Info about the Figma design
    * @param params.designId The ID of the design to which to import the Figma design as a new version. The previous versions of the design must also be imported from Figma.
-   * @param params.figmaToken A Figma access token generated in the "Personal access tokens" section of [Figma account settings](https://www.figma.com/settings).
    * @param params.figmaFileKey A Figma design "file key" from the design URL (i.e. `abc` from `https://www.figma.com/file/abc/Sample-File`).
+   * @param params.figmaToken A Figma access token generated in the "Personal access tokens" section of [Figma account settings](https://www.figma.com/settings). This is only required when the user does not have a Figma account connected.
    * @param params.figmaIds A listing of Figma design frames to use.
    * @param params.designName A name override for the design. The original Figma design name is used by default.
    * @param params.cancelToken A cancellation token which aborts the asynchronous operation. When the token is cancelled, the promise is rejected and side effects are not reverted (e.g. the design is not deleted from the server when the token is cancelled during processing; the server still finishes the processing but the SDK stops watching its progress and does not download the result). A cancellation token can be created via {@link createCancelToken}.
@@ -487,8 +499,8 @@ export class Sdk {
    */
   async importFigmaDesign(params: {
     designId?: DesignId | null
-    figmaToken: string
     figmaFileKey: string
+    figmaToken?: string | null
     figmaIds?: Array<string>
     designName?: string | null
     cancelToken?: CancelToken | null
@@ -516,7 +528,7 @@ export class Sdk {
    *
    * The design is automatically imported by the API and local caching is established in case the local cache is configured.
    *
-   * @example
+   * @example Explicitly provided Figma token
    * ```typescript
    * const design = await sdk.importFigmaDesign({
    *   figmaToken: '<FIGMA_TOKEN>',
@@ -530,11 +542,24 @@ export class Sdk {
    * await design.exportDesignFile('./design.sketch')
    * ```
    *
+   * @example Figma token not provided, using Figma OAuth connection
+   * ```typescript
+   * const design = await sdk.importFigmaDesign({
+   *   figmaFileKey: 'abc',
+   *   conversions: [
+   *     { format: 'sketch' }
+   *   ]
+   * })
+   *
+   * // Download the converted design file
+   * await design.exportDesignFile('./design.sketch')
+   * ```
+   *
    * @category Figma Design Usage
    * @param params Info about the Figma design
    * @param params.designId The ID of the design to which to import the Figma design as a new version. The previous versions of the design must also be imported from Figma.
-   * @param params.figmaToken A Figma access token generated in the "Personal access tokens" section of [Figma account settings](https://www.figma.com/settings).
    * @param params.figmaFileKey A Figma design "file key" from the design URL (i.e. `abc` from `https://www.figma.com/file/abc/Sample-File`).
+   * @param params.figmaToken A Figma access token generated in the "Personal access tokens" section of [Figma account settings](https://www.figma.com/settings). This is only required when the user does not have a Figma account connected.
    * @param params.figmaIds A listing of Figma design frames to use.
    * @param params.designName A name override for the design. The original Figma design name is used by default.
    * @param params.exports Design file export configurations. Only a single export to the `"sketch"` (Sketch) file format is available currently.
@@ -543,8 +568,8 @@ export class Sdk {
    */
   async convertFigmaDesign(params: {
     designId?: DesignId | null
-    figmaToken: string
     figmaFileKey: string
+    figmaToken?: string | null
     figmaIds?: Array<string>
     designName?: string | null
     exports: Array<{ format: DesignExportTargetFormatEnum }>

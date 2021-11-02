@@ -190,7 +190,7 @@ export class OpenDesignApi implements IOpenDesignApi {
 
     if (!design) {
       this._console.error(
-        'OpenDesignApi#getDesignSummary()',
+        'OpenDesignApi#getDesignById()',
         { designId },
         res.statusCode,
         res.body
@@ -268,7 +268,7 @@ export class OpenDesignApi implements IOpenDesignApi {
       res.statusCode === 403
     ) {
       this._console.error(
-        'OpenDesignApi#getDesignById()',
+        'OpenDesignApi#getDesignSummary()',
         { designId },
         res.statusCode,
         res.body
@@ -435,8 +435,8 @@ export class OpenDesignApi implements IOpenDesignApi {
 
   async importFigmaDesignLink(params: {
     designId?: DesignId | null
-    figmaToken: string
     figmaFileKey: string
+    figmaToken?: string | null
     figmaIds?: Array<string> | null
     name?: string | null
     cancelToken?: CancelToken | null
@@ -453,8 +453,10 @@ export class OpenDesignApi implements IOpenDesignApi {
             '/designs/{design_id}/versions/figma-link',
             { 'design_id': params.designId },
             {
-              'figma_token': params.figmaToken,
               'figma_filekey': params.figmaFileKey,
+              ...(params.figmaToken
+                ? { 'figma_token': params.figmaToken }
+                : {}),
               ...(params.figmaIds ? { 'figma_ids': params.figmaIds } : {}),
               ...(params.name ? { 'design_name': params.name } : {}),
             },
@@ -469,8 +471,10 @@ export class OpenDesignApi implements IOpenDesignApi {
             '/designs/figma-link',
             {},
             {
-              'figma_token': params.figmaToken,
               'figma_filekey': params.figmaFileKey,
+              ...(params.figmaToken
+                ? { 'figma_token': params.figmaToken }
+                : {}),
               ...(params.figmaIds ? { 'figma_ids': params.figmaIds } : {}),
               ...(params.name ? { 'design_name': params.name } : {}),
             },
@@ -482,9 +486,20 @@ export class OpenDesignApi implements IOpenDesignApi {
           )
     )
 
+    const figmaTokenErrorData =
+      res.statusCode === 409 ? res.body['error'] : null
+    if (
+      figmaTokenErrorData &&
+      figmaTokenErrorData['code'] === 'FigmaTokenNotProvided'
+    ) {
+      this._console.warn(
+        `Figma is not connected; you can connect your Figma account at ${figmaTokenErrorData['settings_url']}`
+      )
+    }
+
     if (res.statusCode !== 201) {
       this._console.error(
-        'OpenDesignApi#importDesignLink()',
+        'OpenDesignApi#importFigmaDesignLink()',
         res.statusCode,
         res.body
       )
@@ -499,8 +514,8 @@ export class OpenDesignApi implements IOpenDesignApi {
   }
 
   async importFigmaDesignLinkWithExports(params: {
-    figmaToken: string
     figmaFileKey: string
+    figmaToken?: string | null
     figmaIds?: Array<string> | null
     name?: string | null
     exports: Array<{ format: DesignExportTargetFormatEnum }>
@@ -517,9 +532,9 @@ export class OpenDesignApi implements IOpenDesignApi {
         '/designs/figma-link',
         {},
         {
-          'figma_token': params.figmaToken,
           'figma_filekey': params.figmaFileKey,
           'exports': params.exports,
+          ...(params.figmaToken ? { 'figma_token': params.figmaToken } : {}),
           ...(params.figmaIds ? { 'figma_ids': params.figmaIds } : {}),
           ...(params.name ? { 'design_name': params.name } : {}),
         },
@@ -531,9 +546,20 @@ export class OpenDesignApi implements IOpenDesignApi {
       )
     )
 
+    const figmaTokenErrorData =
+      res.statusCode === 409 ? res.body['error'] : null
+    if (
+      figmaTokenErrorData &&
+      figmaTokenErrorData['code'] === 'FigmaTokenNotProvided'
+    ) {
+      this._console.warn(
+        `Figma is not connected; you can connect your Figma account at ${figmaTokenErrorData['settings_url']}`
+      )
+    }
+
     if (res.statusCode !== 201) {
       this._console.error(
-        'OpenDesignApi#importDesignLink()',
+        'OpenDesignApi#importFigmaDesignLinkWithExports()',
         res.statusCode,
         res.body
       )
@@ -601,7 +627,7 @@ export class OpenDesignApi implements IOpenDesignApi {
 
     if (res.statusCode !== 200 && res.statusCode !== 202) {
       this._console.error(
-        'OpenDesignApi#getDesignById()',
+        'OpenDesignApi#getDesignArtboardContent()',
         { designId },
         res.statusCode,
         res.body
@@ -813,7 +839,7 @@ export class OpenDesignApi implements IOpenDesignApi {
       })
     )
     if (res.status !== 200 || !res.body) {
-      this._console.debug('ApiDesign#getBitmapAssetStream()', {
+      this._console.debug('OpenDesignApi#getDesignBitmapAssetStream()', {
         bitmapKey,
         statusCode: res.status,
       })

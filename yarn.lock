@@ -2626,10 +2626,10 @@ onigasm@^2.2.5:
   dependencies:
     lru-cache "^5.1.1"
 
-open-design-api-types@0.3.7-rc.2:
-  version "0.3.7-rc.2"
-  resolved "https://registry.yarnpkg.com/open-design-api-types/-/open-design-api-types-0.3.7-rc.2.tgz#452d18c4785ac3859c416191ebe8644a91b4a09f"
-  integrity sha512-EuRa1edrjcHIJLRgz26CyWn+Rf7UcOBgidaVLOhzCxvVHtQVz3AMtdiq9s1VHApJDE3/ekPwj/v33s4MWd4+Lg==
+open-design-api-types@0.4.0-rc.1:
+  version "0.4.0-rc.1"
+  resolved "https://registry.yarnpkg.com/open-design-api-types/-/open-design-api-types-0.4.0-rc.1.tgz#ec2803b3ca50506fec410272211bc8d6e7884cd1"
+  integrity sha512-Xoh0bI8PrgMax+LVXsZH+EillDDb6fHTJSur0EGQhYkij4PsIRZ1vQkOa8Mm/739QWQgR3ehDsDQDoNC4ZzbyQ==
 
 optionator@^0.8.1:
   version "0.8.3"
