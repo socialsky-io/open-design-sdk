@@ -1,6 +1,6 @@
 {
   "name": "@opendesign/sdk",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "main": "dist",
   "browser": "dist-browser/bundle.js",
   "scripts": {
@@ -29,10 +29,10 @@
     "@avocode/cancel-token": "1.4.0",
     "@avocode/fontkit": "1.7.7-avocode.6",
     "@avocode/system-font-families": "0.5.0-rc.6",
-    "@opendesign/api": "0.3.2",
-    "@opendesign/octopus-reader": "0.3.2",
-    "@opendesign/rendering": "0.3.2",
-    "@opendesign/svg-exporter": "0.3.2",
+    "@opendesign/api": "0.4.0",
+    "@opendesign/octopus-reader": "0.4.0",
+    "@opendesign/rendering": "0.4.0",
+    "@opendesign/svg-exporter": "0.4.0",
     "cplus": "2.0.1",
     "fs-extra": "^9.1.0",
     "mkdirp": "1.0.4",
