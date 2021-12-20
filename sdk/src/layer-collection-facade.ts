@@ -550,7 +550,7 @@ export class LayerCollectionFacade {
       return layer.id
     })
 
-    const artboardIds = [...new Set(this.getLayers().map((layer) => layer.id))]
+    const artboardIds = [...new Set(this.getLayers().map((layer) => layer.artboardId))]
     const artboardId = artboardIds.length === 1 ? artboardIds[0] : null
     if (!artboardId) {
       throw new Error(
@@ -605,7 +605,7 @@ export class LayerCollectionFacade {
       return layer.id
     })
 
-    const artboardIds = [...new Set(this.getLayers().map((layer) => layer.id))]
+    const artboardIds = [...new Set(this.getLayers().map((layer) => layer.artboardId))]
     const artboardId = artboardIds.length === 1 ? artboardIds[0] : null
     if (!artboardId) {
       throw new Error(
@@ -660,7 +660,7 @@ export class LayerCollectionFacade {
       return layer.id
     })
 
-    const artboardIds = [...new Set(this.getLayers().map((layer) => layer.id))]
+    const artboardIds = [...new Set(this.getLayers().map((layer) => layer.artboardId))]
     const artboardId = artboardIds.length === 1 ? artboardIds[0] : null
     if (!artboardId) {
       throw new Error(
