@@ -1,5 +1,5 @@
 import createCancelToken, { CancelToken } from '@avocode/cancel-token'
-import { create as createFontkit, Fontkit } from '@avocode/fontkit'
+import { create as createFontkit } from '@avocode/fontkit'
 import SystemFontFamilies, { getFontInfo } from '@avocode/system-font-families'
 import { extname, resolve as resolvePath } from 'path'
 import { readFile } from 'fs'
@@ -25,7 +25,7 @@ export class SystemFontManager {
 
   _console: Console
   _systemFontFamilies: SystemFontFamilies
-  _fontkit: Fontkit
+  _fontkit: any // NOTE: fontkit is in plain JS
 
   private _globalFontDirname: string | null = null
   private _globalFontFamilies: SystemFontFamilies | null = null
