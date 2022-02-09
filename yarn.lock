@@ -26,10 +26,10 @@
     tiny-inflate "^1.0.2"
     unicode-trie "^0.3.0"
 
-"@avocode/monroe-cli@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@avocode/monroe-cli/-/monroe-cli-0.3.0.tgz#39fa2adbc8a185b7b7f52c12d47f76a970c37ebb"
-  integrity sha512-k0PgWYMhbSq3jWUn+ju53Yc3G4c7T91Kzc9tatks4A/chFyBcSS/m98i0PVnSEBLEY5IqCLsNG6Ig8IwhKJhIw==
+"@avocode/monroe-cli@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@avocode/monroe-cli/-/monroe-cli-0.5.0.tgz#e1dfcf0bd926be29a695db877d0e3624cf267ec8"
+  integrity sha512-yOujlay11quanMLokwqAMjMyYV1GZ+ok8X/tnc3z2hErI7h+x9MrJmGZjaHPETqDyqb5L/d45IF8KlWUzgnluQ==
   dependencies:
     node-fetch "^2.6.1"
 
