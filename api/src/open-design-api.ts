@@ -835,6 +835,8 @@ export class OpenDesignApi implements IOpenDesignApi {
 
     const res = await this._requestQueue.add(() =>
       fetch(bitmapKey, {
+        console: this._console,
+        ...options,
         cancelToken,
       })
     )
