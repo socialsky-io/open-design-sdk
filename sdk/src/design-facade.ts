@@ -1839,6 +1839,9 @@ export class DesignFacade {
       cancelToken,
     })
 
+    await renderingDesign.markArtboardAsReady(artboardId)
+    cancelToken?.throwIfCancelled()
+
     const viewBoxBounds = await renderingDesign.getArtboardLayerCompositionBounds(
       artboardId,
       layerIds,
@@ -1997,6 +2000,8 @@ export class DesignFacade {
 
     const fonts = layer.getFonts()
     await this._loadFontsToRendering(fonts, options)
+
+    await renderingDesign.markArtboardAsReady(artboardId)
 
     return renderingDesign.getArtboardLayerBounds(artboardId, layerId)
   }
