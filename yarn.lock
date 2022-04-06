@@ -33,10 +33,10 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@avocode/svg-exporter@1.2.30":
-  version "1.2.30"
-  resolved "https://registry.yarnpkg.com/@avocode/svg-exporter/-/svg-exporter-1.2.30.tgz#a326d2d43afc8f9ef11cc6fa5090d3043ba84289"
-  integrity sha512-rX6h4tDYEm2XPGLuGOexZs3DJ7Ot52Rk3y0lHMN9bomXuTlo+/RaEdKwLSeH/Y7yVetcaK867ShaZoBv7k8qvw==
+"@avocode/svg-exporter@1.2.33":
+  version "1.2.33"
+  resolved "https://registry.yarnpkg.com/@avocode/svg-exporter/-/svg-exporter-1.2.33.tgz#807fd247ec2f232b398617e54426d957752b6573"
+  integrity sha512-XHXyLWIx3ZQShYgcVa75N2Yj3IL72rVuoooCBnsM8DlCXJa9ai+XGI7Eh2C7XQAJlq+KNoCvGACjtCk6Q39YYQ==
   dependencies:
     html-entities "^2.1.0"
     lodash "^4.17.4"
