@@ -1,3 +1,5 @@
+# We are working on [Open Design 2.0](https://opendesign.dev/blog/open-design-2-0), which will not be backwards compatible with the current version of the SDK. For info on the status of the new version, follow our [blog](https://opendesign.dev/blog) or twitter [@opendesigndev](https://twitter.com/OpenDesignDev).
+
 <p align="center">
   <a href="https://opendesign.dev">
     <img src="https://opendesign.dev/favicons/apple-touch-icon.png?v2" height="128">
